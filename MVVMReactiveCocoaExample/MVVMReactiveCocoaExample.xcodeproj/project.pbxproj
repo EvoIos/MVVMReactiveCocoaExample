@@ -13,6 +13,7 @@
 		19E704811F3B048F0099469C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19E704801F3B048F0099469C /* Assets.xcassets */; };
 		19E704841F3B048F0099469C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 19E704821F3B048F0099469C /* LaunchScreen.storyboard */; };
 		19E704931F3B05FE0099469C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704921F3B05FE0099469C /* HomeViewController.m */; };
+		19E704A31F3B0CEF0099469C /* HttpToolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704A21F3B0CEF0099469C /* HttpToolManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		19E7048B1F3B05050099469C /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		19E704911F3B05FE0099469C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		19E704921F3B05FE0099469C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		19E704A11F3B0CEF0099469C /* HttpToolManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpToolManager.h; sourceTree = "<group>"; };
+		19E704A21F3B0CEF0099469C /* HttpToolManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpToolManager.m; sourceTree = "<group>"; };
 		2A544EBF373A625DC3A240F1 /* Pods-MVVMReactiveCocoaExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.release.xcconfig"; sourceTree = "<group>"; };
 		4D5304A566429A1466B11CC9 /* libPods-MVVMReactiveCocoaExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MVVMReactiveCocoaExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F3D6FA0AC8C37F03950875E /* Pods-MVVMReactiveCocoaExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.debug.xcconfig"; sourceTree = "<group>"; };
@@ -98,6 +101,7 @@
 		19E7048F1F3B05CA0099469C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				19E704A01F3B0CEF0099469C /* HttpToolManager */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -139,6 +143,15 @@
 			children = (
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		19E704A01F3B0CEF0099469C /* HttpToolManager */ = {
+			isa = PBXGroup;
+			children = (
+				19E704A11F3B0CEF0099469C /* HttpToolManager.h */,
+				19E704A21F3B0CEF0099469C /* HttpToolManager.m */,
+			);
+			path = HttpToolManager;
 			sourceTree = "<group>";
 		};
 		4E4D62CE1FFB9F75F25B6AA6 /* Pods */ = {
@@ -280,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				19E704791F3B048F0099469C /* AppDelegate.m in Sources */,
+				19E704A31F3B0CEF0099469C /* HttpToolManager.m in Sources */,
 				19E704761F3B048F0099469C /* main.m in Sources */,
 				19E704931F3B05FE0099469C /* HomeViewController.m in Sources */,
 			);
@@ -436,6 +450,7 @@
 				19E7048A1F3B048F0099469C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
