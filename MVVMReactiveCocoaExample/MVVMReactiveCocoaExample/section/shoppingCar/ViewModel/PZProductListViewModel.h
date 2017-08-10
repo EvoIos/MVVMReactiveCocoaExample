@@ -13,6 +13,10 @@
 @interface PZProductListViewModel : NSObject
 
 @property (nonatomic, strong, readonly) NSArray <PZDefaultProductListData *> *productLists;
+@property (nonatomic, strong, readonly) NSDictionary <NSIndexPath *, NSNumber *>*selectedDic;
 
 @property (nonatomic, strong, readonly) RACCommand *fetchDataCommand;
+/// input: NSIndexPath *
+@property (nonatomic, strong, readonly) RACCommand *selectCommand;
+
 @end
