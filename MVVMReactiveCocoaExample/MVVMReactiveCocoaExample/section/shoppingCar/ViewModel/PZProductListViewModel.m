@@ -55,6 +55,7 @@
             } else {
                 tmpDic[indexPath] = @(NO);
             }
+            self.selectedDic = [tmpDic copy];
             [subscriber sendNext:@YES];
             [subscriber sendCompleted];
             return (RACDisposable *)nil;
