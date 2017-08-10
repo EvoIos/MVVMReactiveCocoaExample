@@ -27,6 +27,13 @@
     }];
 }
 
+- (void)configureNav {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"购买"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(back)];
+}
+
 - (void)configureTableView {
     [self.view addSubview:self.tableView];
     self.tableView.delegate = self;

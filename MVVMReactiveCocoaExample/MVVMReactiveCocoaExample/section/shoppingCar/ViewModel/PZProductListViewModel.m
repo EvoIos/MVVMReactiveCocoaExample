@@ -50,7 +50,8 @@
     self.selectCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(NSIndexPath * indexPath) {
         return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
             NSMutableDictionary *tmpDic = [self.selectedDic mutableCopy];
-            if (!tmpDic[indexPath]) {
+            NSNumber *value = tmpDic[indexPath];
+            if (!value.boolValue) {
                 tmpDic[indexPath] = @(YES);
             } else {
                 tmpDic[indexPath] = @(NO);
