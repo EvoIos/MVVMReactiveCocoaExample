@@ -49,15 +49,18 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:product.img]];
-    cell.textLabel.text = [product.title substringToIndex:10];
-    cell.textLabel.numberOfLines = 2;
+    cell.textLabel.text = product.title ;
     cell.detailTextLabel.text = product.propertyTitle;
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 100;
+    return 60;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
 }
 
 #pragma mark - getter
