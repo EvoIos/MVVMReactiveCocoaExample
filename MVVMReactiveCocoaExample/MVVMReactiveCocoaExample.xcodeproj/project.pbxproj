@@ -8,15 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		0592236F8AF887EEB6493447 /* libPods-MVVMReactiveCocoaExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5304A566429A1466B11CC9 /* libPods-MVVMReactiveCocoaExample.a */; };
+		191363821F3C56100078E173 /* PZBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191363811F3C56100078E173 /* PZBaseNavigationController.m */; };
 		19E704761F3B048F0099469C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704751F3B048F0099469C /* main.m */; };
 		19E704791F3B048F0099469C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704781F3B048F0099469C /* AppDelegate.m */; };
 		19E704811F3B048F0099469C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19E704801F3B048F0099469C /* Assets.xcassets */; };
 		19E704841F3B048F0099469C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 19E704821F3B048F0099469C /* LaunchScreen.storyboard */; };
 		19E704931F3B05FE0099469C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704921F3B05FE0099469C /* HomeViewController.m */; };
 		19E704A31F3B0CEF0099469C /* HttpToolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704A21F3B0CEF0099469C /* HttpToolManager.m */; };
+		19E704A71F3BF3D60099469C /* NetworkAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704A61F3BF3D60099469C /* NetworkAgent.m */; };
+		19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704D11F3C0A0D0099469C /* PZProductListViewController.m */; };
+		19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */; };
+		19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */; };
+		19E705A81F3C54B60099469C /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19E705A71F3C54B60099469C /* iconfont.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		191363801F3C56100078E173 /* PZBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZBaseNavigationController.h; sourceTree = "<group>"; };
+		191363811F3C56100078E173 /* PZBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZBaseNavigationController.m; sourceTree = "<group>"; };
 		19E704711F3B048F0099469C /* MVVMReactiveCocoaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MVVMReactiveCocoaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19E704751F3B048F0099469C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		19E704771F3B048F0099469C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -25,10 +33,20 @@
 		19E704831F3B048F0099469C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		19E704851F3B048F0099469C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		19E7048B1F3B05050099469C /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		19E704911F3B05FE0099469C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
-		19E704921F3B05FE0099469C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		19E704911F3B05FE0099469C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomeViewController.h; path = ../HomeViewController.h; sourceTree = "<group>"; };
+		19E704921F3B05FE0099469C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HomeViewController.m; path = ../HomeViewController.m; sourceTree = "<group>"; };
 		19E704A11F3B0CEF0099469C /* HttpToolManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpToolManager.h; sourceTree = "<group>"; };
 		19E704A21F3B0CEF0099469C /* HttpToolManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpToolManager.m; sourceTree = "<group>"; };
+		19E704A51F3BF3D60099469C /* NetworkAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkAgent.h; sourceTree = "<group>"; };
+		19E704A61F3BF3D60099469C /* NetworkAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkAgent.m; sourceTree = "<group>"; };
+		19E704D01F3C0A0D0099469C /* PZProductListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZProductListViewController.h; sourceTree = "<group>"; };
+		19E704D11F3C0A0D0099469C /* PZProductListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZProductListViewController.m; sourceTree = "<group>"; };
+		19E704D31F3C0A8B0099469C /* PZProductListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZProductListViewModel.h; sourceTree = "<group>"; };
+		19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZProductListViewModel.m; sourceTree = "<group>"; };
+		19E704D61F3C0B310099469C /* PZShoppingCarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShoppingCarHeader.h; sourceTree = "<group>"; };
+		19E705A31F3C4C870099469C /* PZDefaultProductListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZDefaultProductListModel.h; sourceTree = "<group>"; };
+		19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZDefaultProductListModel.m; sourceTree = "<group>"; };
+		19E705A71F3C54B60099469C /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		2A544EBF373A625DC3A240F1 /* Pods-MVVMReactiveCocoaExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.release.xcconfig"; sourceTree = "<group>"; };
 		4D5304A566429A1466B11CC9 /* libPods-MVVMReactiveCocoaExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MVVMReactiveCocoaExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F3D6FA0AC8C37F03950875E /* Pods-MVVMReactiveCocoaExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.debug.xcconfig"; sourceTree = "<group>"; };
@@ -46,6 +64,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1913637F1F3C55D40078E173 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				191363801F3C56100078E173 /* PZBaseNavigationController.h */,
+				191363811F3C56100078E173 /* PZBaseNavigationController.m */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
 		19E704681F3B048F0099469C = {
 			isa = PBXGroup;
 			children = (
@@ -67,8 +94,7 @@
 		19E704731F3B048F0099469C /* MVVMReactiveCocoaExample */ = {
 			isa = PBXGroup;
 			children = (
-				19E704911F3B05FE0099469C /* HomeViewController.h */,
-				19E704921F3B05FE0099469C /* HomeViewController.m */,
+				19E705A61F3C54970099469C /* Resources */,
 				19E704951F3B08950099469C /* section */,
 				19E7048F1F3B05CA0099469C /* Utilities */,
 				19E7048D1F3B05CA0099469C /* General */,
@@ -94,6 +120,7 @@
 		19E7048D1F3B05CA0099469C /* General */ = {
 			isa = PBXGroup;
 			children = (
+				1913637F1F3C55D40078E173 /* Base */,
 			);
 			path = General;
 			sourceTree = "<group>";
@@ -101,6 +128,7 @@
 		19E7048F1F3B05CA0099469C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				19E704A41F3BF3470099469C /* NetworkAgent */,
 				19E704A01F3B0CEF0099469C /* HttpToolManager */,
 			);
 			path = Utilities;
@@ -109,6 +137,8 @@
 		19E704951F3B08950099469C /* section */ = {
 			isa = PBXGroup;
 			children = (
+				19E704911F3B05FE0099469C /* HomeViewController.h */,
+				19E704921F3B05FE0099469C /* HomeViewController.m */,
 				19E704961F3B08C80099469C /* shoppingCar */,
 			);
 			path = section;
@@ -117,8 +147,8 @@
 		19E704961F3B08C80099469C /* shoppingCar */ = {
 			isa = PBXGroup;
 			children = (
-				19E704971F3B08C80099469C /* Model */,
 				19E704981F3B08C80099469C /* View */,
+				19E704971F3B08C80099469C /* Model */,
 				19E704991F3B08C80099469C /* ViewModel */,
 			);
 			path = shoppingCar;
@@ -127,6 +157,9 @@
 		19E704971F3B08C80099469C /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				19E704D61F3C0B310099469C /* PZShoppingCarHeader.h */,
+				19E705A31F3C4C870099469C /* PZDefaultProductListModel.h */,
+				19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -134,6 +167,8 @@
 		19E704981F3B08C80099469C /* View */ = {
 			isa = PBXGroup;
 			children = (
+				19E704D01F3C0A0D0099469C /* PZProductListViewController.h */,
+				19E704D11F3C0A0D0099469C /* PZProductListViewController.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -141,6 +176,8 @@
 		19E704991F3B08C80099469C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				19E704D31F3C0A8B0099469C /* PZProductListViewModel.h */,
+				19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -152,6 +189,23 @@
 				19E704A21F3B0CEF0099469C /* HttpToolManager.m */,
 			);
 			path = HttpToolManager;
+			sourceTree = "<group>";
+		};
+		19E704A41F3BF3470099469C /* NetworkAgent */ = {
+			isa = PBXGroup;
+			children = (
+				19E704A51F3BF3D60099469C /* NetworkAgent.h */,
+				19E704A61F3BF3D60099469C /* NetworkAgent.m */,
+			);
+			path = NetworkAgent;
+			sourceTree = "<group>";
+		};
+		19E705A61F3C54970099469C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				19E705A71F3C54B60099469C /* iconfont.ttf */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		4E4D62CE1FFB9F75F25B6AA6 /* Pods */ = {
@@ -200,6 +254,7 @@
 		19E704691F3B048F0099469C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = PZ;
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Pace.Z;
 				TargetAttributes = {
@@ -234,6 +289,7 @@
 			files = (
 				19E704841F3B048F0099469C /* LaunchScreen.storyboard in Resources */,
 				19E704811F3B048F0099469C /* Assets.xcassets in Resources */,
+				19E705A81F3C54B60099469C /* iconfont.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,8 +350,13 @@
 			files = (
 				19E704791F3B048F0099469C /* AppDelegate.m in Sources */,
 				19E704A31F3B0CEF0099469C /* HttpToolManager.m in Sources */,
+				19E704A71F3BF3D60099469C /* NetworkAgent.m in Sources */,
 				19E704761F3B048F0099469C /* main.m in Sources */,
+				19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */,
 				19E704931F3B05FE0099469C /* HomeViewController.m in Sources */,
+				191363821F3C56100078E173 /* PZBaseNavigationController.m in Sources */,
+				19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */,
+				19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

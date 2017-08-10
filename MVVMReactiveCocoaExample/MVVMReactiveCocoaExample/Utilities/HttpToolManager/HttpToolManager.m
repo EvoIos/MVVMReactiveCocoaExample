@@ -1,36 +1,35 @@
 //
 //  HttpToolManager.m
-//  Zhuan
-//
-//  Created by 张金山 on 17/6/15.
-//  Copyright © 2017年 张金山. All rights reserved.
 //
 
 #import "HttpToolManager.h"
 
 @implementation HttpToolManager
 
-+(HttpToolManager *)shareInstance{
-    static HttpToolManager *request = nil;
++ (HttpToolManager *)shareInstance{
+    static id sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        request = [[HttpToolManager alloc] init];
-        
-        NSURLSessionConfiguration * configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        
-        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
-        manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        manager.requestSerializer.timeoutInterval = 10.0f;
-        request.manager = manager;
-        request.operationQueue = request.manager.operationQueue;
+        sharedInstance = [[self alloc] init];
     });
-    
-    return request;
+    return sharedInstance;
 }
 
-+(void)post:(NSString *)url parameters:(NSDictionary *)dict success:(HttpToolsBlock)block {
-    NSString *validUrl =  [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<>"]];
-    [[HttpToolManager shareInstance].manager POST:validUrl parameters:dict progress:^(NSProgress * _Nonnull uploadProgress) {
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", @"text/json", @"text/javascript", @"text/plain", nil];
+        manager.requestSerializer.timeoutInterval = 15.0f;
+        self.manager = manager;
+        self.operationQueue = manager.operationQueue;
+    }
+    return self;
+}
+
++ (void)post:(NSString *)url parameters:(NSDictionary *)dict handle:(HttpToolsBlock)block {
+    [[HttpToolManager shareInstance].manager POST:url parameters:dict progress:^(NSProgress * _Nonnull uploadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         block(responseObject,nil);
@@ -39,9 +38,8 @@
     }];
 }
 
-+(void)get:(NSString *)url parameters:(NSDictionary *)dict success:(HttpToolsBlock)block{
-    NSString *validUrl =  [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<>"]];
-    [[HttpToolManager shareInstance].manager GET:validUrl parameters:dict progress:^(NSProgress * _Nonnull downloadProgress) {
++ (void)get:(NSString *)url parameters:(NSDictionary *)dict handle:(HttpToolsBlock)block{
+    [[HttpToolManager shareInstance].manager GET:url parameters:dict progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         block(responseObject,nil);

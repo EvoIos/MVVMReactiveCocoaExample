@@ -10,11 +10,11 @@ typedef void (^HttpToolsBlock) (id result, NSError* error);
 @property (nonatomic, strong) AFHTTPSessionManager *manager;
 @property (nonatomic, strong) NSOperationQueue* operationQueue;
 
-+(HttpToolManager*)shareInstance;
++ (HttpToolManager*)shareInstance;
 
-+(void)post:(NSString *)url parameters:(NSDictionary *)dict success:(HttpToolsBlock)block;
++ (void)post:(NSString *)url parameters:(NSDictionary *)dict handle:(HttpToolsBlock)block;
 
-+(void)getURL:(NSString *)url andParameters:(NSDictionary *)dict success:(HttpToolsBlock)block;
++ (void)get:(NSString *)url parameters:(NSDictionary *)dict handle:(HttpToolsBlock)block;
 
 + (void)cancelAllOperations;
 

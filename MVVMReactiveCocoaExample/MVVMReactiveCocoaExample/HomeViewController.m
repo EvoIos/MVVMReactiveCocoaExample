@@ -7,6 +7,7 @@
 //
 
 #import "HomeViewController.h"
+#import "PZProductListViewController.h"
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) NSArray *info;
@@ -42,6 +43,11 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = self.info[indexPath.row];
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    PZProductListViewController *productListVC = [PZProductListViewController new];
+    [self.navigationController pushViewController:productListVC animated:YES];
 }
 
 #pragma mark - getter and setter
