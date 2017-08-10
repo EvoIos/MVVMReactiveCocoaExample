@@ -18,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self configureNav];
     [self configureTableView];
     [self.viewModel.fetchDataCommand execute:nil];
     @weakify(self);
@@ -31,13 +32,17 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"购买"
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
-                                                                             action:@selector(back)];
+                                                                             action:@selector(buy)];
 }
 
 - (void)configureTableView {
     [self.view addSubview:self.tableView];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+}
+
+- (void)buy {
+    DLog(@"buy");
 }
 
 #pragma mark - tableview delegate
