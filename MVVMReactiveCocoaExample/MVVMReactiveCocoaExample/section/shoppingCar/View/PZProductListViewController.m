@@ -20,8 +20,24 @@
     [super viewDidLoad];
     [self configureNav];
     [self configureTableView];
-    [self.viewModel.fetchDataCommand execute:nil];
+    [self bindViewModel];
+
+}
+
+- (void)bindViewModel {
     @weakify(self);
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [[self.viewModel.fetchDataCommand execute:nil]
+     subscribeNext:^(id x) {
+          DLog(@"there");
+          @strongify(self);
+          [MBProgressHUD hideHUDForView:self.view animated:YES];
+      }];
+    [self.viewModel.fetchDataCommand.errors subscribeNext:^(id x) {
+        @strongify(self);
+        [MBProgressHUD showError:@"发生错误了！" toView:self.view];
+    }];
     [RACObserve(self, viewModel.productLists) subscribeNext:^(id x) {
         @strongify(self);
         [self.tableView reloadData];

@@ -17,6 +17,8 @@
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 
+#import "MBProgressHUD+Add.h"
+
 #define BaseUrl @"http://reactivecocoaexample.leanapp.cn/"
 
 
