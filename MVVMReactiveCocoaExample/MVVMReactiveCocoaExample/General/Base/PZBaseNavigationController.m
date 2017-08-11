@@ -7,6 +7,7 @@
 //
 
 #import "PZBaseNavigationController.h"
+#import "UIImage+PZExtension.h"
 
 @interface PZBaseNavigationController ()
 
@@ -17,7 +18,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.interactivePopGestureRecognizer.enabled = YES;
-    self.view.backgroundColor = [UIColor whiteColor];
+    
+    UINavigationBar *navBar = [UINavigationBar appearance];
+    // 选择黑色背景
+    navBar.barStyle = UIBarStyleDefault;
+    // title 字体颜色
+    [navBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                    DefaultTextLabelColor,
+                                    NSForegroundColorAttributeName,
+                                    [UIFont systemFontOfSize:18],
+                                    NSFontAttributeName ,nil]];
+    [navBar setBackgroundColor:DefaultBackgroundColor];
+    // 左右按钮颜色
+    [navBar setTintColor:DefaultTextLabelColor];
+    // status coclor
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(NSIntegerMin, NSIntegerMin) forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void)back {
@@ -25,16 +41,16 @@
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    UIBarButtonItem *leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"\U0000e60d"
-                                                                          style:UIBarButtonItemStylePlain
-                                                                         target:self
-                                                                         action:@selector(back)];
-    [leftBarButtonItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],
-                                                NSFontAttributeName:[UIFont fontWithName:@"iconfont"
-                                                                                    size:20]}
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"\U0000e60d"
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:self
+                                                                action:@selector(back)];
+    [backItem setTitleTextAttributes:@{
+                                       NSForegroundColorAttributeName:DefaultTextLabelColor,
+                                       NSFontAttributeName:[UIFont fontWithName:@"iconfont"
+                                                                           size:18]}
                                      forState:UIControlStateNormal];
-
-    viewController.navigationItem.leftBarButtonItem = leftBarButtonItem;
+    viewController.navigationItem.backBarButtonItem = backItem;
     [super pushViewController:viewController animated:animated];
 }
 

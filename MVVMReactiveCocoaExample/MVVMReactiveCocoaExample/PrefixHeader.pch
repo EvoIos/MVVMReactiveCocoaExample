@@ -9,6 +9,7 @@
 #ifndef PrefixHeader_pch
 #define PrefixHeader_pch
 
+#pragma mark -
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <MJExtension/MJExtension.h>
@@ -16,13 +17,15 @@
 #import <Masonry/Masonry.h>
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
-
 #import "MBProgressHUD+Add.h"
 
+#pragma mark -
 #define BaseUrl @"http://reactivecocoaexample.leanapp.cn/"
 
+#define DefaultNavigationBarTintColor [UIColor colorWithRed:236/255.0 green:156/255.0 blue:18/255.0 alpha:1]
+#define DefaultBackgroundColor [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1]
+#define DefaultTextLabelColor [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1]
 
-// - 
 #ifdef DEBUG
 #define LRString  [NSString stringWithFormat:@"%s",__FILE__].lastPathComponent
 #define DLog(...) printf(" %s 第%d行: %s\n\n",[LRString UTF8String],__LINE__,[[NSString stringWithFormat:__VA_ARGS__] UTF8String]);

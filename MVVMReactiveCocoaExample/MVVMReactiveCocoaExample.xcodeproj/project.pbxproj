@@ -14,6 +14,8 @@
 		1913638A1F3D38500078E173 /* error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 191363881F3D38500078E173 /* error@2x.png */; };
 		1913638D1F3D385B0078E173 /* success.png in Resources */ = {isa = PBXBuildFile; fileRef = 1913638B1F3D385B0078E173 /* success.png */; };
 		1913638E1F3D385B0078E173 /* success@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1913638C1F3D385B0078E173 /* success@2x.png */; };
+		191363911F3D4E070078E173 /* UIImage+PZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 191363901F3D4E070078E173 /* UIImage+PZExtension.m */; };
+		191363961F3D5FE00078E173 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 191363951F3D5FE00078E173 /* iconfont.ttf */; };
 		19E704761F3B048F0099469C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704751F3B048F0099469C /* main.m */; };
 		19E704791F3B048F0099469C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704781F3B048F0099469C /* AppDelegate.m */; };
 		19E704811F3B048F0099469C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19E704801F3B048F0099469C /* Assets.xcassets */; };
@@ -24,7 +26,6 @@
 		19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704D11F3C0A0D0099469C /* PZProductListViewController.m */; };
 		19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */; };
 		19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */; };
-		19E705A81F3C54B60099469C /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19E705A71F3C54B60099469C /* iconfont.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,9 @@
 		191363881F3D38500078E173 /* error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error@2x.png"; sourceTree = "<group>"; };
 		1913638B1F3D385B0078E173 /* success.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = success.png; sourceTree = "<group>"; };
 		1913638C1F3D385B0078E173 /* success@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "success@2x.png"; sourceTree = "<group>"; };
+		1913638F1F3D4E070078E173 /* UIImage+PZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PZExtension.h"; sourceTree = "<group>"; };
+		191363901F3D4E070078E173 /* UIImage+PZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PZExtension.m"; sourceTree = "<group>"; };
+		191363951F3D5FE00078E173 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		19E704711F3B048F0099469C /* MVVMReactiveCocoaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MVVMReactiveCocoaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19E704751F3B048F0099469C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		19E704771F3B048F0099469C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -57,7 +61,6 @@
 		19E704D61F3C0B310099469C /* PZShoppingCarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShoppingCarHeader.h; sourceTree = "<group>"; };
 		19E705A31F3C4C870099469C /* PZDefaultProductListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZDefaultProductListModel.h; sourceTree = "<group>"; };
 		19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZDefaultProductListModel.m; sourceTree = "<group>"; };
-		19E705A71F3C54B60099469C /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		2A544EBF373A625DC3A240F1 /* Pods-MVVMReactiveCocoaExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.release.xcconfig"; sourceTree = "<group>"; };
 		4D5304A566429A1466B11CC9 /* libPods-MVVMReactiveCocoaExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MVVMReactiveCocoaExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F3D6FA0AC8C37F03950875E /* Pods-MVVMReactiveCocoaExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.debug.xcconfig"; sourceTree = "<group>"; };
@@ -151,6 +154,8 @@
 				191363831F3D373C0078E173 /* MBProgressHUD+Add */,
 				19E704A41F3BF3470099469C /* NetworkAgent */,
 				19E704A01F3B0CEF0099469C /* HttpToolManager */,
+				1913638F1F3D4E070078E173 /* UIImage+PZExtension.h */,
+				191363901F3D4E070078E173 /* UIImage+PZExtension.m */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -224,11 +229,11 @@
 		19E705A61F3C54970099469C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				191363951F3D5FE00078E173 /* iconfont.ttf */,
 				1913638B1F3D385B0078E173 /* success.png */,
 				1913638C1F3D385B0078E173 /* success@2x.png */,
 				191363871F3D38500078E173 /* error.png */,
 				191363881F3D38500078E173 /* error@2x.png */,
-				19E705A71F3C54B60099469C /* iconfont.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -314,11 +319,11 @@
 			files = (
 				1913638E1F3D385B0078E173 /* success@2x.png in Resources */,
 				19E704841F3B048F0099469C /* LaunchScreen.storyboard in Resources */,
+				191363961F3D5FE00078E173 /* iconfont.ttf in Resources */,
 				1913638D1F3D385B0078E173 /* success.png in Resources */,
 				1913638A1F3D38500078E173 /* error@2x.png in Resources */,
 				19E704811F3B048F0099469C /* Assets.xcassets in Resources */,
 				191363891F3D38500078E173 /* error.png in Resources */,
-				19E705A81F3C54B60099469C /* iconfont.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,6 +387,7 @@
 				19E704A71F3BF3D60099469C /* NetworkAgent.m in Sources */,
 				19E704761F3B048F0099469C /* main.m in Sources */,
 				19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */,
+				191363911F3D4E070078E173 /* UIImage+PZExtension.m in Sources */,
 				19E704931F3B05FE0099469C /* HomeViewController.m in Sources */,
 				191363821F3C56100078E173 /* PZBaseNavigationController.m in Sources */,
 				191363861F3D373C0078E173 /* MBProgressHUD+Add.m in Sources */,

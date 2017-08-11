@@ -18,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = DefaultBackgroundColor;
     self.title = @"ReactiveCocoaExample";
     [self configureTableView];
 }
@@ -27,6 +27,8 @@
     [self.view addSubview:self.tableView];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.backgroundColor = DefaultBackgroundColor;
 }
 
 
@@ -39,6 +41,8 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
+        cell.backgroundColor = DefaultBackgroundColor;
+        cell.textLabel.textColor = DefaultTextLabelColor;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = self.info[indexPath.row];
