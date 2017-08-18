@@ -16,6 +16,9 @@
 		1913638E1F3D385B0078E173 /* success@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1913638C1F3D385B0078E173 /* success@2x.png */; };
 		191363911F3D4E070078E173 /* UIImage+PZExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 191363901F3D4E070078E173 /* UIImage+PZExtension.m */; };
 		191363961F3D5FE00078E173 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 191363951F3D5FE00078E173 /* iconfont.ttf */; };
+		19C899521F46D70A00E4458B /* PZBaseResponseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C899511F46D70A00E4458B /* PZBaseResponseModel.m */; };
+		19C899591F46E32300E4458B /* PZNetApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C899581F46E32300E4458B /* PZNetApiClient.m */; };
+		19C8995C1F46E35F00E4458B /* PZNetApiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C8995B1F46E35F00E4458B /* PZNetApiManager.m */; };
 		19E704761F3B048F0099469C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704751F3B048F0099469C /* main.m */; };
 		19E704791F3B048F0099469C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704781F3B048F0099469C /* AppDelegate.m */; };
 		19E704811F3B048F0099469C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19E704801F3B048F0099469C /* Assets.xcassets */; };
@@ -40,6 +43,12 @@
 		1913638F1F3D4E070078E173 /* UIImage+PZExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PZExtension.h"; sourceTree = "<group>"; };
 		191363901F3D4E070078E173 /* UIImage+PZExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PZExtension.m"; sourceTree = "<group>"; };
 		191363951F3D5FE00078E173 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
+		19C899501F46D70A00E4458B /* PZBaseResponseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZBaseResponseModel.h; sourceTree = "<group>"; };
+		19C899511F46D70A00E4458B /* PZBaseResponseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZBaseResponseModel.m; sourceTree = "<group>"; };
+		19C899571F46E32300E4458B /* PZNetApiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZNetApiClient.h; sourceTree = "<group>"; };
+		19C899581F46E32300E4458B /* PZNetApiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZNetApiClient.m; sourceTree = "<group>"; };
+		19C8995A1F46E35F00E4458B /* PZNetApiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZNetApiManager.h; sourceTree = "<group>"; };
+		19C8995B1F46E35F00E4458B /* PZNetApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZNetApiManager.m; sourceTree = "<group>"; };
 		19E704711F3B048F0099469C /* MVVMReactiveCocoaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MVVMReactiveCocoaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19E704751F3B048F0099469C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		19E704771F3B048F0099469C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -94,6 +103,17 @@
 				191363851F3D373C0078E173 /* MBProgressHUD+Add.m */,
 			);
 			path = "MBProgressHUD+Add";
+			sourceTree = "<group>";
+		};
+		19C899561F46E30100E4458B /* ApiNetworkManager */ = {
+			isa = PBXGroup;
+			children = (
+				19C899571F46E32300E4458B /* PZNetApiClient.h */,
+				19C899581F46E32300E4458B /* PZNetApiClient.m */,
+				19C8995A1F46E35F00E4458B /* PZNetApiManager.h */,
+				19C8995B1F46E35F00E4458B /* PZNetApiManager.m */,
+			);
+			path = ApiNetworkManager;
 			sourceTree = "<group>";
 		};
 		19E704681F3B048F0099469C = {
@@ -151,6 +171,7 @@
 		19E7048F1F3B05CA0099469C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				19C899561F46E30100E4458B /* ApiNetworkManager */,
 				191363831F3D373C0078E173 /* MBProgressHUD+Add */,
 				19E704A41F3BF3470099469C /* NetworkAgent */,
 				19E704A01F3B0CEF0099469C /* HttpToolManager */,
@@ -186,6 +207,8 @@
 				19E704D61F3C0B310099469C /* PZShoppingCarHeader.h */,
 				19E705A31F3C4C870099469C /* PZDefaultProductListModel.h */,
 				19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */,
+				19C899501F46D70A00E4458B /* PZBaseResponseModel.h */,
+				19C899511F46D70A00E4458B /* PZBaseResponseModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -383,13 +406,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				19E704791F3B048F0099469C /* AppDelegate.m in Sources */,
+				19C899521F46D70A00E4458B /* PZBaseResponseModel.m in Sources */,
 				19E704A31F3B0CEF0099469C /* HttpToolManager.m in Sources */,
 				19E704A71F3BF3D60099469C /* NetworkAgent.m in Sources */,
 				19E704761F3B048F0099469C /* main.m in Sources */,
 				19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */,
 				191363911F3D4E070078E173 /* UIImage+PZExtension.m in Sources */,
+				19C899591F46E32300E4458B /* PZNetApiClient.m in Sources */,
 				19E704931F3B05FE0099469C /* HomeViewController.m in Sources */,
 				191363821F3C56100078E173 /* PZBaseNavigationController.m in Sources */,
+				19C8995C1F46E35F00E4458B /* PZNetApiManager.m in Sources */,
 				191363861F3D373C0078E173 /* MBProgressHUD+Add.m in Sources */,
 				19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */,
 				19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */,

@@ -21,5 +21,12 @@
 @end
 
 @implementation PZDefaultProductListProduct
++ (NSDictionary *)objectClassInArray{
+    return @{@"propertys" : [PZDefaultProductListProperty class]};
+}
+@end
+
+@implementation PZDefaultProductListProperty
+
 
 @end

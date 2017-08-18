@@ -20,7 +20,7 @@
 #import "MBProgressHUD+Add.h"
 
 #pragma mark -
-#define BaseUrl @"http://reactivecocoaexample.leanapp.cn/"
+#define BaseUrl @"http://reactivecocoaexample.leanapp.cn"
 
 #define DefaultNavigationBarTintColor [UIColor colorWithRed:236/255.0 green:156/255.0 blue:18/255.0 alpha:1]
 #define DefaultBackgroundColor [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1]

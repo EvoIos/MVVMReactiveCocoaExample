@@ -78,8 +78,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    cell.textLabel.text = product.title ;
-    cell.detailTextLabel.text = product.propertyTitle;
+//    cell.textLabel.text = product.title ;
+//    cell.detailTextLabel.text = product.propertyTitle;
     cell.accessoryType = isSelected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     return cell;
 }

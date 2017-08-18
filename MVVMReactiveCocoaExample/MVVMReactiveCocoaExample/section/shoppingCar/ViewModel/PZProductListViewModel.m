@@ -7,8 +7,7 @@
 //
 
 #import "PZProductListViewModel.h"
-
-#define ProductListApiPath  @"defaultProduct"
+#import "PZNetApiManager.h"
 
 @interface PZProductListViewModel()
 @property (nonatomic, strong, readwrite) NSArray *productLists;
@@ -27,23 +26,23 @@
     @weakify(self);
     self.fetchDataCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-            NSString *urlString = [NSString stringWithFormat:@"%@%@",BaseUrl,ProductListApiPath];
-            DLog(@"%@",urlString);
-            [HttpToolManager get:urlString parameters:nil handle:^(id result, NSError *error) {
+            [PZNetApiManager fetchDefaultProductListWithBlock:^(id data, NSError *error) {
                 @strongify(self);
                 if (error) {
                     [subscriber sendError:error];
                 } else {
-                    PZDefaultProductListModel *model = [PZDefaultProductListModel mj_objectWithKeyValues:result];
-                    if (model.success == YES) {
+                    PZDefaultProductListModel *model = [PZDefaultProductListModel mj_objectWithKeyValues:data];
+                    if (model.code == 0) {
                         self.productLists = model.data;
-                        [subscriber sendNext:result];
+                        [subscriber sendNext:model];
                     } else {
-                        NSError *tmpError = [[NSError alloc] initWithDomain:@"com.ablackcrow.www" code:-1 userInfo:@{@"msg":model.msg}];
+                        NSError *tmpError = [[NSError alloc] initWithDomain:@"com.ablackcrow.www" code:model.code userInfo:@{@"msg":model.msg}];
                         [subscriber sendError:tmpError];
                     }
                 }
+
             }];
+            
             return (RACDisposable *)nil;
         }];
     }];
