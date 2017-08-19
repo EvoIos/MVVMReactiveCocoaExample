@@ -9,6 +9,6 @@
 #ifndef PZShoppingCarHeader_h
 #define PZShoppingCarHeader_h
 
-#import "HttpToolManager.h"
+
 
 #endif /* PZShoppingCarHeader_h */

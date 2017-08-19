@@ -1,27 +1,26 @@
 //
-//  PZDefaultProductListModel.h
+//  PZShopCarModel.h
 //  MVVMReactiveCocoaExample
 //
-//  Created by z on 2017/8/10.
+//  Created by zhenglanchun on 2017/8/19.
 //  Copyright © 2017年 Pace.Z. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "PZBaseResponseModel.h"
 
-@class PZDefaultProductListData,PZDefaultProductListProduct,PZDefaultProductListProperty;
-@interface PZDefaultProductListModel : PZBaseResponseModel
-@property (nonatomic, strong) NSArray <PZDefaultProductListData *>* data;
+@class PZShopCarData,PZShopCarProduct;
+@interface PZShopCarModel : PZBaseResponseModel
+@property (nonatomic, strong) NSArray <PZShopCarData *>* data;
 @end
 
-@interface PZDefaultProductListData : NSObject
+@interface PZShopCarData : NSObject
 @property (nonatomic, strong) NSString * logo;
-@property (nonatomic, strong) NSArray <PZDefaultProductListProduct *>* products;
+@property (nonatomic, strong) NSArray <PZShopCarProduct *>* products;
 @property (nonatomic, strong) NSString * shopId;
 @property (nonatomic, strong) NSString * shopName;
 @end
 
-@interface PZDefaultProductListProduct : NSObject
+@interface PZShopCarProduct : NSObject
 @property (nonatomic, assign) NSInteger productId;
 @property (nonatomic, assign) NSInteger shopId;
 @property (nonatomic, strong) NSString * img;
@@ -31,5 +30,3 @@
 @property (nonatomic, strong) NSString * propertyTitle;
 @property (nonatomic, strong) NSString * title;
 @end
-
-

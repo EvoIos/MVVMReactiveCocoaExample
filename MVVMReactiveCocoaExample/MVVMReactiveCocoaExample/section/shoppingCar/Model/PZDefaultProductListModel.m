@@ -2,7 +2,7 @@
 //  PZDefaultProductListModel.m
 //  MVVMReactiveCocoaExample
 //
-//  Created by z on 2017/8/10.
+//  Created by Pace.Z on 2017/8/10.
 //  Copyright © 2017年 Pace.Z. All rights reserved.
 //
 
@@ -21,12 +21,7 @@
 @end
 
 @implementation PZDefaultProductListProduct
-+ (NSDictionary *)objectClassInArray{
-    return @{@"propertys" : [PZDefaultProductListProperty class]};
-}
-@end
-
-@implementation PZDefaultProductListProperty
-
 
 @end
+
+

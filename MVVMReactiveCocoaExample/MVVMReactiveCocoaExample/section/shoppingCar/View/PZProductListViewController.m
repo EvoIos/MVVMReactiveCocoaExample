@@ -8,6 +8,7 @@
 
 #import "PZProductListViewController.h"
 #import "PZProductListViewModel.h"
+#import "PZShopCarViewController.h"
 
 @interface PZProductListViewController () <UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) UITableView *tableView;
@@ -21,12 +22,12 @@
     [self configureNav];
     [self configureTableView];
     [self bindViewModel];
-
 }
 
 - (void)bindViewModel {
+    self.title = @"商品列表";
+    self.view.backgroundColor = HEXCOLOR(0xF5F6F7);
     @weakify(self);
-    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [[self.viewModel.fetchDataCommand execute:nil]
      subscribeNext:^(id x) {
@@ -36,6 +37,7 @@
       }];
     [self.viewModel.fetchDataCommand.errors subscribeNext:^(id x) {
         @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         [MBProgressHUD showError:@"发生错误了！" toView:self.view];
     }];
     [RACObserve(self, viewModel.productLists) subscribeNext:^(id x) {
@@ -49,16 +51,37 @@
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(buy)];
+
 }
 
 - (void)configureTableView {
     [self.view addSubview:self.tableView];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.tableFooterView = [UIView new];
+    [self.tableView setSeparatorColor:[UIColor whiteColor]];
 }
 
 - (void)buy {
-    DLog(@"buy");
+    DLog(@"buy : %@",self.viewModel.submitCommand.executing);
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    @weakify(self);
+    __block int count = 0;
+    [[self.viewModel.submitCommand execute:nil]
+     subscribeNext:^(id x) {
+        @strongify(self);
+         count += 1;
+         NSLog(@"count: %d",count);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        PZShopCarViewController *shopCarVC = [[PZShopCarViewController alloc] init];
+        [self.navigationController pushViewController:shopCarVC animated:YES];
+    }];
+    [self.viewModel.submitCommand.errors subscribeNext:^(id x) {
+        @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [MBProgressHUD showError:@"提交失败了！" toView:self.view];
+    }];
 }
 
 #pragma mark - tableview delegate
@@ -70,6 +93,10 @@
     return self.viewModel.productLists[section].products.count;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PZDefaultProductListProduct *product = self.viewModel.productLists[indexPath.section].products[indexPath.row];
     BOOL isSelected = self.viewModel.selectedDic[indexPath].boolValue;
@@ -77,9 +104,10 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.contentView.backgroundColor = HEXCOLOR(0xF5F6F7);
     }
-//    cell.textLabel.text = product.title ;
-//    cell.detailTextLabel.text = product.propertyTitle;
+    cell.textLabel.text = product.title ;
+    cell.detailTextLabel.text = product.propertyTitle;
     cell.accessoryType = isSelected ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     return cell;
 }

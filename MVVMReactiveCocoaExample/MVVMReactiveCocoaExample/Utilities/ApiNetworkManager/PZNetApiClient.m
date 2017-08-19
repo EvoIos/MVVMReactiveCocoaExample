@@ -25,8 +25,8 @@
     if (self) {
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", @"text/json", @"text/javascript", @"text/plain", nil];
         manager.requestSerializer.timeoutInterval = 15.0f;
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html", @"text/json", @"text/javascript", @"text/plain", nil];
         self.manager = manager;
     }
     return self;

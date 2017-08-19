@@ -19,4 +19,8 @@
 /// input: NSIndexPath *
 @property (nonatomic, strong, readonly) RACCommand *selectCommand;
 
+@property (nonatomic, strong, readonly) RACCommand *submitCommand;
+
+@property (nonatomic, strong) RACCommand *testCommand;
+
 @end

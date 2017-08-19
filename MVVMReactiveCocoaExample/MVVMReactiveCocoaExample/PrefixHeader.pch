@@ -18,9 +18,18 @@
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "MBProgressHUD+Add.h"
+#import "PZNetApiManager.h"
 
 #pragma mark -
+
+#if DEBUG
+#define BaseUrl @"http://127.0.0.1:3000"
+#else
 #define BaseUrl @"http://reactivecocoaexample.leanapp.cn"
+#endif
+
+
+#define HEXCOLOR(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue &0xFF))/255.0 alpha:1.0]
 
 #define DefaultNavigationBarTintColor [UIColor colorWithRed:236/255.0 green:156/255.0 blue:18/255.0 alpha:1]
 #define DefaultBackgroundColor [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1]

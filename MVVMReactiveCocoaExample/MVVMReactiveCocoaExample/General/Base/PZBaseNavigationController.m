@@ -41,16 +41,19 @@
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"\U0000e60d"
-                                                                 style:UIBarButtonItemStylePlain
-                                                                target:self
-                                                                action:@selector(back)];
-    [backItem setTitleTextAttributes:@{
-                                       NSForegroundColorAttributeName:DefaultTextLabelColor,
-                                       NSFontAttributeName:[UIFont fontWithName:@"iconfont"
-                                                                           size:18]}
-                                     forState:UIControlStateNormal];
-    viewController.navigationItem.backBarButtonItem = backItem;
+    if  (self.viewControllers.count > 0) {
+        UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"\U0000e60b"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:self
+                                                                    action:@selector(back)];
+        [backItem setTitleTextAttributes:@{
+                                           NSForegroundColorAttributeName:DefaultTextLabelColor,
+                                           NSFontAttributeName:[UIFont fontWithName:@"iconfont"
+                                                                               size:18]}
+                                forState:UIControlStateNormal];
+        
+        viewController.navigationItem.leftBarButtonItem = backItem;
+    }
     [super pushViewController:viewController animated:animated];
 }
 
