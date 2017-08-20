@@ -28,7 +28,6 @@
 - (instancetype)init {
     if (self = [super init]) {
         NSString *udid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        DLog(@"udid: %@",udid);
         [ApiClient.manager.requestSerializer setValue:udid forHTTPHeaderField:@"udid"];
     }
     return self;
@@ -59,6 +58,22 @@
                               }];
 }
 
+- (void)existShoppingWithBlock:(void (^)( PZExistModel * __nullable  model,  NSError * __nullable error))block  {
+    
+    [ApiClient requestJsonDataWithPath:[self urlWithPath:@"/shopCar/existshopping"]
+                            withParams:nil
+                        withMethodType:Get
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZExistModel *model = [PZExistModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
+
+
 - (void)addShopCarWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
     [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/add"]
                             withParams:param.mj_JSONObject
@@ -87,6 +102,19 @@
                               }];
 }
 
+- (void)shopCarRecommendListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopCarRecommendModel * __nullable  model,  NSError * __nullable error))block {
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/recommendlist"]
+                            withParams:param
+                        withMethodType:Get
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZShopCarRecommendModel *model = [PZShopCarRecommendModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
 
 
 @end

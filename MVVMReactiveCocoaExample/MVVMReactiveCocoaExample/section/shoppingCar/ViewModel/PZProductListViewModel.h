@@ -10,6 +10,7 @@
 #import "PZShoppingCarHeader.h"
 #import "PZDefaultProductListModel.h"
 
+
 @interface PZProductListViewModel : NSObject
 
 @property (nonatomic, strong, readonly) NSArray <PZDefaultProductListData *> *productLists;
@@ -21,6 +22,5 @@
 
 @property (nonatomic, strong, readonly) RACCommand *submitCommand;
 
-@property (nonatomic, strong) RACCommand *testCommand;
 
 @end

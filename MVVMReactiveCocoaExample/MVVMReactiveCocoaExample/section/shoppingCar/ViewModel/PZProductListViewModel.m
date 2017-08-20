@@ -64,6 +64,14 @@
     self.submitCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
             @strongify(self);
+            if ([self makeupSubmitParams].count == 0) {
+                NSError *error = [[NSError alloc] initWithDomain:@"com.ablackcrow.www"
+                                           code:-1
+                                       userInfo:@{@"msg":@"必须选择商品，才能提交！"}];
+                [subscriber sendError:error];
+                return nil;
+            }
+            
             NSDictionary *param = @{ @"shopCar":[self makeupSubmitParams].mj_JSONString };
             [ApiManager addShopCarWithParams:param handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
                 if (error) {

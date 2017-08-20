@@ -10,6 +10,8 @@
 #import "PZBaseResponseModel.h"
 #import "PZDefaultProductListModel.h"
 #import "PZShopCarModel.h"
+#import "PZExistModel.h"
+#import "PZShopCarRecommendModel.h"
 
 #define ApiManager [PZNetApiManager sharedManager]
 
@@ -21,10 +23,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)fetchDefaultProductListWithBlock:(void (^)( PZDefaultProductListModel * __nullable  model,  NSError * __nullable error))block;
 
+- (void)existShoppingWithBlock:(void (^)( PZExistModel * __nullable  model,  NSError * __nullable error))block;
+
 - (void)addShopCarWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
 
 - (void)shopCarListWithBlock:(void (^)( PZShopCarModel * __nullable  model,  NSError * __nullable error))block;
 
+- (void)shopCarRecommendListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopCarRecommendModel * __nullable  model,  NSError * __nullable error))block;
 
 @end
 NS_ASSUME_NONNULL_END

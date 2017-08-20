@@ -63,24 +63,23 @@
 }
 
 - (void)buy {
-    DLog(@"buy : %@",self.viewModel.submitCommand.executing);
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     @weakify(self);
-    __block int count = 0;
-    [[self.viewModel.submitCommand execute:nil]
-     subscribeNext:^(id x) {
+    
+    [[self.viewModel.submitCommand execute:nil] subscribeNext:^(id x) {
         @strongify(self);
-         count += 1;
-         NSLog(@"count: %d",count);
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         PZShopCarViewController *shopCarVC = [[PZShopCarViewController alloc] init];
         [self.navigationController pushViewController:shopCarVC animated:YES];
-    }];
-    [self.viewModel.submitCommand.errors subscribeNext:^(id x) {
+    } error:^(NSError *error) {
         @strongify(self);
         [MBProgressHUD hideHUDForView:self.view animated:YES];
-        [MBProgressHUD showError:@"提交失败了！" toView:self.view];
+        if (error.code == -1) {
+            [MBProgressHUD showError:error.userInfo[@"msg"] toView:self.view];
+        } else {
+            [MBProgressHUD showError:@"提交失败了，请稍后再试！" toView:self.view];
+        }
     }];
 }
 

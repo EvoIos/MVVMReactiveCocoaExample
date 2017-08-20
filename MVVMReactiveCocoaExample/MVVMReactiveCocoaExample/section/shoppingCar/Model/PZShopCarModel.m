@@ -10,7 +10,7 @@
 
 @implementation PZShopCarModel
 + (NSDictionary *)objectClassInArray{
-    return @{@"data" : [PZShopCarData class]};
+    return @{@"data" : [PZShopCarData class],@"expiredData" : [PZShopCarProduct class]};
 }
 @end
 
