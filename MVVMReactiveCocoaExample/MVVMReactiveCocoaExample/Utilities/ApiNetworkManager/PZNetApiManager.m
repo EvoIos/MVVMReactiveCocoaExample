@@ -74,7 +74,8 @@
 }
 
 
-- (void)addShopCarWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
+- (void)addShopCarWithParams:(NSDictionary *)param
+                 handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
     [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/add"]
                             withParams:param.mj_JSONObject
                         withMethodType:Post
@@ -102,7 +103,8 @@
                               }];
 }
 
-- (void)shopCarRecommendListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopCarRecommendModel * __nullable  model,  NSError * __nullable error))block {
+- (void)shopCarRecommendListWithParams:(NSDictionary *)param
+                           handleBlock:(void (^)( PZShopCarRecommendModel * __nullable  model,  NSError * __nullable error))block {
     [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/recommendlist"]
                             withParams:param
                         withMethodType:Get

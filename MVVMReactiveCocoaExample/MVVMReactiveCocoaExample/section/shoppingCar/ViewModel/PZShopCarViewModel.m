@@ -9,6 +9,7 @@
 #import "PZShopCarViewModel.h"
 #import "PZShopCarHeaderViewModel.h"
 #import "PZShopCarInvalidCellModel.h"
+#import "PZShopCarRecommendCellModel.h"
 
 @interface PZShopCarViewModel()
 
@@ -17,6 +18,9 @@
 
 @property (nonatomic, strong, readwrite) NSArray * items;
 @property (nonatomic, strong) NSMutableDictionary <NSNumber *, NSNumber *> *sectionTypeDictionary;
+
+@property (nonatomic, strong) RACSignal *fetchListSignal;
+@property (nonatomic, strong) RACSignal *fetchRecommendListSignal;
 @property (nonatomic, strong, readwrite) RACCommand *fetchDataCommand;
 @property (nonatomic, strong, readwrite) RACCommand *fetchMoreDataCommand;
 @end
@@ -40,45 +44,16 @@
     if (!self) return nil;
     @weakify(self);
     
-    RACSignal *fetchListSignal =  [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-        [ApiManager shopCarListWithBlock:^(PZShopCarModel * _Nullable model, NSError * _Nullable error) {
-            if (error) {
-                [subscriber sendError:error];
-            } else {
-                if  (model.code == 0) {
-                    [subscriber sendNext:model];
-                    [subscriber sendCompleted];
-                } else {
-                    [subscriber sendError:model.error];
-                }
-            }
-        }];
-        return nil;
-    }];
-    RACSignal *fetchRecommendListSignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-        [ApiManager shopCarRecommendListWithParams:@{@"pageIndex":@(self.pageIndex)} handleBlock:^(PZShopCarRecommendModel * _Nullable model, NSError * _Nullable error) {
-            if (error) {
-                [subscriber sendError:error];
-            } else {
-                if (model.code == 0) {
-                    [subscriber sendNext:model];
-                    [subscriber sendCompleted];
-                } else {
-                    [subscriber sendError:model.error];
-                }
-            }
-        }];
-        return nil;
-    }];
+
     self.fetchDataCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         @strongify(self);
         [self initializeData];
-        return [fetchListSignal combineLatestWith:fetchRecommendListSignal];
+        return [self.fetchListSignal combineLatestWith:self.fetchRecommendListSignal];
     }];
     self.fetchMoreDataCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         @strongify(self);
         self.pageIndex += 1;
-        return fetchRecommendListSignal;
+        return self.fetchRecommendListSignal;
     }];
     
     [self.fetchDataCommand.executionSignals.switchToLatest subscribeNext:^(RACTuple * x) {
@@ -120,6 +95,38 @@
             infoModel.cellViewModels = [expiredArray copy];
             [tmpArray addObject:infoModel];
         }
+        // recommend list
+            for (PZShopCarRecommendData * recommendData in recommendModel.recommendlist) {
+                self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendClassType);
+                
+                NSMutableArray *recommendList = [@[] mutableCopy];
+                for (PZShopCarRecommendProduct *recommendProduct in recommendData.products) {
+                    PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:recommendProduct];
+                    [recommendList addObject:cellModel];
+                }
+                
+                PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithShopCarRecommendData:recommendData];
+                
+                PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+                infoModel.cellViewModels = [recommendList copy];
+                infoModel.headerViewModel = headerModel;
+                [tmpArray addObject:infoModel];
+            }
+        // like list
+        if (recommendModel.likelist.count != 0) {
+            self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendProductType);
+            NSMutableArray *likeArray = [@[] mutableCopy];
+            for (PZShopCarRecommendProduct *product in recommendModel.likelist) {
+                PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:product];
+                [likeArray addObject:cellModel];
+            }
+            PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithTitle:@"猜你喜欢"];
+            
+            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+            infoModel.cellViewModels = [likeArray copy];
+            infoModel.headerViewModel = headerModel;
+            [tmpArray addObject:infoModel];
+        }
         
         self.items = [tmpArray copy];
         DLog(@"%@-%@",model,recommendModel);
@@ -131,9 +138,14 @@
             self.pageIndex -= 1;
             self.more = NO;
         } else {
-//            for (PZShopCarRecommendProduct *product in model.likelist) {
-//                
-//            }
+            // recommend List 不会发生变化，只有 like list 会发生变化
+            PZShopCarCellInfosModel *infoModel = self.items[self.sectionTypeDictionary.count-1];
+            NSMutableArray *cellModels = [infoModel.cellViewModels mutableCopy];
+            for (PZShopCarRecommendProduct *product in model.likelist) {
+                PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:product];
+                [cellModels addObject:cellModel];
+            }
+            infoModel.cellViewModels = [cellModels copy];
         }
     } error:^(NSError *error) {
         DLog(@"fetch More error: %@",error);
@@ -146,7 +158,7 @@
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section {
     switch ([self sectionTypeForSection:section]) {
         case PZShopCarSectionInfoTypeValidType:
-            return UIEdgeInsetsMake(0, 0, 10, 0);
+            return UIEdgeInsetsMake(0, 0, 0, 0);
         case PZShopCarSectionInfoTypeInvalidType:
             return UIEdgeInsetsMake(0, 0, 0, 0);
         case PZShopCarSectionInfoTypeRecommendTipsType:
@@ -190,15 +202,7 @@
 }
 
 - (CGFloat)minimumLineSpacingForSectionAtIndex:(NSInteger )section {
-    switch ([self sectionTypeForSection:section]) {
-        case PZShopCarSectionInfoTypeValidType:
-        case PZShopCarSectionInfoTypeInvalidType: {
-            return 0;
-        }
-        default: {
-            return 5;
-        }
-    }
+    return 0;
 }
 
 - (CGFloat)minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
@@ -223,17 +227,72 @@
             return CGSizeMake([UIScreen mainScreen].bounds.size.width, 10);
         }
         default: {
-            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 44);
+            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 54);
         }
     }
 }
 
 - (CGSize)referenceSizeForFooterInSection:(NSInteger)section {
-    return CGSizeMake([UIScreen mainScreen].bounds.size.width, 0);
+    switch ([self sectionTypeForSection:section]) {
+        case PZShopCarSectionInfoTypeValidType: {
+            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 10);
+        }
+        default: {
+            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 0);
+        }
+    }
 }
 
 - (PZShopCarSectionInfoType)sectionTypeForSection:(NSInteger)section {
     return self.sectionTypeDictionary[@(section)].integerValue;
 }
+
+#pragma mark - setter and getter
+
+- (RACSignal *)fetchListSignal {
+    if (!_fetchListSignal) {
+        _fetchListSignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            [ApiManager shopCarListWithBlock:^(PZShopCarModel * _Nullable model, NSError * _Nullable error) {
+                if (error) {
+                    [subscriber sendError:error];
+                } else {
+                    if  (model.code == 0) {
+                        [subscriber sendNext:model];
+                        [subscriber sendCompleted];
+                    } else {
+                        [subscriber sendError:model.error];
+                    }
+                }
+            }];
+            return nil;
+        }];
+    }
+    return _fetchListSignal;
+}
+
+- (RACSignal *)fetchRecommendListSignal {
+    if (!_fetchRecommendListSignal) {
+        _fetchRecommendListSignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            [ApiManager shopCarRecommendListWithParams:@{} handleBlock:^(PZShopCarRecommendModel * _Nullable model, NSError * _Nullable error) {
+                DLog(@"");
+            }];
+            [ApiManager shopCarRecommendListWithParams:@{@"pageIndex":@(self.pageIndex)} handleBlock:^(PZShopCarRecommendModel * _Nullable model, NSError * _Nullable error) {
+                if (error) {
+                    [subscriber sendError:error];
+                } else {
+                    if (model.code == 0) {
+                        [subscriber sendNext:model];
+                        [subscriber sendCompleted];
+                    } else {
+                        [subscriber sendError:model.error];
+                    }
+                }
+            }];
+            return nil;
+        }];
+    }
+    return _fetchRecommendListSignal;
+}
+
 
 @end

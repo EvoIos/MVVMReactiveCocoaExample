@@ -7,6 +7,7 @@
 //
 
 #import "PZShopCarInvalidCell.h"
+#import "PZShopCarHeader.h"
 
 @interface PZShopCarInvalidCell()
 @property (nonatomic,strong) UIButton *markButton;
@@ -52,7 +53,7 @@
         tmpBtn.titleLabel.font = [UIFont systemFontOfSize:13];
         [tmpBtn setTintColor:[UIColor whiteColor]];
         tmpBtn.layer.cornerRadius = 8;
-        tmpBtn.backgroundColor = CustomGrayColor;
+        tmpBtn.backgroundColor = PZShopCarGrayColor;
         tmpBtn.userInteractionEnabled = NO;
         tmpBtn;
     });
@@ -91,10 +92,10 @@
         UIButton *tmpBtn = [[UIButton alloc] init];
         [tmpBtn addTarget:self action:@selector(findAction) forControlEvents:UIControlEventTouchUpInside];
         [tmpBtn setTitle:@"找相似" forState:UIControlStateNormal];
-        [tmpBtn setTitleColor:DefaultNavigationBarTintColor forState:UIControlStateNormal];
+        [tmpBtn setTitleColor:PZShopCarGrayColor forState:UIControlStateNormal];
         tmpBtn.titleLabel.font = [UIFont systemFontOfSize:15];
         tmpBtn.backgroundColor = [UIColor whiteColor];
-        tmpBtn.layer.borderColor = DefaultNavigationBarTintColor.CGColor;
+        tmpBtn.layer.borderColor = PZShopCarGrayColor.CGColor;
         tmpBtn.layer.borderWidth = 0.6;
         tmpBtn.layer.cornerRadius = 15;
         tmpBtn;

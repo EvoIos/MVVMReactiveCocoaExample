@@ -7,6 +7,7 @@
 //
 
 #import "PZShopCarNormalStateView.h"
+#import "PZShopCarHeader.h"
 
 @interface PZShopCarNormalStateView()
 @property (nonatomic,strong) UILabel *titleLabel;
@@ -28,7 +29,7 @@
     self.backgroundColor = [UIColor whiteColor];
     self.titleLabel = ({
         UILabel *tmpLabel = [[UILabel alloc] init];
-        tmpLabel.textColor = CustomBlackColor;
+        tmpLabel.textColor = PZShopCarBlackColor;
         tmpLabel.font = [UIFont systemFontOfSize:15];
         tmpLabel.numberOfLines = 2;
         tmpLabel.textAlignment = NSTextAlignmentLeft;
@@ -46,7 +47,7 @@
     
     self.subTitleLabel = ({
         UILabel *tmpLabel = [[UILabel alloc] init];
-        tmpLabel.textColor =  CustomLightGrayColor;
+        tmpLabel.textColor =  PZShopCarGrayColor;
         tmpLabel.font = [UIFont systemFontOfSize:13];
         tmpLabel.numberOfLines = 1;
         tmpLabel.textAlignment = NSTextAlignmentLeft;
@@ -62,7 +63,7 @@
     
     self.priceLabel = ({
         UILabel *tmpLabel = [[UILabel alloc] init];
-        tmpLabel.textColor =  [UIColor colorWithRed:250/255.0 green:47/255.0 blue:56/255.0 alpha:1];
+        tmpLabel.textColor =  PZShopCarRedColor;
         tmpLabel.font = [UIFont systemFontOfSize:13];
         tmpLabel.numberOfLines = 1;
         tmpLabel.textAlignment = NSTextAlignmentLeft;
@@ -72,7 +73,7 @@
     
     self.countLabel = ({
         UILabel *tmpLabel = [[UILabel alloc] init];
-        tmpLabel.textColor =  CustomGrayColor;
+        tmpLabel.textColor =  PZShopCarGrayColor;
         tmpLabel.font = [UIFont systemFontOfSize:11];
         tmpLabel.numberOfLines = 1;
         tmpLabel.textAlignment = NSTextAlignmentRight;

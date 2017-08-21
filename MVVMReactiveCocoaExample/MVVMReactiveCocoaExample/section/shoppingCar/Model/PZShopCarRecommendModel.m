@@ -10,11 +10,12 @@
 
 @implementation PZShopCarRecommendModel
 + (NSDictionary *)objectClassInArray{
-    return @{@"data" : [PZShopCarRecommenData class],@"expiredData" : [PZShopCarRecommendProduct class]};
+    return @{ @"recommendlist" : [PZShopCarRecommendData class],
+              @"likelist" : [PZShopCarRecommendProduct class] };
 }
 @end
 
-@implementation PZShopCarRecommenData
+@implementation PZShopCarRecommendData
 + (NSDictionary *)objectClassInArray{
     return @{@"products" : [PZShopCarRecommendProduct class]};
 }

@@ -7,6 +7,7 @@
 //
 
 #import "PZShopCarValidHeaderView.h"
+#import "PZShopCarHeader.h"
 
 @interface PZShopCarValidHeaderView()
 @property (nonatomic,strong) UIButton *markButton;
@@ -35,8 +36,8 @@
     self.markButton = ({
         UIButton *tmpBtn = [[UIButton alloc] init];
         [tmpBtn addTarget:self action:@selector(markItemAction:) forControlEvents:UIControlEventTouchUpInside];
-        [tmpBtn setImage:[UIImage imageNamed:@"未选中"] forState:UIControlStateNormal];
-        [tmpBtn setImage:[UIImage imageNamed:@"选中"] forState:UIControlStateSelected];
+        [tmpBtn setImage:[UIImage imageNamed:PZShopCarDeSelectImageName] forState:UIControlStateNormal];
+        [tmpBtn setImage:[UIImage imageNamed:PZShopCarSelectImageName] forState:UIControlStateSelected];
         tmpBtn.backgroundColor = [UIColor clearColor];
         tmpBtn;
     });

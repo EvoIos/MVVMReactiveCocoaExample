@@ -8,13 +8,14 @@
 
 #import "PZBaseResponseModel.h"
 
-@class PZShopCarRecommendProduct,PZShopCarRecommenData;
+@class PZShopCarRecommendProduct,PZShopCarRecommendData;
+
 @interface PZShopCarRecommendModel : PZBaseResponseModel
-@property (nonatomic, strong) NSArray <PZShopCarRecommenData *>* recommendlist;
+@property (nonatomic, strong) NSArray <PZShopCarRecommendData *>* recommendlist;
 @property (nonatomic, strong) NSArray <PZShopCarRecommendProduct *>* likelist;
 @end
 
-@interface PZShopCarRecommenData : NSObject
+@interface PZShopCarRecommendData : NSObject
 @property (nonatomic, strong) NSString * logo;
 @property (nonatomic, strong) NSArray <PZShopCarRecommendProduct *>* products;
 @property (nonatomic, assign) NSInteger shopId;
@@ -22,12 +23,13 @@
 @end
 
 @interface PZShopCarRecommendProduct : NSObject
-@property (nonatomic, assign) NSInteger productId;
-@property (nonatomic, assign) NSInteger shopId;
+@property (nonatomic, assign) BOOL expired;
 @property (nonatomic, strong) NSString * img;
 @property (nonatomic, assign) NSInteger inventory;
-@property (nonatomic, assign) NSInteger price;
+@property (nonatomic, assign) CGFloat price;
+@property (nonatomic, assign) NSInteger productId;
 @property (nonatomic, assign) NSInteger propertyId;
 @property (nonatomic, strong) NSString * propertyTitle;
+@property (nonatomic, assign) NSInteger shopId;
 @property (nonatomic, strong) NSString * title;
 @end

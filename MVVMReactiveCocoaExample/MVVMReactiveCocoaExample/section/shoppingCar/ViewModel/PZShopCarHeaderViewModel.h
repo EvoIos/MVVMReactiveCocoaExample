@@ -10,19 +10,21 @@
 #import "PZShopCarModel.h"
 #import "PZShopCarCellStateModel.h"
 #import "PZShopCarStateEnum.h"
+#import "PZShopCarRecommendModel.h"
+
 NS_ASSUME_NONNULL_BEGIN
 @interface PZShopCarHeaderViewModel : NSObject
-@property (nonatomic,assign)    BOOL isLocal;
 @property (nonatomic,copy)      NSString *title;
 @property (nonatomic,strong)    NSURL *logoUrl;
-@property (nonatomic,strong)    NSString *localImgName;
 @property (nonatomic,assign)    NSInteger shopId;
+@property (nonatomic,strong)    NSString *localImgName;
+
 @property (nonatomic,strong)    PZShopCarCellStateModel *state;
 
 - (instancetype)initWithShopCarData:(PZShopCarData *)data;
 
-//- (instancetype)initWithShoppingCarRecommendModel:(RACShoppingInfoRecommendClass *)model;
-/// 加载本地图片
+- (instancetype)initWithShopCarRecommendData:(PZShopCarRecommendData *)data;
+
 - (instancetype)initWithTitle:(NSString *)title;
 @end
 NS_ASSUME_NONNULL_END

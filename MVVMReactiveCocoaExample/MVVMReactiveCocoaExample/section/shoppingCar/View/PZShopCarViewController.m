@@ -13,10 +13,15 @@
 #import "PZShopCarInValidCell.h"
 #import "PZShopCarValidHeaderView.h"
 #import "PZShopCarInvalidCellModel.h"
+#import "PZShopCarSettlementView.h"
+#import "PZShopCarRecommendCell.h"
+#import "PZShopCarRecommendHeaderView.h"
+#import "PZShopCarValidFooterView.h"
 
 @interface PZShopCarViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic,strong) PZShopCarViewModel *viewModel;
 @property (nonatomic,strong) UICollectionView *collectionView;
+@property (nonatomic,strong) PZShopCarSettlementView *settlementView;
 @end
 
 @implementation PZShopCarViewController
@@ -27,8 +32,6 @@
     self.title = @"购物车";
     [self configureRefreshView];
     [self bindViewModel];
-    
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -86,11 +89,14 @@
     return self.viewModel.items.count;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section {
     return self.viewModel.items[section].cellViewModels.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     switch ([self.viewModel sectionTypeForSection:indexPath.section]) {
         case PZShopCarSectionInfoTypeValidType: {
             
@@ -103,19 +109,42 @@
             cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
             return cell;
         }
+        case PZShopCarSectionInfoTypeRecommendClassType: {
+            PZShopCarRecommendCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZShopCarRecommendCell" forIndexPath:indexPath];
+            cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+            return cell;
+        }
+        case PZShopCarSectionInfoTypeRecommendProductType: {
+            PZShopCarRecommendCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZShopCarRecommendCell" forIndexPath:indexPath];
+            cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+            return cell;
+        }
         default: {
             NSAssert(YES, @"不应该出现在这里");
-            return [UICollectionViewCell new];
+            return [collectionView dequeueReusableCellWithReuseIdentifier:@"collectionView" forIndexPath:indexPath];;
         }
     }
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath {
     switch ([self.viewModel sectionTypeForSection:indexPath.section]) {
         case PZShopCarSectionInfoTypeValidType: {
-            PZShopCarValidHeaderView *header =  [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidHeaderView" forIndexPath:indexPath];
-            header.viewModel = self.viewModel.items[indexPath.section].headerViewModel;
-            return header;
+            if ([kind isEqualToString:@"UICollectionElementKindSectionHeader"]) {
+                PZShopCarValidHeaderView *header =  [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidHeaderView" forIndexPath:indexPath];
+                header.viewModel = self.viewModel.items[indexPath.section].headerViewModel;
+                return header;
+            } else {
+                PZShopCarValidFooterView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidFooterView" forIndexPath:indexPath];
+                return footer;
+            }
+        }
+        case PZShopCarSectionInfoTypeRecommendClassType:
+        case PZShopCarSectionInfoTypeRecommendProductType: {
+            PZShopCarRecommendHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarRecommendHeaderView" forIndexPath:indexPath];
+            headerView.viewModel = self.viewModel.items[indexPath.section].headerViewModel;
+            return headerView;
         }
         default:
             return [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"UICollectionReusableViewHeader" forIndexPath:indexPath];
@@ -123,46 +152,78 @@
 }
 
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
+                        layout:(UICollectionViewLayout*)collectionViewLayout
+        insetForSectionAtIndex:(NSInteger)section {
    return [self.viewModel insetForSectionAtIndex:section];
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout*)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return [self.viewModel sizeForItemAtIndexPath:indexPath];
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+- (CGFloat)collectionView:(UICollectionView *)collectionView
+                   layout:(UICollectionViewLayout*)collectionViewLayout
+minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return [self.viewModel minimumLineSpacingForSectionAtIndex:section];
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+- (CGFloat)collectionView:(UICollectionView *)collectionView
+                   layout:(UICollectionViewLayout*)collectionViewLayout
+minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return [self.viewModel minimumInteritemSpacingForSectionAtIndex:section];
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+referenceSizeForHeaderInSection:(NSInteger)section {
     return [self.viewModel referenceSizeForHeaderInSection:section];
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+referenceSizeForFooterInSection:(NSInteger)section {
     return [self.viewModel referenceSizeForFooterInSection:section];
 }
 
 #pragma mark - setter and getter
+
+- (PZShopCarSettlementView *)settlementView {
+    if (!_settlementView) {
+        _settlementView = [[PZShopCarSettlementView alloc] init];
+        [self.view addSubview:_settlementView];
+        [_settlementView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.bottom.right.mas_equalTo(self.view);
+            make.height.mas_equalTo(50);
+        }];
+    }
+    return _settlementView;
+}
 
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:flowLayout];
-        
-        _collectionView.backgroundColor = [UIColor colorWithRed:244/255.0 green:244/255.0 blue:244/255.0 alpha:1];
-        [self.view addSubview:_collectionView];
+        _collectionView.backgroundColor = [UIColor whiteColor];
+        //[UIColor colorWithRed:244/255.0 green:244/255.0 blue:244/255.0 alpha:1];
         _collectionView.alwaysBounceVertical = YES;
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
+        [self.view addSubview:_collectionView];
+        
+        if (self.settlementView) {
+            [_collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.left.right.mas_equalTo(self.view);
+                make.bottom.equalTo(self.settlementView.mas_top);
+            }];
+        }
         
         [_collectionView registerClass:[PZShopCarValidCell class] forCellWithReuseIdentifier:@"PZShopCarValidCell"];
         [_collectionView registerClass:[PZShopCarInvalidCell class] forCellWithReuseIdentifier:@"PZShopCarInvalidCell"];
+        [_collectionView registerClass:[PZShopCarRecommendCell class] forCellWithReuseIdentifier:@"PZShopCarRecommendCell"];
         
         [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                        withReuseIdentifier:@"UICollectionReusableViewHeader"];
@@ -170,6 +231,11 @@
                        withReuseIdentifier:@"UICollectionReusableViewFooter"];
         [_collectionView registerClass:[PZShopCarValidHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                        withReuseIdentifier:@"PZShopCarValidHeaderView"];
+        [_collectionView registerClass:[PZShopCarRecommendHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:@"PZShopCarRecommendHeaderView"];
+        [_collectionView registerClass:[PZShopCarValidFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                   withReuseIdentifier:@"PZShopCarValidFooterView"];
+        
     }
     return _collectionView;
 }

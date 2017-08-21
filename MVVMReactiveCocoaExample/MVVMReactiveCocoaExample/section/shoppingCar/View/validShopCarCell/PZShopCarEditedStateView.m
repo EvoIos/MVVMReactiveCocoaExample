@@ -7,6 +7,7 @@
 //
 
 #import "PZShopCarEditedStateView.h"
+#import "PZShopCarHeader.h"
 
 @interface PZShopCarEditedStateView()
 @property (nonatomic,strong) PZCalculationView *amountView;
@@ -57,7 +58,7 @@
     self.downArrowImgView = ({
         UIImageView *tmpImgView = [[UIImageView alloc] init];
         tmpImgView.contentMode = UIViewContentModeScaleToFill;
-        tmpImgView.image = [UIImage imageNamed:@"向下"];
+        tmpImgView.image = [UIImage imageNamed:PZShopCarDownArrowImageName];
         tmpImgView;
     });
     [self addSubview:self.downArrowImgView];
@@ -75,7 +76,6 @@
         tmpLabel.textAlignment = NSTextAlignmentLeft;
         tmpLabel;
     });
-    self.subTitleLabel.text = @"黑、白、美黑；36";
     [self addSubview:self.subTitleLabel];
     [self.subTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.mas_left).offset(8);

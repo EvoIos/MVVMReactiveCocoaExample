@@ -7,6 +7,7 @@
 //
 
 #import "PZShopCarValidCell.h"
+#import "PZShopCarHeader.h"
 
 @interface PZShopCarValidCell()
 @property (nonatomic,strong) NSString *home;
@@ -109,8 +110,8 @@
     self.markButton = ({
         UIButton *tmpBtn = [[UIButton alloc] init];
         [tmpBtn addTarget:self action:@selector(markItemAction:) forControlEvents:UIControlEventTouchUpInside];
-        [tmpBtn setImage:[UIImage imageNamed:@"未选中"] forState:UIControlStateNormal];
-        [tmpBtn setImage:[UIImage imageNamed:@"选中"] forState:UIControlStateSelected];
+        [tmpBtn setImage:[UIImage imageNamed:PZShopCarDeSelectImageName] forState:UIControlStateNormal];
+        [tmpBtn setImage:[UIImage imageNamed:PZShopCarSelectImageName] forState:UIControlStateSelected];
         tmpBtn.backgroundColor = [UIColor whiteColor];
         tmpBtn;
     });
@@ -123,7 +124,9 @@
     self.coverImgView = ({
         UIImageView *tmpImgView = [[UIImageView alloc] init];
         tmpImgView.contentMode = UIViewContentModeScaleAspectFill;
+        tmpImgView.clipsToBounds = YES;
         tmpImgView.image = [UIImage imageNamed:@""];
+        tmpImgView.backgroundColor = HEXCOLOR(0xF0F0F0);
         tmpImgView;
     });
     
