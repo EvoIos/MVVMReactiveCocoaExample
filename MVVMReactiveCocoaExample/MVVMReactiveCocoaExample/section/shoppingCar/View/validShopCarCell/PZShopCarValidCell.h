@@ -13,17 +13,19 @@
 #import "PZShopCarValidCellModel.h"
 
 @interface PZShopCarValidCell : ZLCSwipeCollectionViewCell
+
 @property (nonatomic, strong) PZShopCarValidCellModel * viewModel;
 
 /// 选中商品
 @property (nonatomic,copy) void(^mark)(void);
+
 /// 删除商品
 @property (nonatomic,copy) void(^deleteOneProduct)(void);
 /// 选择规格
 @property (nonatomic,copy) void(^tapDownArrowButton)(void);
 /// 修改商品数量
 @property (nonatomic,copy) void(^changeShoppingCount)(PZCalculationStyle style,NSInteger currentValue);
-///
+/// textField 开始编辑
 @property (nonatomic,copy) void(^didBeginEditing)(UITextField *textField,ZLCSwipeCollectionViewCell *cell);
 /// 取消编辑状态
 - (void)endEditing;

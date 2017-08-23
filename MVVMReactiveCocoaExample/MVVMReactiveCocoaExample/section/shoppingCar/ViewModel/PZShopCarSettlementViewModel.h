@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @interface PZShopCarSettlementViewModel : NSObject
-@property (nonatomic,assign) CGFloat price;
-@property (nonatomic,assign) NSInteger count;
-@property (nonatomic,assign) BOOL isSelected;
-@property (nonatomic,assign) BOOL isEditedAll;
+@property (nonatomic, assign) CGFloat price;
+@property (nonatomic, assign) NSInteger count;
+@property (nonatomic, assign, getter=isMarked) BOOL marked;
+@property (nonatomic, assign, getter=isEdited) BOOL edited;
 
 @property (nonatomic, strong, readonly) RACCommand *saveCommand;
 
 @property (nonatomic, strong, readonly) RACCommand *markCommand;
+
 @end

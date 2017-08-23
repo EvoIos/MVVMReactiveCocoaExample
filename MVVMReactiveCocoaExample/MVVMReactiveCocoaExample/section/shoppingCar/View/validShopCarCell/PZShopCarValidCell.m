@@ -10,6 +10,7 @@
 #import "PZShopCarHeader.h"
 
 @interface PZShopCarValidCell()
+
 @property (nonatomic,strong) NSString *home;
 @property (nonatomic,strong) UIButton *markButton;
 @property (nonatomic,strong) UIImageView *coverImgView;
@@ -30,6 +31,7 @@
     if (!self) { return nil; }
     
     [self setupUI];
+    
     @weakify(self);
     [RACObserve(self, viewModel)
      subscribeNext:^(id x) {
@@ -43,6 +45,8 @@
          self.editingView.currentCount = self.viewModel.count;
          self.editingView.max = self.viewModel.max;
          self.markButton.selected = self.viewModel.state.isMarked;
+         self.markButton.rac_command = self.viewModel.markCommand;
+         
          
          switch (self.viewModel.state.editedState) {
              case PZShopCarEditStateTypeNormal: {
@@ -68,6 +72,16 @@
          }
      }];
     
+//    [[self.markButton rac_signalForControlEvents:UIControlEventTouchUpInside]
+//     subscribeNext:^(id x) {
+//         @strongify(self);
+//         if (self.mark) {
+//             self.mark();
+//         }
+//    }];
+//    self.markCommand = self.markButton.rac_command;
+    
+   
     
     self.editingView.deleteAction = ^{
         @strongify(self);
@@ -109,7 +123,6 @@
     
     self.markButton = ({
         UIButton *tmpBtn = [[UIButton alloc] init];
-        [tmpBtn addTarget:self action:@selector(markItemAction:) forControlEvents:UIControlEventTouchUpInside];
         [tmpBtn setImage:[UIImage imageNamed:PZShopCarDeSelectImageName] forState:UIControlStateNormal];
         [tmpBtn setImage:[UIImage imageNamed:PZShopCarSelectImageName] forState:UIControlStateSelected];
         tmpBtn.backgroundColor = [UIColor whiteColor];
@@ -170,12 +183,6 @@
 }
 
 #pragma mark - event response
-
-- (void)markItemAction:(UIButton *)sender {
-    if (self.mark) {
-        self.mark();
-    }
-}
 
 - (void)endEditing {
     [self.editingView endEditing];

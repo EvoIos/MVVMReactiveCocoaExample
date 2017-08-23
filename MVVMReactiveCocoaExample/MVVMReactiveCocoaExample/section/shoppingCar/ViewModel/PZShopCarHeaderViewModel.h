@@ -14,12 +14,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @interface PZShopCarHeaderViewModel : NSObject
-@property (nonatomic,copy)      NSString *title;
-@property (nonatomic,strong)    NSURL *logoUrl;
-@property (nonatomic,assign)    NSInteger shopId;
-@property (nonatomic,strong)    NSString *localImgName;
+@property (nonatomic, copy)      NSString *title;
+@property (nonatomic, strong)    NSURL *logoUrl;
+@property (nonatomic, assign)    NSInteger shopId;
+@property (nonatomic, strong)    NSString *localImgName;
+@property (nonatomic, strong)    PZShopCarCellStateModel *state;
 
-@property (nonatomic,strong)    PZShopCarCellStateModel *state;
+@property (nonatomic, strong, readonly) RACCommand *markCommand;
 
 - (instancetype)initWithShopCarData:(PZShopCarData *)data;
 

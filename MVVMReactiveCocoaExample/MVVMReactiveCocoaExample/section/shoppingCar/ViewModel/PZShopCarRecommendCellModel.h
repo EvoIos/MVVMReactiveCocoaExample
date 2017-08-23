@@ -10,10 +10,10 @@
 #import "PZShopCarRecommendModel.h"
 
 @interface PZShopCarRecommendCellModel : NSObject
-@property (nonatomic,strong) NSURL *imgUrl;
-@property (nonatomic,strong) NSString *title;
-@property (nonatomic,assign) CGFloat price;
-@property (nonatomic,assign) NSInteger productId;
+@property (nonatomic, strong) NSURL *imgUrl;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, assign) CGFloat price;
+@property (nonatomic, assign) NSInteger productId;
 
 - (instancetype)initWithProduct:(PZShopCarRecommendProduct *)product;
 @end

@@ -9,25 +9,25 @@
 #import "PZShopCarHeaderViewModel.h"
 #import "PZShopCarHeader.h"
 
+@interface PZShopCarHeaderViewModel()
+@property (nonatomic, strong, readwrite) RACCommand *markCommand;
+@end
+
 @implementation PZShopCarHeaderViewModel
-- (instancetype)init {
-    if (self = [super init]) {
-        self.state = [PZShopCarCellStateModel new];
-    }
-    return self;
-}
 
 - (instancetype)initWithShopCarData:(PZShopCarData *)data {
-    if  (self = [self init]) {
-        self.title = [NSString stringWithFormat:@"根据关注的“%@”为你推荐",data.shopName];
+    if  (self = [super init]) {
+        self.title = [NSString stringWithFormat:@"%@",data.shopName];
         self.logoUrl = [NSURL URLWithString:data.logo];
         self.shopId = data.shopId;
+        self.state = [[PZShopCarCellStateModel alloc] initWithMarked:NO
+                                                           editState:PZShopCarEditStateTypeNormal];
     }
     return self;
 }
 
 - (instancetype)initWithShopCarRecommendData:(PZShopCarRecommendData *)data {
-    if (self = [self init]) {
+    if (self = [super init]) {
         self.title = [NSString stringWithFormat:@"根据关注的“%@”为你推荐",data.shopName];
         self.logoUrl = [NSURL URLWithString:data.logo];
         self.shopId = data.shopId;
@@ -41,6 +41,15 @@
         self.localImgName = PZShopCarLikeImageName;
     }
     return self;
+}
+
+- (RACCommand *)markCommand {
+    if (!_markCommand) {
+        _markCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+            return [RACSignal empty];
+        }];
+    }
+    return _markCommand;
 }
 
 @end

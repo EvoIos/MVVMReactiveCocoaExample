@@ -10,14 +10,9 @@
 #import "PZShopCarSettlementViewModel.h"
 
 @interface PZShopCarSettlementView : UIView
-@property (nonatomic,strong) RACCommand *markCommand;
-@property (nonatomic,strong) RACCommand *deleteAllCommand;
-@property (nonatomic,strong) RACCommand *saveCommand;
-@property (nonatomic,strong) RACCommand *submitCommand;
 
-@property (nonatomic,assign) CGFloat price;
-@property (nonatomic,assign) NSInteger count;
+@property (nonatomic, assign) BOOL marked;
 
-@property (nonatomic,assign,getter=isEditedAll) BOOL editedAll;
-@property (nonatomic,assign,getter=isMarkedAll) BOOL markedAll;
+@property (nonatomic, strong) RACCommand *markCommand;
+
 @end

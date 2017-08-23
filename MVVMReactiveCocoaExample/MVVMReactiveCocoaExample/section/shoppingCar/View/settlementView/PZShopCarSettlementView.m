@@ -23,32 +23,34 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (!self) { return nil; }
+   
     [self setupUI];
     
-    RAC(self, markButton.rac_command) = RACObserve(self, markCommand);
-    RAC(self, deleteButton.rac_command) = RACObserve(self, deleteAllCommand);
-    RAC(self, moveToSaveButton.rac_command) = RACObserve(self, saveCommand);
-    RAC(self, submitButton.rac_command) = RACObserve(self, submitCommand);
-    
-    RAC(self, markButton.selected) = RACObserve(self, markedAll);
-    RAC(self, totalLabel.text) = [RACObserve(self, price) map:^id _Nullable(NSNumber * value) {
-        return [NSString stringWithFormat:@"合计：￥%.2f",value.floatValue];
-    }];
-    
     @weakify(self);
-    [RACObserve(self, editedAll) subscribeNext:^(NSNumber *editedAll) {
-        @strongify(self);
-        self.deleteButton.hidden = !editedAll.boolValue;
-        self.moveToSaveButton.hidden = !editedAll.boolValue;
-        self.submitButton.hidden = editedAll.boolValue;
-        self.totalLabel.hidden = editedAll.boolValue;
+
+    [RACObserve(self, markCommand) subscribeNext:^(id x) {
+       @strongify(self);
+        self.markButton.rac_command = self.markCommand;
     }];
     
-    [self.submitButton
-     rac_liftSelector:@selector(setTitle:forState:)
-     withSignals:[RACObserve(self, count) map:^id _Nullable(NSNumber * value) {
-        return [NSString stringWithFormat:@"结算(%ld)",value.integerValue];
-    }], [RACSignal return:@(UIControlStateNormal)], nil];
+    [RACObserve(self, marked) subscribeNext:^(id x) {
+        @strongify(self);
+        self.markButton.selected = self.marked;
+    }];
+    
+//    [RACObserve(self, editedAll) subscribeNext:^(NSNumber *editedAll) {
+//        @strongify(self);
+//        self.deleteButton.hidden = !editedAll.boolValue;
+//        self.moveToSaveButton.hidden = !editedAll.boolValue;
+//        self.submitButton.hidden = editedAll.boolValue;
+//        self.totalLabel.hidden = editedAll.boolValue;
+//    }];
+//    
+//    [self.submitButton
+//     rac_liftSelector:@selector(setTitle:forState:)
+//     withSignals:[RACObserve(self, count) map:^id _Nullable(NSNumber * value) {
+//        return [NSString stringWithFormat:@"结算(%ld)",value.integerValue];
+//    }], [RACSignal return:@(UIControlStateNormal)], nil];
     
     return self;
 }

@@ -22,12 +22,41 @@
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        [self setupUI];
-        [self bindViewModel];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-        [self addGestureRecognizer:tap];
-    }
+    self = [super initWithFrame:frame];
+    if (!self) { return nil; }
+    
+    [self setupUI];
+    
+    @weakify(self);
+    [RACObserve(self, viewModel) subscribeNext:^(id x) {
+        @strongify(self);
+        self.titleLabel.text = self.viewModel.title;
+        [self.logoImgView sd_setImageWithURL:self.viewModel.logoUrl];
+        self.markButton.selected = self.viewModel.state.isMarked;
+        self.markButton.rac_command = self.viewModel.markCommand;
+        
+        switch (self.viewModel.state.editedState) {
+            case PZShopCarEditStateTypeNormal: {
+                self.editButton.hidden = NO;
+                self.editButton.selected = NO;
+            }
+                break;
+            case PZShopCarEditStateTypeEditing: {
+                self.editButton.hidden = NO;
+                self.editButton.selected = YES;
+            }
+                break;
+            case PZShopCarEditStateTypeEditALl: {
+                self.editButton.hidden = YES;
+                self.editButton.selected = NO;
+            }
+                break;
+            default:
+                break;
+        }
+    }];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+    [self addGestureRecognizer:tap];
     return self;
 }
 
@@ -35,7 +64,6 @@
     self.backgroundColor = [UIColor whiteColor];
     self.markButton = ({
         UIButton *tmpBtn = [[UIButton alloc] init];
-        [tmpBtn addTarget:self action:@selector(markItemAction:) forControlEvents:UIControlEventTouchUpInside];
         [tmpBtn setImage:[UIImage imageNamed:PZShopCarDeSelectImageName] forState:UIControlStateNormal];
         [tmpBtn setImage:[UIImage imageNamed:PZShopCarSelectImageName] forState:UIControlStateSelected];
         tmpBtn.backgroundColor = [UIColor clearColor];
@@ -104,44 +132,12 @@
 }
 
 - (void)bindViewModel {
-    @weakify(self);
-    [RACObserve(self, viewModel) subscribeNext:^(id x) {
-        @strongify(self);
-        self.titleLabel.text = self.viewModel.title;
-        [self.logoImgView sd_setImageWithURL:self.viewModel.logoUrl];
-        self.markButton.selected = self.viewModel.state.isMarked;
-        
-        switch (self.viewModel.state.editedState) {
-            case PZShopCarEditStateTypeNormal: {
-                self.editButton.hidden = NO;
-                self.editButton.selected = NO;
-            }
-                break;
-            case PZShopCarEditStateTypeEditing: {
-                self.editButton.hidden = NO;
-                self.editButton.selected = YES;
-            }
-                break;
-            case PZShopCarEditStateTypeEditALl: {
-                self.editButton.hidden = YES;
-                self.editButton.selected = NO;
-            }
-                break;
-            default:
-                break;
-        }
-    }];
+
 }
 
 - (void)tapAction {
     if (self.tap) {
         self.tap();
-    }
-}
-
-- (void)markItemAction:(UIButton *)sender {
-    if (self.markSelfSection) {
-        self.markSelfSection();
     }
 }
 

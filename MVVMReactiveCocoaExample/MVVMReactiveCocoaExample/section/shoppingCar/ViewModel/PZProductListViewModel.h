@@ -17,7 +17,7 @@
 @property (nonatomic, strong, readonly) NSDictionary <NSIndexPath *, NSNumber *>*selectedDic;
 
 @property (nonatomic, strong, readonly) RACCommand *fetchDataCommand;
-/// input: NSIndexPath *
+/// input: NSIndexPath *indexPath
 @property (nonatomic, strong, readonly) RACCommand *selectCommand;
 
 @property (nonatomic, strong, readonly) RACCommand *submitCommand;

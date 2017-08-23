@@ -14,15 +14,19 @@
 @interface PZShopCarViewModel()
 
 @property (nonatomic, assign) NSInteger pageIndex;
+@property (nonatomic, assign, readwrite, getter=isMarked) BOOL marked;
 @property (nonatomic, assign, readwrite, getter=isMore) BOOL more;
 
 @property (nonatomic, strong, readwrite) NSArray * items;
 @property (nonatomic, strong) NSMutableDictionary <NSNumber *, NSNumber *> *sectionTypeDictionary;
+@property (nonatomic, strong) NSMutableDictionary <NSIndexPath *, PZShopCarCellStateModel *> *markedDicionary;
 
 @property (nonatomic, strong) RACSignal *fetchListSignal;
 @property (nonatomic, strong) RACSignal *fetchRecommendListSignal;
 @property (nonatomic, strong, readwrite) RACCommand *fetchDataCommand;
 @property (nonatomic, strong, readwrite) RACCommand *fetchMoreDataCommand;
+@property (nonatomic, strong, readwrite) RACCommand *markCommand;
+
 @end
 
 @implementation PZShopCarViewModel
@@ -31,11 +35,11 @@
     self.pageIndex = 0;
 //    self.price = 0.0;
 //    self.editedAll = NO;
-//    self.markedAll = NO;
+
+    self.marked = NO;
     self.more = YES;
-//    
     self.sectionTypeDictionary = [@{} mutableCopy];
-//    self.markedDic = @{};
+    self.markedDicionary = [@{} mutableCopy];
     self.items = @[];
 }
 
@@ -43,8 +47,7 @@
     self = [super init];
     if (!self) return nil;
     @weakify(self);
-    
-
+    // request data
     self.fetchDataCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         @strongify(self);
         [self initializeData];
@@ -129,7 +132,6 @@
         }
         
         self.items = [tmpArray copy];
-        DLog(@"%@-%@",model,recommendModel);
     }];
     
     [self.fetchMoreDataCommand.executionSignals.switchToLatest subscribeNext:^(PZShopCarRecommendModel * model) {
@@ -149,6 +151,45 @@
         }
     } error:^(NSError *error) {
         DLog(@"fetch More error: %@",error);
+    }];
+    
+    // button event
+    self.markCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *( id input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
+            if ([input isKindOfClass:[UIButton class]]) {
+                self.marked = !self.isMarked;
+                for (PZShopCarCellInfosModel *infoModel in self.items) {
+                    infoModel.headerViewModel.state.marked = self.isMarked;
+                    for (id cellModel in infoModel.cellViewModels) {
+                        if ([cellModel isKindOfClass:[PZShopCarValidCellModel class]]) {
+                            ((PZShopCarValidCellModel *)cellModel).state.marked = self.isMarked;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                NSDictionary *dic = (NSDictionary *)input;
+                if ([dic[@"type"] isEqualToString:@"indexPath"]) {
+                    NSIndexPath *indexPath = (NSIndexPath *)dic[@"indexPath"];
+                    PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                    cellModel.state.marked =  !cellModel.state.isMarked;
+                } else if ([dic[@"type"] isEqualToString:@"section"]) {
+                    NSNumber *section = (NSNumber *)dic[@"section"];
+                    PZShopCarCellInfosModel *infoModel = self.items[section.integerValue];
+                    BOOL isMarked = !infoModel.headerViewModel.state.isMarked;
+                    infoModel.headerViewModel.state.marked = isMarked;
+                    
+                    for (PZShopCarValidCellModel *cellModel in infoModel.cellViewModels) {
+                        cellModel.state.marked = isMarked;
+                    }
+                }
+            }
+            [subscriber sendNext:@YES];
+            [subscriber sendCompleted];
+            return nil;
+        }];
     }];
     
     return self;
@@ -273,9 +314,6 @@
 - (RACSignal *)fetchRecommendListSignal {
     if (!_fetchRecommendListSignal) {
         _fetchRecommendListSignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-            [ApiManager shopCarRecommendListWithParams:@{} handleBlock:^(PZShopCarRecommendModel * _Nullable model, NSError * _Nullable error) {
-                DLog(@"");
-            }];
             [ApiManager shopCarRecommendListWithParams:@{@"pageIndex":@(self.pageIndex)} handleBlock:^(PZShopCarRecommendModel * _Nullable model, NSError * _Nullable error) {
                 if (error) {
                     [subscriber sendError:error];
@@ -294,5 +332,11 @@
     return _fetchRecommendListSignal;
 }
 
+- (PZShopCarSettlementViewModel *)settlementViewModel {
+    if (!_settlementViewModel) {
+        _settlementViewModel = [PZShopCarSettlementViewModel new];
+    }
+    return _settlementViewModel;
+}
 
 @end

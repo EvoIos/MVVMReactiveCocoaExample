@@ -10,13 +10,13 @@
 #import "PZShopCarModel.h"
 
 @interface PZShopCarInvalidCellModel : NSObject
-@property (nonatomic,strong) NSURL *imgUrl;
-@property (nonatomic,strong) NSString *title;
-@property (nonatomic,strong) NSString *subTitle;
-@property (nonatomic,assign) NSInteger shopId;
-@property (nonatomic,assign) NSInteger productId;
-@property (nonatomic,assign) NSInteger productType;
-@property (nonatomic,strong,readonly) RACCommand *deleteCommand;
+@property (nonatomic, strong) NSURL *imgUrl;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *subTitle;
+@property (nonatomic, assign) NSInteger shopId;
+@property (nonatomic, assign) NSInteger productId;
+@property (nonatomic, assign) NSInteger productType;
+@property (nonatomic, strong, readonly) RACCommand *deleteCommand;
 
 - (instancetype)initWithModel:(PZShopCarProduct *)product;
 @end

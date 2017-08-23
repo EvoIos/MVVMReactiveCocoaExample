@@ -19,9 +19,9 @@
 #import "PZShopCarValidFooterView.h"
 
 @interface PZShopCarViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
-@property (nonatomic,strong) PZShopCarViewModel *viewModel;
-@property (nonatomic,strong) UICollectionView *collectionView;
-@property (nonatomic,strong) PZShopCarSettlementView *settlementView;
+@property (nonatomic, strong) PZShopCarViewModel *viewModel;
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) PZShopCarSettlementView *settlementView;
 @end
 
 @implementation PZShopCarViewController
@@ -60,7 +60,7 @@
 
 - (void)bindViewModel {
     @weakify(self);
-    
+    [self.viewModel.fetchDataCommand execute:nil];
     [[[self.viewModel.fetchDataCommand.executing skip:1] not]
      subscribeNext:^(id x) {
          @strongify(self)
@@ -80,7 +80,35 @@
              }
          }
      }];
-    [self.viewModel.fetchDataCommand execute:nil];
+
+   
+//    RAC(self,settlementView.viewModel) = RACObserve(self, viewModel.settlementViewModel);
+    
+    self.settlementView.markCommand = self.viewModel.markCommand;
+    [RACObserve(self, viewModel.marked) subscribeNext:^(id x) {
+        DLog(@"marked: %d",self.viewModel.marked);
+        self.settlementView.marked = self.viewModel.isMarked;
+        
+    }];
+    
+    
+    
+//    [self.viewModel.markCommand.executionSignals subscribeNext:^(id x) {
+//        @strongify(self);
+////        [self.collectionView reloadData];
+//        DLog(@"here sss... ");
+//    }];
+    
+//    [[self.viewModel.markCommand.executionSignals
+//     flattenMap:^RACStream *(id value) {
+//         @strongify(self);
+//         NSDictionary *input = @{@"type":@"all"};
+//         return [self.viewModel.markCommand execute:input];
+//     }]
+//     subscribeNext:^(id x) {
+//         @strongify(self);
+//         [self.collectionView reloadData];
+//     }];
     
 }
 
@@ -102,6 +130,23 @@
             
             PZShopCarValidCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZShopCarValidCell" forIndexPath:indexPath];
             cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+
+            @weakify(self);
+            [[cell.viewModel.markCommand.executionSignals
+              flattenMap:^RACStream *(id value) {
+                  @strongify(self);
+                  NSDictionary *input = @{@"type":@"indexPath",@"indexPath":indexPath};
+                  return [self.viewModel.markCommand execute:input];
+              }]
+              subscribeNext:^(id x) {
+                  @strongify(self);
+                  [self.collectionView reloadData];
+              }];
+            
+//            [cell.viewModel.markCommand.executionSignals.switchToLatest subscribeNext:^(id x) {
+//                DLog(@"hree mark");
+//            }];
+            
             return cell;
         }
         case PZShopCarSectionInfoTypeInvalidType: {
@@ -134,6 +179,16 @@
             if ([kind isEqualToString:@"UICollectionElementKindSectionHeader"]) {
                 PZShopCarValidHeaderView *header =  [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidHeaderView" forIndexPath:indexPath];
                 header.viewModel = self.viewModel.items[indexPath.section].headerViewModel;
+                @weakify(self);
+                [[header.viewModel.markCommand.executionSignals
+                 flattenMap:^RACStream *(id value) {
+                     @strongify(self);
+                     NSDictionary *input = @{@"type":@"section",@"section":@(indexPath.section)};
+                     return [self.viewModel.markCommand execute:input];
+                 }] subscribeNext:^(id x) {
+                     @strongify(self);
+                     [self.collectionView reloadData];
+                 }];
                 return header;
             } else {
                 PZShopCarValidFooterView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidFooterView" forIndexPath:indexPath];
@@ -198,6 +253,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
             make.left.bottom.right.mas_equalTo(self.view);
             make.height.mas_equalTo(50);
         }];
+        
     }
     return _settlementView;
 }
@@ -246,6 +302,5 @@ referenceSizeForFooterInSection:(NSInteger)section {
     }
     return _viewModel;
 }
-
 
 @end

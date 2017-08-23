@@ -10,12 +10,22 @@
 
 @interface PZShopCarValidCellModel()
 @property (nonatomic, strong) PZShopCarProduct *product;
+@property (nonatomic,strong,readwrite) RACCommand *markCommand;
 @property (nonatomic,strong,readwrite) RACCommand *deleteCommand;
 @end
 
 @implementation PZShopCarValidCellModel
-- (instancetype)initWithProduct:(PZShopCarProduct *)product {
+- (instancetype)init {
     self = [super init];
+    if (self) {
+        self.state = [[PZShopCarCellStateModel alloc] initWithMarked:NO
+                                                           editState:PZShopCarEditStateTypeNormal];
+    }
+    return self;
+}
+
+- (instancetype)initWithProduct:(PZShopCarProduct *)product {
+    self = [self init];
     if (self) {
         self.product = product;
     }
@@ -49,6 +59,15 @@
         }];
     }
     return _deleteCommand;
+}
+
+- (RACCommand *)markCommand {
+    if (!_markCommand) {
+        _markCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+            return [RACSignal empty];
+        }];
+    }
+    return _markCommand;
 }
 
 /// 删除商品
