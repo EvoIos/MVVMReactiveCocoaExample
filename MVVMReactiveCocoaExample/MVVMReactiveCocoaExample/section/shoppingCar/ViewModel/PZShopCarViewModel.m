@@ -36,8 +36,6 @@
 //    self.price = 0.0;
 //    self.editedAll = NO;
 
-    self.marked = NO;
-    self.more = YES;
     self.sectionTypeDictionary = [@{} mutableCopy];
     self.markedDicionary = [@{} mutableCopy];
     self.items = @[];
@@ -46,12 +44,23 @@
 - (instancetype)init {
     self = [super init];
     if (!self) return nil;
+        
+    self.stateInitCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            self.marked = NO;
+            self.more = YES;
+            [subscriber sendNext:@YES];
+            [subscriber sendCompleted];
+            return nil;
+        }];
+    }];
+    
     @weakify(self);
     // request data
     self.fetchDataCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         @strongify(self);
         [self initializeData];
-        return [self.fetchListSignal combineLatestWith:self.fetchRecommendListSignal];
+        return [self.fetchListSignal combineLatestWith:self.fetchRecommendListSignal] ;
     }];
     self.fetchMoreDataCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
         @strongify(self);
@@ -132,6 +141,7 @@
         }
         
         self.items = [tmpArray copy];
+        
     }];
     
     [self.fetchMoreDataCommand.executionSignals.switchToLatest subscribeNext:^(PZShopCarRecommendModel * model) {
@@ -155,41 +165,37 @@
     
     // button event
     self.markCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *( id input) {
-        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-            @strongify(self);
-            if ([input isKindOfClass:[UIButton class]]) {
-                self.marked = !self.isMarked;
-                for (PZShopCarCellInfosModel *infoModel in self.items) {
-                    infoModel.headerViewModel.state.marked = self.isMarked;
-                    for (id cellModel in infoModel.cellViewModels) {
-                        if ([cellModel isKindOfClass:[PZShopCarValidCellModel class]]) {
-                            ((PZShopCarValidCellModel *)cellModel).state.marked = self.isMarked;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            } else {
-                NSDictionary *dic = (NSDictionary *)input;
-                if ([dic[@"type"] isEqualToString:@"indexPath"]) {
-                    NSIndexPath *indexPath = (NSIndexPath *)dic[@"indexPath"];
-                    PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
-                    cellModel.state.marked =  !cellModel.state.isMarked;
-                } else if ([dic[@"type"] isEqualToString:@"section"]) {
-                    NSNumber *section = (NSNumber *)dic[@"section"];
-                    PZShopCarCellInfosModel *infoModel = self.items[section.integerValue];
-                    BOOL isMarked = !infoModel.headerViewModel.state.isMarked;
-                    infoModel.headerViewModel.state.marked = isMarked;
-                    
-                    for (PZShopCarValidCellModel *cellModel in infoModel.cellViewModels) {
-                        cellModel.state.marked = isMarked;
+        @strongify(self);
+        if ([input isKindOfClass:[UIButton class]]) {
+            self.marked = !self.isMarked;
+            for (PZShopCarCellInfosModel *infoModel in self.items) {
+                infoModel.headerViewModel.state.marked = self.isMarked;
+                for (id cellModel in infoModel.cellViewModels) {
+                    if ([cellModel isKindOfClass:[PZShopCarValidCellModel class]]) {
+                        ((PZShopCarValidCellModel *)cellModel).state.marked = self.isMarked;
+                    } else {
+                        break;
                     }
                 }
             }
-            [subscriber sendNext:@YES];
-            [subscriber sendCompleted];
-            return nil;
-        }];
+        } else {
+            NSDictionary *dic = (NSDictionary *)input;
+            if ([dic[@"type"] isEqualToString:@"indexPath"]) {
+                NSIndexPath *indexPath = (NSIndexPath *)dic[@"indexPath"];
+                PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                cellModel.state.marked =  !cellModel.state.isMarked;
+            } else if ([dic[@"type"] isEqualToString:@"section"]) {
+                NSNumber *section = (NSNumber *)dic[@"section"];
+                PZShopCarCellInfosModel *infoModel = self.items[section.integerValue];
+                BOOL isMarked = !infoModel.headerViewModel.state.isMarked;
+                infoModel.headerViewModel.state.marked = isMarked;
+                
+                for (PZShopCarValidCellModel *cellModel in infoModel.cellViewModels) {
+                    cellModel.state.marked = isMarked;
+                }
+            }
+        }
+        return [RACSignal return:@YES];
     }];
     
     return self;

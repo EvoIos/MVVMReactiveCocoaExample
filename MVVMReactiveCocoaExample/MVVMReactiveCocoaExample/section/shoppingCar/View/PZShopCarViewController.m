@@ -61,14 +61,19 @@
 - (void)bindViewModel {
     @weakify(self);
     [self.viewModel.fetchDataCommand execute:nil];
-    [[[self.viewModel.fetchDataCommand.executing skip:1] not]
+    [[[[self.viewModel.fetchDataCommand.executing skip:1] not]
+     map:^id(id value) {
+         return @([value boolValue] == YES);
+     }]
      subscribeNext:^(id x) {
          @strongify(self)
+         DLog(@"fetch Data herellll");
          if ([x boolValue]) { // 执行完成
              [self.collectionView reloadData];
              [self.collectionView.mj_header endRefreshing];
          }
      }];
+    
     [[[self.viewModel.fetchMoreDataCommand.executing skip:1] not]
      subscribeNext:^(id x) {
          @strongify(self)
@@ -80,16 +85,26 @@
              }
          }
      }];
-
+    [self.viewModel.fetchDataCommand.errors subscribeNext:^(id x) {
+        DLog(@"error: %@",x);
+    }];
    
 //    RAC(self,settlementView.viewModel) = RACObserve(self, viewModel.settlementViewModel);
     
     self.settlementView.markCommand = self.viewModel.markCommand;
     [RACObserve(self, viewModel.marked) subscribeNext:^(id x) {
-        DLog(@"marked: %d",self.viewModel.marked);
+        @strongify(self);
         self.settlementView.marked = self.viewModel.isMarked;
-        
+        [self.collectionView reloadData];
     }];
+    
+
+//    [RACObserve(self, viewModel.marked) subscribeNext:^(id x) {
+//        DLog(@"marked: %d",self.viewModel.marked);
+//        @strongify(self);
+//         self.settlementView.marked = self.viewModel.isMarked;
+//        [self.collectionView reloadData];
+//    }];
     
     
     

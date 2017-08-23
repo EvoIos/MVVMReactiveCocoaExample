@@ -21,6 +21,7 @@
 @property (nonatomic, strong, readonly) NSArray <PZShopCarCellInfosModel*>*items;
 @property (nonatomic, strong) PZShopCarSettlementViewModel *settlementViewModel;
 
+@property (nonatomic, strong) RACCommand *stateInitCommand;
 @property (nonatomic, strong, readonly) RACCommand *fetchDataCommand;
 @property (nonatomic, strong, readonly) RACCommand *fetchMoreDataCommand;
 /** @brief 选中单个商品，section商品，全部商品
