@@ -33,10 +33,17 @@
         self.markButton.rac_command = self.markCommand;
     }];
     
-    [RACObserve(self, marked) subscribeNext:^(id x) {
-        @strongify(self);
-        self.markButton.selected = self.marked;
-    }];
+    [[self.markButton rac_signalForControlEvents:UIControlEventTouchUpInside]
+     subscribeNext:^(UIButton * x) {
+         x.selected = !x.selected;
+     }];
+    
+//    RAC(self,markButton.selected) = RACObserve(self, marked);
+    
+//    [RACObserve(self, marked) subscribeNext:^(id x) {
+//        @strongify(self);
+//        self.markButton.selected = self.marked;
+//    }];
     
 //    [RACObserve(self, editedAll) subscribeNext:^(NSNumber *editedAll) {
 //        @strongify(self);
@@ -46,13 +53,19 @@
 //        self.totalLabel.hidden = editedAll.boolValue;
 //    }];
 //    
-//    [self.submitButton
-//     rac_liftSelector:@selector(setTitle:forState:)
-//     withSignals:[RACObserve(self, count) map:^id _Nullable(NSNumber * value) {
-//        return [NSString stringWithFormat:@"结算(%ld)",value.integerValue];
-//    }], [RACSignal return:@(UIControlStateNormal)], nil];
+    [self.submitButton
+     rac_liftSelector:@selector(setTitle:forState:)
+     withSignals:[RACObserve(self, count)
+                  map:^id _Nullable(NSNumber * value) {
+                      return [NSString stringWithFormat:@"结算(%ld)",value.integerValue];
+                  }],
+     [RACSignal return:@(UIControlStateNormal)], nil];
     
     return self;
+}
+
+- (void)reloadData {
+   self.markButton.selected = self.marked;
 }
 
 - (void)setupUI {

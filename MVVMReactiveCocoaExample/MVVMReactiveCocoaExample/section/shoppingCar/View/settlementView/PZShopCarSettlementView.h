@@ -11,8 +11,10 @@
 
 @interface PZShopCarSettlementView : UIView
 
+@property (nonatomic, assign) NSInteger count;
 @property (nonatomic, assign) BOOL marked;
 
 @property (nonatomic, strong) RACCommand *markCommand;
 
+- (void)reloadData;
 @end

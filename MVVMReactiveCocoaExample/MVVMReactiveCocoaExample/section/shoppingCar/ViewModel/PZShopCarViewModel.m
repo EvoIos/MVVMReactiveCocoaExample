@@ -19,7 +19,8 @@
 
 @property (nonatomic, strong, readwrite) NSArray * items;
 @property (nonatomic, strong) NSMutableDictionary <NSNumber *, NSNumber *> *sectionTypeDictionary;
-@property (nonatomic, strong) NSMutableDictionary <NSIndexPath *, PZShopCarCellStateModel *> *markedDicionary;
+@property (nonatomic, strong) NSDictionary <NSIndexPath *, NSArray<PZShopCarValidCellModel *> *> *markedDicionary;
+@property (nonatomic, strong) NSArray <NSArray<PZShopCarValidCellModel *> *> *markedArray;
 
 @property (nonatomic, strong) RACSignal *fetchListSignal;
 @property (nonatomic, strong) RACSignal *fetchRecommendListSignal;
@@ -35,25 +36,17 @@
     self.pageIndex = 0;
 //    self.price = 0.0;
 //    self.editedAll = NO;
-
+    self.marked = NO;
+    self.more = YES;
     self.sectionTypeDictionary = [@{} mutableCopy];
-    self.markedDicionary = [@{} mutableCopy];
+    self.markedDicionary = @{};
+    self.markedArray = @[];
     self.items = @[];
 }
 
 - (instancetype)init {
     self = [super init];
     if (!self) return nil;
-        
-    self.stateInitCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
-        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-            self.marked = NO;
-            self.more = YES;
-            [subscriber sendNext:@YES];
-            [subscriber sendCompleted];
-            return nil;
-        }];
-    }];
     
     @weakify(self);
     // request data
@@ -94,6 +87,8 @@
             infoModel.cellViewModels = [rowDatas copy];
             infoModel.headerViewModel =headerModel;
             [tmpArray addObject:infoModel];
+            self.markedArray = [tmpArray copy];
+            
         }
         // expired Info
         if (model.expiredData.count != 0) {
@@ -165,40 +160,77 @@
     
     // button event
     self.markCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *( id input) {
-        @strongify(self);
-        if ([input isKindOfClass:[UIButton class]]) {
-            self.marked = !self.isMarked;
-            for (PZShopCarCellInfosModel *infoModel in self.items) {
-                infoModel.headerViewModel.state.marked = self.isMarked;
-                for (id cellModel in infoModel.cellViewModels) {
-                    if ([cellModel isKindOfClass:[PZShopCarValidCellModel class]]) {
-                        ((PZShopCarValidCellModel *)cellModel).state.marked = self.isMarked;
-                    } else {
-                        break;
-                    }
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
+            if ([input isKindOfClass:[UIButton class]]) {
+                self.marked = !self.isMarked;
+                [[[[[self.items rac_sequence]
+                    filter:^BOOL(PZShopCarCellInfosModel *value) {
+                        return value.headerViewModel.state != nil;
+                    }]
+                   map:^id(PZShopCarCellInfosModel * value) {
+                       @strongify(self);
+                       value.headerViewModel.state.marked = self.marked;
+                       return value.cellViewModels;
+                   }]
+                  map:^id(NSArray * value) {
+                      @strongify(self);
+                      return [[value.rac_sequence map:^id(PZShopCarValidCellModel * value) {
+                          @strongify(self);
+                          value.state.marked = self.isMarked;
+                          return value;
+                      }] array];
+                  }] array];
+            } else {
+                NSDictionary *dic = (NSDictionary *)input;
+                NSMutableDictionary *tmpDic = [self.markedDicionary mutableCopy];
+                if ([dic[@"type"] isEqualToString:@"indexPath"]) {
+                    NSIndexPath *indexPath = (NSIndexPath *)dic[@"indexPath"];
+                    PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                    cellModel.state.marked =  !cellModel.state.isMarked;
+                } else if ([dic[@"type"] isEqualToString:@"section"]) {
+                    NSNumber *section = (NSNumber *)dic[@"section"];
+                    PZShopCarCellInfosModel *infoModel = self.items[section.integerValue];
+                    BOOL isMarked = !infoModel.headerViewModel.state.isMarked;
+                    infoModel.headerViewModel.state.marked = isMarked;
+                    [[infoModel.cellViewModels.rac_sequence map:^id(PZShopCarValidCellModel * value) {
+                        value.state.marked = isMarked;
+                        return value;
+                    }] array];
                 }
+                self.markedDicionary = [tmpDic copy];
             }
-        } else {
-            NSDictionary *dic = (NSDictionary *)input;
-            if ([dic[@"type"] isEqualToString:@"indexPath"]) {
-                NSIndexPath *indexPath = (NSIndexPath *)dic[@"indexPath"];
-                PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
-                cellModel.state.marked =  !cellModel.state.isMarked;
-            } else if ([dic[@"type"] isEqualToString:@"section"]) {
-                NSNumber *section = (NSNumber *)dic[@"section"];
-                PZShopCarCellInfosModel *infoModel = self.items[section.integerValue];
-                BOOL isMarked = !infoModel.headerViewModel.state.isMarked;
-                infoModel.headerViewModel.state.marked = isMarked;
-                
-                for (PZShopCarValidCellModel *cellModel in infoModel.cellViewModels) {
-                    cellModel.state.marked = isMarked;
-                }
-            }
-        }
-        return [RACSignal return:@YES];
+            
+            // update info
+            [self updatePropertyValue];
+            
+            [subscriber sendNext:@YES];
+            [subscriber sendCompleted];
+            return nil;
+        }];
     }];
     
+    
     return self;
+}
+
+// update mark state
+- (void) updatePropertyValue {
+    @weakify(self);
+    
+    NSArray *validArray = [[[self.items rac_sequence]
+                            filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                return value.headerViewModel.state != nil;
+                            }] array];
+    NSArray *modelsArray = [[[validArray rac_sequence]
+                            filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                return !value.headerViewModel.state.isMarked ;
+                            }] array] ;
+    if (modelsArray.count == 0) {
+        self.count = validArray.count;
+    } else {
+        
+    }
 }
 
 #pragma mark - UICollectionView layout

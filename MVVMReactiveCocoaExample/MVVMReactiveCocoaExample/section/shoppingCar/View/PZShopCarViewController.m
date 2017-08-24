@@ -55,25 +55,20 @@
         @strongify(self);
         [self.viewModel.fetchMoreDataCommand execute:nil];
     }];
-    
 }
 
 - (void)bindViewModel {
     @weakify(self);
     [self.viewModel.fetchDataCommand execute:nil];
-    [[[[self.viewModel.fetchDataCommand.executing skip:1] not]
-     map:^id(id value) {
-         return @([value boolValue] == YES);
-     }]
+    [[[self.viewModel.fetchDataCommand.executing skip:1] not]
      subscribeNext:^(id x) {
          @strongify(self)
-         DLog(@"fetch Data herellll");
+         DLog(@"fetch Data herellll: %@",x);
          if ([x boolValue]) { // 执行完成
-             [self.collectionView reloadData];
+             [self reloadData];
              [self.collectionView.mj_header endRefreshing];
          }
      }];
-    
     [[[self.viewModel.fetchMoreDataCommand.executing skip:1] not]
      subscribeNext:^(id x) {
          @strongify(self)
@@ -86,45 +81,21 @@
          }
      }];
     [self.viewModel.fetchDataCommand.errors subscribeNext:^(id x) {
-        DLog(@"error: %@",x);
+        @strongify(self);
+        [self.collectionView.mj_header endRefreshing];
+        [self.collectionView.mj_footer endRefreshing];
     }];
    
-//    RAC(self,settlementView.viewModel) = RACObserve(self, viewModel.settlementViewModel);
-    
     self.settlementView.markCommand = self.viewModel.markCommand;
-    [RACObserve(self, viewModel.marked) subscribeNext:^(id x) {
+    RAC(self,settlementView.marked) = RACObserve(self, viewModel.marked);
+    RAC(self,settlementView.count) = RACObserve(self, viewModel.count);
+    
+    [[self.viewModel.markCommand.executing not] subscribeNext:^(NSNumber * x) {
         @strongify(self);
-        self.settlementView.marked = self.viewModel.isMarked;
-        [self.collectionView reloadData];
+        if ([x boolValue]) {
+            [self reloadData];
+        }
     }];
-    
-
-//    [RACObserve(self, viewModel.marked) subscribeNext:^(id x) {
-//        DLog(@"marked: %d",self.viewModel.marked);
-//        @strongify(self);
-//         self.settlementView.marked = self.viewModel.isMarked;
-//        [self.collectionView reloadData];
-//    }];
-    
-    
-    
-//    [self.viewModel.markCommand.executionSignals subscribeNext:^(id x) {
-//        @strongify(self);
-////        [self.collectionView reloadData];
-//        DLog(@"here sss... ");
-//    }];
-    
-//    [[self.viewModel.markCommand.executionSignals
-//     flattenMap:^RACStream *(id value) {
-//         @strongify(self);
-//         NSDictionary *input = @{@"type":@"all"};
-//         return [self.viewModel.markCommand execute:input];
-//     }]
-//     subscribeNext:^(id x) {
-//         @strongify(self);
-//         [self.collectionView reloadData];
-//     }];
-    
 }
 
 #pragma mark - UICollectionView delegate
@@ -139,6 +110,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     
     switch ([self.viewModel sectionTypeForSection:indexPath.section]) {
         case PZShopCarSectionInfoTypeValidType: {
@@ -155,13 +127,8 @@
               }]
               subscribeNext:^(id x) {
                   @strongify(self);
-                  [self.collectionView reloadData];
+                  [self reloadData];
               }];
-            
-//            [cell.viewModel.markCommand.executionSignals.switchToLatest subscribeNext:^(id x) {
-//                DLog(@"hree mark");
-//            }];
-            
             return cell;
         }
         case PZShopCarSectionInfoTypeInvalidType: {
@@ -202,7 +169,7 @@
                      return [self.viewModel.markCommand execute:input];
                  }] subscribeNext:^(id x) {
                      @strongify(self);
-                     [self.collectionView reloadData];
+                     [self reloadData];
                  }];
                 return header;
             } else {
@@ -220,7 +187,6 @@
             return [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"UICollectionReusableViewHeader" forIndexPath:indexPath];
     }
 }
-
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout*)collectionViewLayout
@@ -256,6 +222,13 @@ referenceSizeForHeaderInSection:(NSInteger)section {
                   layout:(UICollectionViewLayout *)collectionViewLayout
 referenceSizeForFooterInSection:(NSInteger)section {
     return [self.viewModel referenceSizeForFooterInSection:section];
+}
+
+#pragma mark - reloadData
+
+- (void)reloadData {
+    [self.collectionView reloadData];
+    [self.settlementView reloadData];
 }
 
 #pragma mark - setter and getter

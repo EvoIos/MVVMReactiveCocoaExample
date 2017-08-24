@@ -21,18 +21,12 @@
 @property (nonatomic, strong, readonly) NSArray <PZShopCarCellInfosModel*>*items;
 @property (nonatomic, strong) PZShopCarSettlementViewModel *settlementViewModel;
 
-@property (nonatomic, strong) RACCommand *stateInitCommand;
 @property (nonatomic, strong, readonly) RACCommand *fetchDataCommand;
 @property (nonatomic, strong, readonly) RACCommand *fetchMoreDataCommand;
 /** @brief 选中单个商品，section商品，全部商品
  *  input: 选中全部 UIButton，其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
  */
 @property (nonatomic, strong, readonly) RACCommand *markCommand;
-
-// MARK: - info for collectionView
-- (id)cellItemViewModelForSection:(NSInteger)section row:(NSInteger)row;
-- (id)headerItemViewModelForSection:(NSInteger)section;
-- (id)footerItemViewModelForSection:(NSInteger)section;
 
 // MARK: - layout
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section;
