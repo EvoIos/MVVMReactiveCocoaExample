@@ -22,11 +22,12 @@
 @end
 
 @interface PZShopCarProduct : NSObject
+@property (nonatomic, assign) NSInteger count;
 @property (nonatomic, assign) NSInteger productId;
 @property (nonatomic, assign) NSInteger shopId;
 @property (nonatomic, strong) NSString * img;
 @property (nonatomic, assign) NSInteger inventory;
-@property (nonatomic, assign) NSInteger price;
+@property (nonatomic, assign) CGFloat price;
 @property (nonatomic, assign) NSInteger propertyId;
 @property (nonatomic, strong) NSString * propertyTitle;
 @property (nonatomic, strong) NSString * title;

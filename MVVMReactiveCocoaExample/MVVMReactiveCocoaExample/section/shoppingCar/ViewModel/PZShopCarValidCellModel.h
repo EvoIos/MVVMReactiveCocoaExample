@@ -20,15 +20,12 @@
 @property (nonatomic, assign) CGFloat price;
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, assign) NSInteger max;
+
 @property (nonatomic, strong, readwrite) PZShopCarCellStateModel *state;
 
 @property (nonatomic, strong, readonly) RACCommand *markCommand;
 @property (nonatomic, strong, readonly) RACCommand *deleteCommand;
 
-/// 替换product模型
-//- (void)replaceProductWithModel:(GoodDetailFormatModel *)model;
-//- (void)changeCount:(NSInteger)count;
-//
 - (instancetype)initWithProduct:(PZShopCarProduct *)product;
 
 @end

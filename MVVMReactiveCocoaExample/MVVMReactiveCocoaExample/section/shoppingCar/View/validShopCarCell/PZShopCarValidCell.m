@@ -47,7 +47,6 @@
          self.markButton.selected = self.viewModel.state.isMarked;
          self.markButton.rac_command = self.viewModel.markCommand;
          
-         
          switch (self.viewModel.state.editedState) {
              case PZShopCarEditStateTypeNormal: {
                  self.defaultView.hidden = NO;
@@ -71,17 +70,6 @@
                  break;
          }
      }];
-    
-//    [[self.markButton rac_signalForControlEvents:UIControlEventTouchUpInside]
-//     subscribeNext:^(id x) {
-//         @strongify(self);
-//         if (self.mark) {
-//             self.mark();
-//         }
-//    }];
-//    self.markCommand = self.markButton.rac_command;
-    
-   
     
     self.editingView.deleteAction = ^{
         @strongify(self);

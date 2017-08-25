@@ -52,7 +52,12 @@
 //        self.submitButton.hidden = editedAll.boolValue;
 //        self.totalLabel.hidden = editedAll.boolValue;
 //    }];
-//    
+//
+    [RACObserve(self, price) subscribeNext:^(id x) {
+        @strongify(self);
+        self.totalLabel.text = [NSString stringWithFormat:@"%.2f",self.price];
+    }];
+    
     [self.submitButton
      rac_liftSelector:@selector(setTitle:forState:)
      withSignals:[RACObserve(self, count)

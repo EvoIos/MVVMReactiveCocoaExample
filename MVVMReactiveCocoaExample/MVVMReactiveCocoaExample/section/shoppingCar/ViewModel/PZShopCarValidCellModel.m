@@ -52,6 +52,18 @@
     return self.product.productId;
 }
 
+- (CGFloat)price {
+    return self.product.price;
+}
+
+- (NSInteger)max {
+    return self.product.inventory;
+}
+
+- (NSInteger)count {
+    return self.product.count;
+}
+
 - (RACCommand *)deleteCommand {
     if (!_deleteCommand) {
         _deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {

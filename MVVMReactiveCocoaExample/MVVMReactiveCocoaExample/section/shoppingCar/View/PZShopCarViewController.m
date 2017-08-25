@@ -89,6 +89,7 @@
     self.settlementView.markCommand = self.viewModel.markCommand;
     RAC(self,settlementView.marked) = RACObserve(self, viewModel.marked);
     RAC(self,settlementView.count) = RACObserve(self, viewModel.count);
+    RAC(self,settlementView.price) = RACObserve(self, viewModel.price);
     
     [[self.viewModel.markCommand.executing not] subscribeNext:^(NSNumber * x) {
         @strongify(self);

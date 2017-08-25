@@ -199,11 +199,10 @@
                     }] array];
                 }
                 self.markedDicionary = [tmpDic copy];
+                // update state info
+                [self updateMarkedValue];
             }
-            
-            // update info
-            [self updatePropertyValue];
-            
+            [self updatePriceAndCountValue];
             [subscriber sendNext:@YES];
             [subscriber sendCompleted];
             return nil;
@@ -214,23 +213,59 @@
     return self;
 }
 
-// update mark state
-- (void) updatePropertyValue {
-    @weakify(self);
-    
-    NSArray *validArray = [[[self.items rac_sequence]
+/// update count/pirce value
+- (void)updatePriceAndCountValue {
+    NSArray *valideArray = [[[self.items rac_sequence]
                             filter:^BOOL(PZShopCarCellInfosModel *value) {
                                 return value.headerViewModel.state != nil;
                             }] array];
-    NSArray *modelsArray = [[[validArray rac_sequence]
-                            filter:^BOOL(PZShopCarCellInfosModel *value) {
-                                return !value.headerViewModel.state.isMarked ;
-                            }] array] ;
-    if (modelsArray.count == 0) {
-        self.count = validArray.count;
-    } else {
-        
+    NSInteger count = 0;
+    CGFloat price = 0.0;
+    for (PZShopCarCellInfosModel *info in valideArray) {
+        for (PZShopCarValidCellModel *cellModel in info.cellViewModels) {
+            if  (cellModel.state.isMarked == YES) {
+                count += 1;
+                price += cellModel.price *cellModel.count;
+            }
+        }
     }
+    self.price = price;
+    self.count = count;
+}
+
+/// update mark state
+- (void) updateMarkedValue {
+    @weakify(self);
+    NSArray *validArray = [[[self.sectionTypeDictionary.allValues rac_sequence]
+                            filter:^BOOL(NSNumber * value) {
+                                return value.integerValue == PZShopCarSectionInfoTypeValidType;
+                            }] array];
+    
+    NSArray *filterArray = [[[[[self.items rac_sequence]
+                               filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                   return value.headerViewModel.state != nil;
+                               }]
+                              map:^id(PZShopCarCellInfosModel *info) {
+                                  @strongify(self);
+                                  info.headerViewModel.state.marked = [self stateIsYesInArray:info.cellViewModels];
+                                  return info;
+                              }]
+                             filter:^BOOL(PZShopCarCellInfosModel *info) {
+                                 return info.headerViewModel.state.isMarked;
+                             }] array];
+    self.marked = validArray.count == filterArray.count;
+}
+
+/// 判断 array 里的所有 state 是否都是 YES
+- (BOOL)stateIsYesInArray:(NSArray <PZShopCarValidCellModel *>*)array  {
+    BOOL result = YES;
+    for (PZShopCarValidCellModel *cellModel in array) {
+        if  (cellModel.state.isMarked == NO) {
+            result = NO;
+            break;
+        }
+    }
+    return result;
 }
 
 #pragma mark - UICollectionView layout

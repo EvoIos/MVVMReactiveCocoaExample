@@ -53,7 +53,7 @@
         tmpBtn.titleLabel.font = [UIFont systemFontOfSize:13];
         [tmpBtn setTintColor:[UIColor whiteColor]];
         tmpBtn.layer.cornerRadius = 8;
-        tmpBtn.backgroundColor = PZShopCarGrayColor;
+        tmpBtn.backgroundColor = PZShopCarLightGrayColor;
         tmpBtn.userInteractionEnabled = NO;
         tmpBtn;
     });
