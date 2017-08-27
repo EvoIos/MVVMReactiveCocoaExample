@@ -11,6 +11,7 @@
 
 @interface PZShopCarHeaderViewModel()
 @property (nonatomic, strong, readwrite) RACCommand *markCommand;
+@property (nonatomic, strong, readwrite) RACCommand *editCommand;
 @end
 
 @implementation PZShopCarHeaderViewModel
@@ -50,6 +51,15 @@
         }];
     }
     return _markCommand;
+}
+
+- (RACCommand *)editCommand {
+    if (!_editCommand) {
+        _editCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+            return [RACSignal empty];
+        }];
+    }
+    return _editCommand;
 }
 
 @end

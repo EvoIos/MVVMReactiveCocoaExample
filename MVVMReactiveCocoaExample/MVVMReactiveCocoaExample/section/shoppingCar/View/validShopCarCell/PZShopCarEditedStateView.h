@@ -10,6 +10,9 @@
 #import "PZCalculationView.h"
 
 @interface PZShopCarEditedStateView : UIView
+
+@property (nonatomic,strong) RACCommand *deleteCommand;
+
 /// 是否进入编辑状态
 @property (nonatomic,assign) BOOL isShowEditButton;
 /// 是否被标记

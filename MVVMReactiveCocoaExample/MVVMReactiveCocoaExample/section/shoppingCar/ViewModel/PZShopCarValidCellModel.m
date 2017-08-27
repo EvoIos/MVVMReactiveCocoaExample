@@ -66,8 +66,24 @@
 
 - (RACCommand *)deleteCommand {
     if (!_deleteCommand) {
+        @weakify(self);
         _deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [self deleteProduct];
+            return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+                @strongify(self);
+                [ApiManager shopCarDeleteWithParams:@{@"propertyIds":@[@(self.productId)]} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
+                    if (error) {
+                        [subscriber sendError:error];
+                    } else {
+                        if (model.code == 0) {
+                            [subscriber sendNext:input];
+                            [subscriber sendCompleted];
+                        } else {
+                            [subscriber sendError:model.error];
+                        }
+                    }
+                }];
+                return nil;
+            }];
         }];
     }
     return _deleteCommand;
@@ -80,22 +96,6 @@
         }];
     }
     return _markCommand;
-}
-
-/// 删除商品
-- (RACSignal *)deleteProduct {
-    return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-//        [ApiManager delShopCartWithParams:@{ @"shop_ids":@(self.shopId) } resultBlock:^(ShoppingCarBaseModel *result, NSError *error) {
-//            if (result.success == YES) {
-//                [subscriber sendNext:@YES];
-//                [subscriber sendCompleted];
-//            } else {
-//                NSError *error = [[NSError alloc] initWithDomain:@"cc.txooo.com" code:-1 userInfo:@{@"msg":@"deleteOneProductError"}];
-//                [subscriber sendError:error];
-//            }
-//        }];
-        return nil;
-    }];
 }
 
 @end

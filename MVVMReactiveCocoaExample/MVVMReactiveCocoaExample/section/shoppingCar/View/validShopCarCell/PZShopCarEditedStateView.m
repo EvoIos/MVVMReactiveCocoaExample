@@ -23,6 +23,7 @@
     if (self = [super initWithFrame:frame]) {
         [self setupUI];
         [self blockAction];
+        RAC(self,deleteButton.rac_command) = RACObserve(self, deleteCommand);
     }
     return self;
 }
@@ -34,7 +35,7 @@
     
     self.deleteButton = ({
         UIButton *tmpBtn = [[UIButton alloc] init];
-        [tmpBtn addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
+//        [tmpBtn addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
         [tmpBtn setTitle:@"删除" forState:UIControlStateNormal];
         [tmpBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         tmpBtn.titleLabel.font = [UIFont systemFontOfSize:18];

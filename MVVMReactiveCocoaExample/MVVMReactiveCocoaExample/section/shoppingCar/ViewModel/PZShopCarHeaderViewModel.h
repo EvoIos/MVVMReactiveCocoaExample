@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong)    PZShopCarCellStateModel *state;
 
 @property (nonatomic, strong, readonly) RACCommand *markCommand;
+@property (nonatomic, strong, readonly) RACCommand *editCommand;
 
 - (instancetype)initWithShopCarData:(PZShopCarData *)data;
 

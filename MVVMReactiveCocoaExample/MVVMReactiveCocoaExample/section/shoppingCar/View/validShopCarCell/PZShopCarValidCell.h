@@ -16,11 +16,8 @@
 
 @property (nonatomic, strong) PZShopCarValidCellModel * viewModel;
 
-/// 选中商品
-@property (nonatomic,copy) void(^mark)(void);
+@property (nonatomic,copy) void(^deleteSlef)(void);
 
-/// 删除商品
-@property (nonatomic,copy) void(^deleteOneProduct)(void);
 /// 选择规格
 @property (nonatomic,copy) void(^tapDownArrowButton)(void);
 /// 修改商品数量

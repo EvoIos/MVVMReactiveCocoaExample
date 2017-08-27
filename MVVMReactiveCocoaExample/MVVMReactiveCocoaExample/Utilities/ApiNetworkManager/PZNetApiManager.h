@@ -31,5 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)shopCarRecommendListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopCarRecommendModel * __nullable  model,  NSError * __nullable error))block;
 
+- (void)shopCarDeleteWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
+
+
 @end
 NS_ASSUME_NONNULL_END

@@ -12,7 +12,4 @@
 @interface PZShopCarValidHeaderView : UICollectionReusableView
 @property (nonatomic,strong) PZShopCarHeaderViewModel *viewModel;
 
-@property (nonatomic,copy) void(^editSelf)(void);
-@property (nonatomic,copy) void(^markSelfSection)(void);
-@property (nonatomic,copy) void(^tap)(void);
 @end

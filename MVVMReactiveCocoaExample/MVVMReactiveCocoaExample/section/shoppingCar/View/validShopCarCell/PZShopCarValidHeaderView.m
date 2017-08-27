@@ -34,6 +34,7 @@
         [self.logoImgView sd_setImageWithURL:self.viewModel.logoUrl];
         self.markButton.selected = self.viewModel.state.isMarked;
         self.markButton.rac_command = self.viewModel.markCommand;
+        self.editButton.rac_command = self.viewModel.editCommand;
         
         switch (self.viewModel.state.editedState) {
             case PZShopCarEditStateTypeNormal: {
@@ -55,8 +56,8 @@
                 break;
         }
     }];
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-    [self addGestureRecognizer:tap];
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+//    [self addGestureRecognizer:tap];
     return self;
 }
 
@@ -105,7 +106,6 @@
     
     self.editButton = ({
         UIButton *tmpBtn = [[UIButton alloc] init];
-        [tmpBtn addTarget:self action:@selector(editAction:) forControlEvents:UIControlEventTouchUpInside];
         [tmpBtn setTitle:@"编辑" forState:UIControlStateNormal];
         [tmpBtn setTitle:@"完成" forState:UIControlStateSelected];
         [tmpBtn setTitleColor:CustomBlackColor forState:UIControlStateNormal];
@@ -129,22 +129,6 @@
         make.bottom.right.mas_equalTo(self);
         make.height.mas_equalTo(0.5);
     }];
-}
-
-- (void)bindViewModel {
-
-}
-
-- (void)tapAction {
-    if (self.tap) {
-        self.tap();
-    }
-}
-
-- (void)editAction:(UIButton *)sender {
-    if  (self.editSelf) {
-        self.editSelf();
-    }
 }
 
 @end

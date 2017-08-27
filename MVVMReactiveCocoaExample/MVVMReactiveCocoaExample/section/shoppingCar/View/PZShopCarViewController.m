@@ -28,8 +28,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.title = @"购物车";
+    [self setupNav];
     [self configureRefreshView];
     [self bindViewModel];
 }
@@ -42,6 +41,34 @@
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     self.fd_interactivePopDisabled = NO;
+}
+
+- (void)setupNav {
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.title = @"购物车";
+    UIButton *rightButton = ({
+        UIButton *tmpBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
+        [tmpBtn setTitle:@"编辑" forState:UIControlStateNormal];
+        [tmpBtn setTitle:@"完成" forState:UIControlStateSelected];
+        [tmpBtn setTitleColor:DefaultTextLabelColor forState:UIControlStateNormal];
+        tmpBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+        tmpBtn.backgroundColor = [UIColor clearColor ];
+        tmpBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        tmpBtn;
+    });
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    @weakify(self);
+    RAC(rightButton,selected) = RACObserve(self, viewModel.edited);
+    RAC(rightButton,rac_command) = RACObserve(self, viewModel.editCommand);
+    [[self.viewModel.editCommand.executing not] subscribeNext:^(id x) {
+        if ([x boolValue]) {
+            @strongify(self);
+            [self reloadData];
+        }
+    }];
+    [[rightButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(UIButton * sender) {
+        sender.selected = !sender.selected;
+    }];
 }
 
 - (void)configureRefreshView {
@@ -117,19 +144,44 @@
         case PZShopCarSectionInfoTypeValidType: {
             
             PZShopCarValidCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZShopCarValidCell" forIndexPath:indexPath];
-            cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+            cell.viewModel = nil;
+            PZShopCarValidCellModel *model = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+            cell.viewModel = model;
 
             @weakify(self);
-            [[cell.viewModel.markCommand.executionSignals
+//            [[cell.viewModel.markCommand.executionSignals
+//              flattenMap:^RACStream *(id value) {
+//                  @strongify(self);
+//                  NSDictionary *input = @{@"type":@"indexPath",@"indexPath":indexPath};
+//                  return [self.viewModel.markCommand execute:input];
+//              }]
+//              subscribeNext:^(id x) {
+//                  @strongify(self);
+//                  [self reloadData];
+//              }];
+            [[cell.viewModel.deleteCommand.executionSignals
               flattenMap:^RACStream *(id value) {
                   @strongify(self);
-                  NSDictionary *input = @{@"type":@"indexPath",@"indexPath":indexPath};
-                  return [self.viewModel.markCommand execute:input];
+                  DLog(@"indexPath: %@",indexPath);
+                  return [self.viewModel.deleteCommand execute:indexPath];
               }]
               subscribeNext:^(id x) {
-                  @strongify(self);
-                  [self reloadData];
-              }];
+                 @strongify(self);
+                 [self reloadData];
+             }];
+//            cell.deleteSlef = ^() {
+//                @strongify(self);
+//                DLog(@"delete cell indexpath :%@",indexPath);
+//                [[self.viewModel.deleteCommand execute:indexPath] subscribeNext:^(id x) {
+//                    @strongify(self);
+//                    [self reloadData];
+//                }];
+//                [self.viewModel.deleteCommand.errors subscribeNext:^(id x) {
+//                    
+//                    DLog(@"errot %@",x);
+//                }];
+//            };
+            
             return cell;
         }
         case PZShopCarSectionInfoTypeInvalidType: {
@@ -172,6 +224,15 @@
                      @strongify(self);
                      [self reloadData];
                  }];
+                [[header.viewModel.editCommand.executionSignals
+                 flattenMap:^RACStream *(id value) {
+                     @strongify(self);
+                     return [self.viewModel.editCommand execute:@(indexPath.section)];
+                 }]
+                 subscribeNext:^(id x) {
+                    @strongify(self);
+                    [self reloadData];
+                }];
                 return header;
             } else {
                 PZShopCarValidFooterView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidFooterView" forIndexPath:indexPath];
@@ -292,4 +353,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     return _viewModel;
 }
 
+- (void)dealloc {
+    DLog(@"controller dealloc: %@",self);
+}
 @end

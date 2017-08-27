@@ -15,6 +15,7 @@
 
 @property (nonatomic, assign) NSInteger pageIndex;
 @property (nonatomic, assign, readwrite, getter=isMarked) BOOL marked;
+@property (nonatomic, assign, readwrite, getter=isEdited) BOOL edited;
 @property (nonatomic, assign, readwrite, getter=isMore) BOOL more;
 
 @property (nonatomic, strong, readwrite) NSArray * items;
@@ -27,6 +28,8 @@
 @property (nonatomic, strong, readwrite) RACCommand *fetchDataCommand;
 @property (nonatomic, strong, readwrite) RACCommand *fetchMoreDataCommand;
 @property (nonatomic, strong, readwrite) RACCommand *markCommand;
+@property (nonatomic, strong, readwrite) RACCommand *editCommand;
+@property (nonatomic, strong, readwrite) RACCommand *deleteCommand;
 
 @end
 
@@ -34,10 +37,12 @@
 
 - (void)initializeData {
     self.pageIndex = 0;
-//    self.price = 0.0;
-//    self.editedAll = NO;
+    
+    self.price = 0.0;
+    self.edited = NO;
     self.marked = NO;
     self.more = YES;
+    
     self.sectionTypeDictionary = [@{} mutableCopy];
     self.markedDicionary = @{};
     self.markedArray = @[];
@@ -91,49 +96,49 @@
             
         }
         // expired Info
-        if (model.expiredData.count != 0) {
-            self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeInvalidType);
-            NSMutableArray *expiredArray = [@[] mutableCopy];
-            for (PZShopCarProduct *expiredProduct in model.expiredData) {
-                PZShopCarInvalidCellModel *invalidModel = [[PZShopCarInvalidCellModel alloc] initWithModel:expiredProduct];
-                [expiredArray addObject:invalidModel];
-            }
-            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
-            infoModel.cellViewModels = [expiredArray copy];
-            [tmpArray addObject:infoModel];
-        }
-        // recommend list
-            for (PZShopCarRecommendData * recommendData in recommendModel.recommendlist) {
-                self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendClassType);
-                
-                NSMutableArray *recommendList = [@[] mutableCopy];
-                for (PZShopCarRecommendProduct *recommendProduct in recommendData.products) {
-                    PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:recommendProduct];
-                    [recommendList addObject:cellModel];
-                }
-                
-                PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithShopCarRecommendData:recommendData];
-                
-                PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
-                infoModel.cellViewModels = [recommendList copy];
-                infoModel.headerViewModel = headerModel;
-                [tmpArray addObject:infoModel];
-            }
-        // like list
-        if (recommendModel.likelist.count != 0) {
-            self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendProductType);
-            NSMutableArray *likeArray = [@[] mutableCopy];
-            for (PZShopCarRecommendProduct *product in recommendModel.likelist) {
-                PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:product];
-                [likeArray addObject:cellModel];
-            }
-            PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithTitle:@"猜你喜欢"];
-            
-            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
-            infoModel.cellViewModels = [likeArray copy];
-            infoModel.headerViewModel = headerModel;
-            [tmpArray addObject:infoModel];
-        }
+//        if (model.expiredData.count != 0) {
+//            self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeInvalidType);
+//            NSMutableArray *expiredArray = [@[] mutableCopy];
+//            for (PZShopCarProduct *expiredProduct in model.expiredData) {
+//                PZShopCarInvalidCellModel *invalidModel = [[PZShopCarInvalidCellModel alloc] initWithModel:expiredProduct];
+//                [expiredArray addObject:invalidModel];
+//            }
+//            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+//            infoModel.cellViewModels = [expiredArray copy];
+//            [tmpArray addObject:infoModel];
+//        }
+//        // recommend list
+//            for (PZShopCarRecommendData * recommendData in recommendModel.recommendlist) {
+//                self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendClassType);
+//                
+//                NSMutableArray *recommendList = [@[] mutableCopy];
+//                for (PZShopCarRecommendProduct *recommendProduct in recommendData.products) {
+//                    PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:recommendProduct];
+//                    [recommendList addObject:cellModel];
+//                }
+//                
+//                PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithShopCarRecommendData:recommendData];
+//                
+//                PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+//                infoModel.cellViewModels = [recommendList copy];
+//                infoModel.headerViewModel = headerModel;
+//                [tmpArray addObject:infoModel];
+//            }
+//        // like list
+//        if (recommendModel.likelist.count != 0) {
+//            self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendProductType);
+//            NSMutableArray *likeArray = [@[] mutableCopy];
+//            for (PZShopCarRecommendProduct *product in recommendModel.likelist) {
+//                PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:product];
+//                [likeArray addObject:cellModel];
+//            }
+//            PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithTitle:@"猜你喜欢"];
+//            
+//            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+//            infoModel.cellViewModels = [likeArray copy];
+//            infoModel.headerViewModel = headerModel;
+//            [tmpArray addObject:infoModel];
+//        }
         
         self.items = [tmpArray copy];
         
@@ -205,6 +210,79 @@
             [self updatePriceAndCountValue];
             [subscriber sendNext:@YES];
             [subscriber sendCompleted];
+            return nil;
+        }];
+    }];
+    
+    self.editCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
+            if ([input isKindOfClass:[UIButton class]]) {
+                self.edited = !self.isEdited;
+                PZShopCarEditStateType state =
+                !self.edited ?
+                PZShopCarEditStateTypeNormal :
+                PZShopCarEditStateTypeEditALl;
+                
+                [[[[[self.items rac_sequence]
+                    filter:^BOOL(PZShopCarCellInfosModel *value) {
+                        return value.headerViewModel.state != nil;
+                    }]
+                   map:^id(PZShopCarCellInfosModel * value) {
+                       value.headerViewModel.state.editedState = state;
+                       return value.cellViewModels;
+                   }]
+                  map:^id(NSArray * value) {
+                      return [[value.rac_sequence map:^id(PZShopCarValidCellModel * value) {
+                          value.state.editedState = state;
+                          return value;
+                      }] array];
+                  }] array];
+            } else {
+                // edit section
+                NSInteger section = ((NSNumber *)input).integerValue;
+                PZShopCarCellInfosModel *info = self.items[section];
+                PZShopCarEditStateType state =  info.headerViewModel.state.editedState;
+                if (state == PZShopCarEditStateTypeEditing) {
+                    // editing -> normal
+                    info.headerViewModel.state.editedState = PZShopCarEditStateTypeNormal;
+                    
+                } else {
+                    // normal -> editing
+                    info.headerViewModel.state.editedState = PZShopCarEditStateTypeEditing;
+                }
+                
+                [[info.cellViewModels.rac_sequence map:^id(PZShopCarValidCellModel* value) {
+                    value.state.editedState = info.headerViewModel.state.editedState;
+                    return value;
+                }] array];
+
+            }
+            [subscriber sendNext:@YES];
+            [subscriber sendCompleted];
+            
+            return nil;
+        }];
+    }];
+    
+    self.deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
+            NSIndexPath *indexPath = input;
+            NSMutableArray *tmpArray = [self.items mutableCopy];
+            PZShopCarCellInfosModel *info = tmpArray[indexPath.section];
+            if (info.cellViewModels.count == 1) {
+                [tmpArray removeObject:info];
+            } else {
+                NSMutableArray *tmpCellModels = [info.cellViewModels mutableCopy];
+                [tmpCellModels removeObject:tmpCellModels[indexPath.row]];
+                info.cellViewModels = [tmpCellModels copy];
+            }
+            self.items = [tmpArray copy];
+            
+            [subscriber sendNext:@YES];
+            [subscriber sendCompleted];
+            
             return nil;
         }];
     }];

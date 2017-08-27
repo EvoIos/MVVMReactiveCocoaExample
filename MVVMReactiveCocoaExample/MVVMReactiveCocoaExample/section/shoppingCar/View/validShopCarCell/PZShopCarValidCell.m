@@ -33,79 +33,81 @@
     [self setupUI];
     
     @weakify(self);
-    [RACObserve(self, viewModel)
-     subscribeNext:^(id x) {
-         @strongify(self);
-         [self.coverImgView sd_setImageWithURL:self.viewModel.imgUrl placeholderImage:nil];
-         self.defaultView.title = self.viewModel.title;
-         self.defaultView.subTitle = self.viewModel.subTitle;
-         self.defaultView.price = self.viewModel.price;
-         self.defaultView.count = self.viewModel.count;
-         self.editingView.subTitle = self.viewModel.subTitle;
-         self.editingView.currentCount = self.viewModel.count;
-         self.editingView.max = self.viewModel.max;
-         self.markButton.selected = self.viewModel.state.isMarked;
-         self.markButton.rac_command = self.viewModel.markCommand;
-         
-         switch (self.viewModel.state.editedState) {
-             case PZShopCarEditStateTypeNormal: {
-                 self.defaultView.hidden = NO;
-                 self.editingView.hidden = YES;
-                 self.canSwiped = YES;
-             }
-                 break;
-             case PZShopCarEditStateTypeEditing: {
-                 self.defaultView.hidden = YES;
-                 self.editingView.hidden = NO;
-                 self.editingView.isShowEditButton = YES;
-                 self.canSwiped = NO;
-             }
-                 break;
-             case PZShopCarEditStateTypeEditALl: {
-                 self.defaultView.hidden = YES;
-                 self.editingView.hidden = NO;
-                 self.editingView.isShowEditButton = NO;
-                 self.canSwiped = NO;
-             }
-                 break;
-         }
-     }];
+//    [RACObserve(self, viewModel)
+//     subscribeNext:^(id x) {
+//         @strongify(self);
+//    }];
     
-    self.editingView.deleteAction = ^{
-        @strongify(self);
-        if (self.deleteOneProduct) {
-            self.deleteOneProduct();
-        }
-    };
-    
+//    self.editingView.deleteAction = ^{
+//        @strongify(self);
+//         [self.viewModel.deleteCommand execute:self];
+////        if  (self.deleteSlef) { self.deleteSlef(); }
+//    };
+//    
     self.zlc_delete = ^{
         @strongify(self);
-        if (self.deleteOneProduct) {
-            self.deleteOneProduct();
-        }
+        [self.viewModel.deleteCommand execute:self];
+//        if  (self.deleteSlef) { self.deleteSlef(); }
     };
-    self.editingView.tapDownArrowButton = ^{
-        @strongify(self);
-        if (self.tapDownArrowButton) {
-            self.tapDownArrowButton();
-        }
-    };
-    self.editingView.changeShoppingCount = ^(PZCalculationStyle style, NSInteger currentValue) {
-        @strongify(self);
-        if (self.changeShoppingCount) {
-            self.changeShoppingCount(style, currentValue);
-        }
-    };
-    self.editingView.didBeginEditing = ^(UITextField *textField) {
-        @strongify(self);
-        if (self.didBeginEditing) {
-            self.didBeginEditing(textField,self);
-        }
-    };
+//    self.editingView.tapDownArrowButton = ^{
+//        @strongify(self);
+//        if (self.tapDownArrowButton) {
+//            self.tapDownArrowButton();
+//        }
+//    };
+//    self.editingView.changeShoppingCount = ^(PZCalculationStyle style, NSInteger currentValue) {
+//        @strongify(self);
+//        if (self.changeShoppingCount) {
+//            self.changeShoppingCount(style, currentValue);
+//        }
+//    };
+//    self.editingView.didBeginEditing = ^(UITextField *textField) {
+//        @strongify(self);
+//        if (self.didBeginEditing) {
+//            self.didBeginEditing(textField,self);
+//        }
+//    };
     
     return self;
 }
 
+- (void)setViewModel:(PZShopCarValidCellModel *)viewModel {
+    _viewModel = viewModel;
+    [self.coverImgView sd_setImageWithURL:self.viewModel.imgUrl placeholderImage:nil];
+    self.defaultView.title = self.viewModel.title;
+    self.defaultView.subTitle = self.viewModel.subTitle;
+    self.defaultView.price = self.viewModel.price;
+    self.defaultView.count = self.viewModel.count;
+    self.editingView.subTitle = self.viewModel.subTitle;
+    self.editingView.currentCount = self.viewModel.count;
+    self.editingView.max = self.viewModel.max;
+    self.markButton.selected = self.viewModel.state.isMarked;
+    self.markButton.rac_command = self.viewModel.markCommand;
+    
+    switch (self.viewModel.state.editedState) {
+        case PZShopCarEditStateTypeNormal: {
+            self.defaultView.hidden = NO;
+            self.editingView.hidden = YES;
+            self.canSwiped = YES;
+        }
+            break;
+        case PZShopCarEditStateTypeEditing: {
+            self.defaultView.hidden = YES;
+            self.editingView.hidden = NO;
+            self.editingView.isShowEditButton = YES;
+            self.canSwiped = NO;
+        }
+            break;
+        case PZShopCarEditStateTypeEditALl: {
+            self.defaultView.hidden = YES;
+            self.editingView.hidden = NO;
+            self.editingView.isShowEditButton = NO;
+            self.canSwiped = NO;
+        }
+            break;
+    }
+
+}
 - (void)setupUI {
     self.backgroundColor = [UIColor whiteColor];
     
@@ -174,6 +176,10 @@
 
 - (void)endEditing {
     [self.editingView endEditing];
+}
+
+- (void)dealloc {
+    DLog(@"cell dealloc: %@",self);
 }
 
 @end

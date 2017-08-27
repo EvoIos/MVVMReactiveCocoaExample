@@ -27,6 +27,14 @@
  *  input: 选中全部 UIButton，其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
  */
 @property (nonatomic, strong, readonly) RACCommand *markCommand;
+/** @brief 选中单个商品，section商品，全部商品
+ *  input: 选中全部 UIButton，其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
+ */
+@property (nonatomic, strong, readonly) RACCommand *editCommand;
+/** @brief 选中单个商品，section商品，全部商品
+ *  input: 选中全部 UIButton，其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
+ */
+@property (nonatomic, strong, readonly) RACCommand *deleteCommand;
 
 // MARK: - layout
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section;

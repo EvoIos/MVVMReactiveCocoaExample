@@ -118,6 +118,19 @@
                               }];
 }
 
+- (void)shopCarDeleteWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/deleteProperty"]
+                            withParams:param
+                        withMethodType:Post
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZBaseResponseModel *model = [PZBaseResponseModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
 
 @end
 //NS_ASSUME_NONNULL_END
