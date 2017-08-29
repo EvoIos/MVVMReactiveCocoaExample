@@ -18,7 +18,9 @@
 
 @property (nonatomic, strong) RACSubject *deleteSignal;
 @property (nonatomic, strong) RACSubject *markSignal;
-
+/// return @{@"type":@(style),@"currentValue":@(currentValue)}
+@property (nonatomic, strong) RACSubject *changeCountSignal;
+@property (nonatomic, strong) RACSubject *changePropertySignal;
 
 /// 选择规格
 @property (nonatomic,copy) void(^tapDownArrowButton)(void);

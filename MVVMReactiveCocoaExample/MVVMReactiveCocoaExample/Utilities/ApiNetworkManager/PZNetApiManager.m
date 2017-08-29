@@ -132,5 +132,33 @@
                               }];
 }
 
+- (void)shopCarChangeCountWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/updateCount"]
+                            withParams:param
+                        withMethodType:Post
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZBaseResponseModel *model = [PZBaseResponseModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
+
+- (void)shopCarPropertyListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopFormatModel * __nullable  model,  NSError * __nullable error))block {
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/propertyList"]
+                            withParams:param
+                        withMethodType:Get
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZShopFormatModel *model = [PZShopFormatModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
+
 @end
 //NS_ASSUME_NONNULL_END

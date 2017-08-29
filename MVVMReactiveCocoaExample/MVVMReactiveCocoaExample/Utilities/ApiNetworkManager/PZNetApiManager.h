@@ -12,6 +12,7 @@
 #import "PZShopCarModel.h"
 #import "PZExistModel.h"
 #import "PZShopCarRecommendModel.h"
+#import "PZShopFormatModel.h"
 
 #define ApiManager [PZNetApiManager sharedManager]
 
@@ -33,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)shopCarDeleteWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
 
+- (void)shopCarChangeCountWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
+
+- (void)shopCarPropertyListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopFormatModel * __nullable  model,  NSError * __nullable error))block;
 
 @end
 NS_ASSUME_NONNULL_END

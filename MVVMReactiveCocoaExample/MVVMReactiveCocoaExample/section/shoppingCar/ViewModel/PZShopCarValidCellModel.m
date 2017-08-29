@@ -68,4 +68,12 @@
     return self.product.propertyId;
 }
 
+- (void)changeCount:(NSInteger)count {
+    self.product.count = count;
+}
+
+- (void)replaceProductWithModel:(PZShopCarProduct *)product {
+    self.product = product;
+}
+
 @end

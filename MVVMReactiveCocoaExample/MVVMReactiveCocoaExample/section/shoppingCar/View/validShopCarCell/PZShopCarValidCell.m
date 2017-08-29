@@ -89,18 +89,19 @@
          }
      }];
     
-//    self.editingView.tapDownArrowButton = ^{
-//        @strongify(self);
-//        if (self.tapDownArrowButton) {
-//            self.tapDownArrowButton();
-//        }
-//    };
-//    self.editingView.changeShoppingCount = ^(PZCalculationStyle style, NSInteger currentValue) {
-//        @strongify(self);
-//        if (self.changeShoppingCount) {
-//            self.changeShoppingCount(style, currentValue);
-//        }
-//    };
+    self.editingView.changeShoppingCount = ^(PZCalculationStyle style, NSInteger currentValue) {
+        @strongify(self);
+        if (self.changeCountSignal) {
+            [self.changeCountSignal sendNext:@{@"type":@(style),@"currentValue":@(currentValue)}];
+        }
+    };
+    self.editingView.tapDownArrowButton = ^{
+        @strongify(self);
+        if (self.changePropertySignal) {
+            [self.changePropertySignal sendNext:nil];
+        }
+    };
+
 //    self.editingView.didBeginEditing = ^(UITextField *textField) {
 //        @strongify(self);
 //        if (self.didBeginEditing) {

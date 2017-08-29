@@ -35,6 +35,10 @@
  *  input: 选中全部 UIButton，其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
  */
 @property (nonatomic, strong, readonly) RACCommand *deleteCommand;
+/**
+ *  input: NSIndexPath *indexPath
+ */
+@property (nonatomic, strong, readonly) RACCommand *changeCountCommand;
 
 // MARK: - layout
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section;

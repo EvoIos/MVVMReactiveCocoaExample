@@ -22,7 +22,13 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self setupUI];
-        [self bindViewModel];
+        @weakify(self);
+        [RACObserve(self, viewModel) subscribeNext:^(id x) {
+            @strongify(self);
+            [self.coverImgView sd_setImageWithURL:self.viewModel.imgUrl placeholderImage:nil];
+            self.titleLabel.text = self.viewModel.title;
+            [self setMoneyStyleWithMoney:self.viewModel.price];
+        }];
     }
     return self;
 }
@@ -97,16 +103,6 @@
         make.height.mas_equalTo(28);
     }];
     self.lookupButton.hidden = YES;
-}
-
-- (void)bindViewModel {
-    @weakify(self);
-    [RACObserve(self, viewModel) subscribeNext:^(id x) {
-        @strongify(self);
-        [self.coverImgView sd_setImageWithURL:self.viewModel.imgUrl placeholderImage:nil];
-        self.titleLabel.text = self.viewModel.title;
-        [self setMoneyStyleWithMoney:self.viewModel.price];
-    }];
 }
 
 - (void)setMoneyStyleWithMoney:(CGFloat)money {

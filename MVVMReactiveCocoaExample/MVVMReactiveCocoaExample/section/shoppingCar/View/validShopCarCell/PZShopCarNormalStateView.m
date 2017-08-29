@@ -8,6 +8,7 @@
 
 #import "PZShopCarNormalStateView.h"
 #import "PZShopCarHeader.h"
+#import "NSString+MoneyStyle.h"
 
 @interface PZShopCarNormalStateView()
 @property (nonatomic,strong) UILabel *titleLabel;
@@ -74,7 +75,7 @@
     self.countLabel = ({
         UILabel *tmpLabel = [[UILabel alloc] init];
         tmpLabel.textColor =  PZShopCarGrayColor;
-        tmpLabel.font = [UIFont systemFontOfSize:11];
+        tmpLabel.font = [UIFont systemFontOfSize:15];
         tmpLabel.numberOfLines = 1;
         tmpLabel.textAlignment = NSTextAlignmentRight;
         tmpLabel;
@@ -105,12 +106,15 @@
 }
 - (void)setPrice:(CGFloat)price {
     _price = price;
-    self.priceLabel.text = [NSString stringWithFormat:@"￥%.2f",price];
+    [self setMoneyStyleWithMoney:price];
 }
 - (void)setCount:(NSInteger)count {
     _count = count;
     self.countLabel.text = [NSString stringWithFormat:@"x%ld",count];
 }
 
+- (void)setMoneyStyleWithMoney:(CGFloat)money {
+    self.priceLabel.attributedText = [NSString differentFontWithMoney:money moneyFont:[UIFont systemFontOfSize:13] integerFont:[UIFont systemFontOfSize:15] decimalPointFont:[UIFont systemFontOfSize:11]];
+}
 
 @end

@@ -18,7 +18,18 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self setupUI];
-        [self bindViewModel];
+        @weakify(self);
+        [RACObserve(self, viewModel) subscribeNext:^(id x) {
+            @strongify(self);
+            self.titleLabel.text = self.viewModel.title;
+            if  (self.viewModel.localImgName.length == 0) {
+                self.thumbImgVIew.contentMode = UIViewContentModeScaleAspectFill;
+                [self.thumbImgVIew sd_setImageWithURL:self.viewModel.logoUrl placeholderImage:nil];
+            } else {
+                self.thumbImgVIew.contentMode = UIViewContentModeCenter;
+                self.thumbImgVIew.image = [UIImage imageNamed:self.viewModel.localImgName];
+            }
+        }];
     }
     return self;
 }
@@ -66,20 +77,5 @@
     }];
 }
 
-- (void)bindViewModel {
-    @weakify(self);
-    [RACObserve(self, viewModel) subscribeNext:^(id x) {
-        self.titleLabel.text = self.viewModel.title;
-        @strongify(self);
-        if  (self.viewModel.localImgName.length == 0) {
-            self.thumbImgVIew.contentMode = UIViewContentModeScaleAspectFill;
-            [self.thumbImgVIew sd_setImageWithURL:self.viewModel.logoUrl placeholderImage:nil];
-            
-        } else {
-            self.thumbImgVIew.contentMode = UIViewContentModeCenter;
-            self.thumbImgVIew.image = [UIImage imageNamed:self.viewModel.localImgName];
-        }
-    }];
-}
 
 @end

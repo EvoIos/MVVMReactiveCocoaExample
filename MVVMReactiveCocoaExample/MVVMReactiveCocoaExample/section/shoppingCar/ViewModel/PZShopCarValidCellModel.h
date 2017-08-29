@@ -21,8 +21,11 @@
 @property (nonatomic, assign) CGFloat price;
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, assign) NSInteger max;
-
 @property (nonatomic, strong, readwrite) PZShopCarCellStateModel *state;
+
+/// 替换product模型
+- (void)replaceProductWithModel:(PZShopCarProduct *)product;
+- (void)changeCount:(NSInteger)count;
 
 - (instancetype)initWithProduct:(PZShopCarProduct *)product;
 

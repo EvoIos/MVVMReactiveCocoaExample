@@ -18,6 +18,7 @@
 #import "PZShopCarRecommendHeaderView.h"
 #import "PZShopCarValidFooterView.h"
 #import "PZShopCarHeader.h"
+#import "PZShopFormatController.h"
 
 @interface PZShopCarViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic, strong) PZShopCarViewModel *viewModel;
@@ -177,7 +178,30 @@
                  @strongify(self);
                  [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
              }];
- 
+            
+            cell.changeCountSignal = [RACSubject subject];
+            [[cell.changeCountSignal
+             flattenMap:^RACStream *(NSDictionary * value) {
+                 @strongify(self);
+                 [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                 NSDictionary *dic = @{@"indexPath":indexPath,@"count":value[@"currentValue"]};
+                 return [self.viewModel.changeCountCommand execute:dic];
+             }]
+             subscribeNext:^(id x) {
+                 @strongify(self);
+                 [MBProgressHUD hideHUDForView:self.view animated:YES];
+             } error:^(NSError *error) {
+                 @strongify(self);
+                 [MBProgressHUD hideHUDForView:self.view animated:YES];
+                 [MBProgressHUD showError:@"修改失败了！" toView:self.view];
+             }];
+            
+            cell.changePropertySignal = [RACSubject subject];
+            [cell.changePropertySignal subscribeNext:^(id x) {
+                @strongify(self);
+                [self updatePropertyForIndexPath:indexPath];
+            }];
+            
             return cell;
         }
         case PZShopCarSectionInfoTypeInvalidType: {
@@ -298,11 +322,30 @@ referenceSizeForFooterInSection:(NSInteger)section {
     return [self.viewModel referenceSizeForFooterInSection:section];
 }
 
-#pragma mark - reloadData
+#pragma mark - event
 
 - (void)reloadData {
     [self.collectionView reloadData];
     [self.settlementView reloadData];
+}
+
+- (void)updatePropertyForIndexPath:(NSIndexPath *)indexPath {
+    PZShopFormatController *formatVC = [PZShopFormatController new];
+    formatVC.transitioningDelegate = formatVC;
+    formatVC.modalPresentationStyle = UIModalPresentationCustom;
+    PZShopCarValidCellModel *cellModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+    formatVC.productId = cellModel.productId;
+    @weakify(self);
+    @weakify(cellModel);
+    formatVC.callBack = ^(PZShopFormatData *data) {
+        @strongify(self);
+        @strongify(cellModel);
+        NSDictionary *dic = [data mj_keyValues];
+        PZShopCarProduct *product = [PZShopCarProduct mj_objectWithKeyValues:dic];
+        [cellModel replaceProductWithModel:product];
+        [self reloadData];
+    };
+    [self presentViewController:formatVC animated:YES completion:nil];
 }
 
 #pragma mark - setter and getter
