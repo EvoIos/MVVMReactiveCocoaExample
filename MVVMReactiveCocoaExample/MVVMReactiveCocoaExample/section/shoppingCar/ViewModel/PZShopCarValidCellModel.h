@@ -12,6 +12,7 @@
 
 @interface PZShopCarValidCellModel : NSObject
 
+@property (nonatomic, assign) NSInteger propertyId;
 @property (nonatomic, assign) NSInteger productId;
 @property (nonatomic, assign) NSInteger shopId;
 @property (nonatomic, strong) NSURL *imgUrl;
@@ -22,9 +23,6 @@
 @property (nonatomic, assign) NSInteger max;
 
 @property (nonatomic, strong, readwrite) PZShopCarCellStateModel *state;
-
-@property (nonatomic, strong, readonly) RACCommand *markCommand;
-@property (nonatomic, strong, readonly) RACCommand *deleteCommand;
 
 - (instancetype)initWithProduct:(PZShopCarProduct *)product;
 

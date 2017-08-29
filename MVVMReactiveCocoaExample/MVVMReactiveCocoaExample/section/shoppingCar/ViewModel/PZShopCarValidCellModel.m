@@ -64,38 +64,8 @@
     return self.product.count;
 }
 
-- (RACCommand *)deleteCommand {
-    if (!_deleteCommand) {
-        @weakify(self);
-        _deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-                @strongify(self);
-                [ApiManager shopCarDeleteWithParams:@{@"propertyIds":@[@(self.productId)]} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
-                    if (error) {
-                        [subscriber sendError:error];
-                    } else {
-                        if (model.code == 0) {
-                            [subscriber sendNext:input];
-                            [subscriber sendCompleted];
-                        } else {
-                            [subscriber sendError:model.error];
-                        }
-                    }
-                }];
-                return nil;
-            }];
-        }];
-    }
-    return _deleteCommand;
-}
-
-- (RACCommand *)markCommand {
-    if (!_markCommand) {
-        _markCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
-            return [RACSignal empty];
-        }];
-    }
-    return _markCommand;
+- (NSInteger)propertyId {
+    return self.product.propertyId;
 }
 
 @end

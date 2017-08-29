@@ -33,11 +33,10 @@
         self.subTitleLabel.text = self.viewModel.subTitle;
     }];
     
-    
     self.zlc_delete = ^{
         @strongify(self);
-        if (self.deleteOneProduct) {
-            self.deleteOneProduct();
+        if (self.deleteSignal) {
+            [self.deleteSignal sendNext:nil];
         }
     };
     

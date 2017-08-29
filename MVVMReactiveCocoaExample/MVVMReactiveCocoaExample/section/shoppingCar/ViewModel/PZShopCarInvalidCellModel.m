@@ -43,30 +43,8 @@
     return self.product.productId;
 }
 
-
-- (RACCommand *)deleteCommand {
-    if (!_deleteCommand) {
-        _deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [self deleteProduct];
-        }];
-    }
-    return _deleteCommand;
-}
-
-/// 删除商品
-- (RACSignal *)deleteProduct {
-    return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
-//        [ShoppingCarApi delShopCartWithParams:@{ @"shop_ids":@(self.shopId) } resultBlock:^(ShoppingCarBaseModel *result, NSError *error) {
-//            if (result.success == YES) {
-//                [subscriber sendNext:@YES];
-//                [subscriber sendCompleted];
-//            } else {
-//                NSError *error = [[NSError alloc] initWithDomain:@"cc.txooo.com" code:-1 userInfo:@{@"msg":@"deleteOneProductError"}];
-//                [subscriber sendError:error];
-//            }
-//        }];
-        return nil;
-    }];
+- (NSInteger)propertyId {
+    return self.product.propertyId;
 }
 
 @end

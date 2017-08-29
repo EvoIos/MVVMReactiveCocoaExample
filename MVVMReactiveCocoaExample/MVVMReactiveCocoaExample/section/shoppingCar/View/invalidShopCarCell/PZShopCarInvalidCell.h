@@ -12,6 +12,8 @@
 @interface PZShopCarInvalidCell : ZLCSwipeCollectionViewCell
 @property (nonatomic,strong) PZShopCarInvalidCellModel *viewModel;
 
+@property (nonatomic, strong) RACSubject *deleteSignal;
+
 @property (nonatomic, copy) void(^deleteOneProduct)(void);
 @property (nonatomic, copy) void(^findSimilarProduct)(void);
 @end

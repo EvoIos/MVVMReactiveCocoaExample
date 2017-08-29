@@ -16,7 +16,9 @@
 
 @property (nonatomic, strong) PZShopCarValidCellModel * viewModel;
 
-@property (nonatomic,copy) void(^deleteSlef)(void);
+@property (nonatomic, strong) RACSubject *deleteSignal;
+@property (nonatomic, strong) RACSubject *markSignal;
+
 
 /// 选择规格
 @property (nonatomic,copy) void(^tapDownArrowButton)(void);

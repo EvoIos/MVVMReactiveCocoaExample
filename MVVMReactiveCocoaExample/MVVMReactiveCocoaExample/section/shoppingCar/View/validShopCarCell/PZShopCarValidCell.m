@@ -16,7 +16,6 @@
 @property (nonatomic,strong) UIImageView *coverImgView;
 @property (nonatomic,strong) PZShopCarNormalStateView *defaultView;
 @property (nonatomic,strong) PZShopCarEditedStateView *editingView;
-@property (nonatomic,strong) UIButton *deleteButton;
 
 @end
 
@@ -33,22 +32,63 @@
     [self setupUI];
     
     @weakify(self);
-//    [RACObserve(self, viewModel)
-//     subscribeNext:^(id x) {
-//         @strongify(self);
-//    }];
+    [RACObserve(self, viewModel) subscribeNext:^(id x) {
+        @strongify(self);
+        [self.coverImgView sd_setImageWithURL:self.viewModel.imgUrl placeholderImage:nil];
+        self.defaultView.title = self.viewModel.title;
+        self.defaultView.subTitle = self.viewModel.subTitle;
+        self.defaultView.price = self.viewModel.price;
+        self.defaultView.count = self.viewModel.count;
+        self.editingView.subTitle = self.viewModel.subTitle;
+        self.editingView.currentCount = self.viewModel.count;
+        self.editingView.max = self.viewModel.max;
+        self.markButton.selected = self.viewModel.state.isMarked;
+        
+        switch (self.viewModel.state.editedState) {
+            case PZShopCarEditStateTypeNormal: {
+                self.defaultView.hidden = NO;
+                self.editingView.hidden = YES;
+                self.canSwiped = YES;
+            }
+                break;
+            case PZShopCarEditStateTypeEditing: {
+                self.defaultView.hidden = YES;
+                self.editingView.hidden = NO;
+                self.editingView.isShowEditButton = YES;
+                self.canSwiped = NO;
+            }
+                break;
+            case PZShopCarEditStateTypeEditALl: {
+                self.defaultView.hidden = YES;
+                self.editingView.hidden = NO;
+                self.editingView.isShowEditButton = NO;
+                self.canSwiped = NO;
+            }
+                break;
+        }
+    }];
     
-//    self.editingView.deleteAction = ^{
-//        @strongify(self);
-//         [self.viewModel.deleteCommand execute:self];
-////        if  (self.deleteSlef) { self.deleteSlef(); }
-//    };
-//    
     self.zlc_delete = ^{
         @strongify(self);
-        [self.viewModel.deleteCommand execute:self];
-//        if  (self.deleteSlef) { self.deleteSlef(); }
+        if (self.deleteSignal) {
+            [self.deleteSignal sendNext:nil];
+        }
     };
+    self.editingView.deleteAction = ^{
+        @strongify(self);
+        if (self.deleteSignal) {
+            [self.deleteSignal sendNext:nil];
+        }
+    };
+    
+    [[self.markButton rac_signalForControlEvents:UIControlEventTouchUpInside]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         if (self.markSignal) {
+             [self.markSignal sendNext:nil];
+         }
+     }];
+    
 //    self.editingView.tapDownArrowButton = ^{
 //        @strongify(self);
 //        if (self.tapDownArrowButton) {
@@ -73,40 +113,7 @@
 
 - (void)setViewModel:(PZShopCarValidCellModel *)viewModel {
     _viewModel = viewModel;
-    [self.coverImgView sd_setImageWithURL:self.viewModel.imgUrl placeholderImage:nil];
-    self.defaultView.title = self.viewModel.title;
-    self.defaultView.subTitle = self.viewModel.subTitle;
-    self.defaultView.price = self.viewModel.price;
-    self.defaultView.count = self.viewModel.count;
-    self.editingView.subTitle = self.viewModel.subTitle;
-    self.editingView.currentCount = self.viewModel.count;
-    self.editingView.max = self.viewModel.max;
-    self.markButton.selected = self.viewModel.state.isMarked;
-    self.markButton.rac_command = self.viewModel.markCommand;
     
-    switch (self.viewModel.state.editedState) {
-        case PZShopCarEditStateTypeNormal: {
-            self.defaultView.hidden = NO;
-            self.editingView.hidden = YES;
-            self.canSwiped = YES;
-        }
-            break;
-        case PZShopCarEditStateTypeEditing: {
-            self.defaultView.hidden = YES;
-            self.editingView.hidden = NO;
-            self.editingView.isShowEditButton = YES;
-            self.canSwiped = NO;
-        }
-            break;
-        case PZShopCarEditStateTypeEditALl: {
-            self.defaultView.hidden = YES;
-            self.editingView.hidden = NO;
-            self.editingView.isShowEditButton = NO;
-            self.canSwiped = NO;
-        }
-            break;
-    }
-
 }
 - (void)setupUI {
     self.backgroundColor = [UIColor whiteColor];

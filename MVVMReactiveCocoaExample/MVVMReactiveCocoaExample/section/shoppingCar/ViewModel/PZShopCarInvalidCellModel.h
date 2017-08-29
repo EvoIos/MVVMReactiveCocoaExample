@@ -16,7 +16,8 @@
 @property (nonatomic, assign) NSInteger shopId;
 @property (nonatomic, assign) NSInteger productId;
 @property (nonatomic, assign) NSInteger productType;
-@property (nonatomic, strong, readonly) RACCommand *deleteCommand;
+@property (nonatomic, assign) NSInteger propertyId;
 
 - (instancetype)initWithModel:(PZShopCarProduct *)product;
+
 @end

@@ -17,6 +17,7 @@
 #import "PZShopCarRecommendCell.h"
 #import "PZShopCarRecommendHeaderView.h"
 #import "PZShopCarValidFooterView.h"
+#import "PZShopCarHeader.h"
 
 @interface PZShopCarViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic, strong) PZShopCarViewModel *viewModel;
@@ -44,7 +45,7 @@
 }
 
 - (void)setupNav {
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = PZShopCarLightGrayColor;
     self.title = @"购物车";
     UIButton *rightButton = ({
         UIButton *tmpBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
@@ -147,46 +148,57 @@
             cell.viewModel = nil;
             PZShopCarValidCellModel *model = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
             cell.viewModel = model;
-
-            @weakify(self);
-//            [[cell.viewModel.markCommand.executionSignals
-//              flattenMap:^RACStream *(id value) {
-//                  @strongify(self);
-//                  NSDictionary *input = @{@"type":@"indexPath",@"indexPath":indexPath};
-//                  return [self.viewModel.markCommand execute:input];
-//              }]
-//              subscribeNext:^(id x) {
-//                  @strongify(self);
-//                  [self reloadData];
-//              }];
-            [[cell.viewModel.deleteCommand.executionSignals
-              flattenMap:^RACStream *(id value) {
-                  @strongify(self);
-                  DLog(@"indexPath: %@",indexPath);
-                  return [self.viewModel.deleteCommand execute:indexPath];
-              }]
-              subscribeNext:^(id x) {
-                 @strongify(self);
-                 [self reloadData];
-             }];
-//            cell.deleteSlef = ^() {
-//                @strongify(self);
-//                DLog(@"delete cell indexpath :%@",indexPath);
-//                [[self.viewModel.deleteCommand execute:indexPath] subscribeNext:^(id x) {
-//                    @strongify(self);
-//                    [self reloadData];
-//                }];
-//                [self.viewModel.deleteCommand.errors subscribeNext:^(id x) {
-//                    
-//                    DLog(@"errot %@",x);
-//                }];
-//            };
             
+            @weakify(self);
+            cell.markSignal = [RACSubject subject];
+            [[cell.markSignal
+             flattenMap:^RACStream *(id value) {
+                @strongify(self);
+                NSDictionary *input = @{@"type":@"indexPath",@"indexPath":indexPath};
+                return [self.viewModel.markCommand execute:input];
+             }]
+             subscribeNext:^(id x) {
+                @strongify(self);
+                [self reloadData];
+             }];
+            
+            cell.deleteSignal = [RACSubject subject];
+            [[[cell.deleteSignal
+             flattenMap:^RACStream *(id value) {
+                 @strongify(self);
+                 DLog(@"indexPath: %@",indexPath);
+                 return [self.viewModel.deleteCommand execute:indexPath];
+             }]
+             flattenMap:^RACStream *(id value) {
+                 @strongify(self);
+                 return [self.viewModel.fetchDataCommand execute:nil];
+             }]
+             subscribeNext:^(id x) {
+                 @strongify(self);
+                 [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
+             }];
+ 
             return cell;
         }
         case PZShopCarSectionInfoTypeInvalidType: {
             PZShopCarInvalidCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZShopCarInvalidCell" forIndexPath:indexPath];
             cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
+            cell.deleteSignal = [RACSubject subject];
+            @weakify(self);
+            [[[cell.deleteSignal
+               flattenMap:^RACStream *(id value) {
+                   @strongify(self);
+                   DLog(@"indexPath: %@",indexPath);
+                   return [self.viewModel.deleteCommand execute:indexPath];
+               }]
+               flattenMap:^RACStream *(id value) {
+                   @strongify(self);
+                   return [self.viewModel.fetchDataCommand execute:nil];
+               }]
+               subscribeNext:^(id x) {
+                   @strongify(self);
+                   [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
+               }];
             return cell;
         }
         case PZShopCarSectionInfoTypeRecommendClassType: {
