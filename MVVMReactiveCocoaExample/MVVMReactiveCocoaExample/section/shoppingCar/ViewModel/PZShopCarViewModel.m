@@ -17,7 +17,7 @@
 @property (nonatomic, assign, readwrite, getter=isMarked) BOOL marked;
 @property (nonatomic, assign, readwrite, getter=isEdited) BOOL edited;
 @property (nonatomic, assign, readwrite, getter=isMore) BOOL more;
-
+@property (nonatomic, assign, readwrite, getter=isHasValidData) BOOL hasValidData;
 @property (nonatomic, strong, readwrite) NSArray * items;
 @property (nonatomic, strong) NSMutableDictionary <NSNumber *, NSNumber *> *sectionTypeDictionary;
 @property (nonatomic, strong) NSDictionary <NSIndexPath *, NSArray<PZShopCarValidCellModel *> *> *markedDicionary;
@@ -45,6 +45,7 @@
     self.edited = NO;
     self.marked = NO;
     self.more = YES;
+    self.hasValidData = NO;
     
     self.sectionTypeDictionary = [@{} mutableCopy];
     self.markedDicionary = @{};
@@ -96,7 +97,14 @@
             infoModel.headerViewModel =headerModel;
             [tmpArray addObject:infoModel];
             self.markedArray = [tmpArray copy];
-            
+        }
+        self.hasValidData = (model.data.count > 0);
+        // none data tips
+        if (!self.hasValidData) {
+            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+            infoModel.cellViewModels = @[@"noData"];
+            [tmpArray addObject:infoModel];
+            self.sectionTypeDictionary[@(0)] = @(PZShopCarSectionInfoTypeNoneType);
         }
         // expired Info
         if (model.expiredData.count != 0) {
@@ -111,22 +119,22 @@
             [tmpArray addObject:infoModel];
         }
         // recommend list
-            for (PZShopCarRecommendData * recommendData in recommendModel.recommendlist) {
-                self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendClassType);
+        for (PZShopCarRecommendData * recommendData in recommendModel.recommendlist) {
+            self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendClassType);
                 
-                NSMutableArray *recommendList = [@[] mutableCopy];
-                for (PZShopCarRecommendProduct *recommendProduct in recommendData.products) {
-                    PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:recommendProduct];
-                    [recommendList addObject:cellModel];
-                }
-                
-                PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithShopCarRecommendData:recommendData];
-                
-                PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
-                infoModel.cellViewModels = [recommendList copy];
-                infoModel.headerViewModel = headerModel;
-                [tmpArray addObject:infoModel];
+            NSMutableArray *recommendList = [@[] mutableCopy];
+            for (PZShopCarRecommendProduct *recommendProduct in recommendData.products) {
+                PZShopCarRecommendCellModel *cellModel = [[PZShopCarRecommendCellModel alloc] initWithProduct:recommendProduct];
+                [recommendList addObject:cellModel];
             }
+                
+            PZShopCarHeaderViewModel *headerModel = [[PZShopCarHeaderViewModel alloc] initWithShopCarRecommendData:recommendData];
+                
+            PZShopCarCellInfosModel *infoModel = [PZShopCarCellInfosModel new];
+            infoModel.cellViewModels = [recommendList copy];
+            infoModel.headerViewModel = headerModel;
+            [tmpArray addObject:infoModel];
+        }
         // like list
         if (recommendModel.likelist.count != 0) {
             self.sectionTypeDictionary[@(self.sectionTypeDictionary.count)] = @(PZShopCarSectionInfoTypeRecommendProductType);
@@ -272,15 +280,28 @@
         return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
             @strongify(self);
             NSMutableArray *params = [@[] mutableCopy];
-            if (![input isKindOfClass:[UIButton class]]) {
-                NSIndexPath *indexPath = input;
-                BOOL validType = self.sectionTypeDictionary[@(indexPath.section)].integerValue == PZShopCarSectionInfoTypeValidType;
-                if (validType) {
-                    PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
-                    [params addObject:@(cellModel.propertyId)];
-                } else {
-                    PZShopCarInvalidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
-                    [params addObject:@(cellModel.propertyId)];
+            if ([input isKindOfClass:[UIButton class]]) {
+               
+            } else {
+                NSDictionary *dic = input;
+                NSString *type = dic[@"type"];
+                if  ([type isEqualToString:@"indexPath"]) {
+                    NSIndexPath *indexPath = dic[@"indexPath"];
+                    BOOL validType = self.sectionTypeDictionary[@(indexPath.section)].integerValue == PZShopCarSectionInfoTypeValidType;
+                    if (validType) {
+                        PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                        [params addObject:@(cellModel.propertyId)];
+                    } else {
+                        PZShopCarInvalidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                        [params addObject:@(cellModel.propertyId)];
+                    }
+                } else if  ([type isEqualToString:@"section"]) {
+                    NSNumber *section = dic[@"section"];
+                    PZShopCarCellInfosModel *info = self.items[section.integerValue];
+                    NSArray *tmpArry = [[info.cellViewModels.rac_sequence map:^id(PZShopCarValidCellModel * value) {
+                        return @(value.propertyId);
+                    }] array];
+                    params = [tmpArry mutableCopy];
                 }
             }
             [ApiManager shopCarDeleteWithParams:@{@"propertyIds":((NSArray *)[params copy]).mj_JSONString} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
@@ -407,6 +428,7 @@
 #pragma mark - UICollectionView layout
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section {
     switch ([self sectionTypeForSection:section]) {
+        case PZShopCarSectionInfoTypeNoneType:
         case PZShopCarSectionInfoTypeValidType:
             return UIEdgeInsetsMake(0, 0, 0, 0);
         case PZShopCarSectionInfoTypeInvalidType:
@@ -470,11 +492,9 @@
 - (CGSize)referenceSizeForHeaderInSection:(NSInteger)section {
     switch ([self sectionTypeForSection:section]) {
         case PZShopCarSectionInfoTypeNoneType:
+        case PZShopCarSectionInfoTypeInvalidType:
         case PZShopCarSectionInfoTypeRecommendTipsType: {
             return CGSizeZero;
-        }
-        case PZShopCarSectionInfoTypeInvalidType: {
-            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 10);
         }
         default: {
             return CGSizeMake([UIScreen mainScreen].bounds.size.width, 54);
@@ -486,6 +506,9 @@
     switch ([self sectionTypeForSection:section]) {
         case PZShopCarSectionInfoTypeValidType: {
             return CGSizeMake([UIScreen mainScreen].bounds.size.width, 10);
+        }
+        case PZShopCarSectionInfoTypeInvalidType: {
+            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 44);
         }
         default: {
             return CGSizeMake([UIScreen mainScreen].bounds.size.width, 0);

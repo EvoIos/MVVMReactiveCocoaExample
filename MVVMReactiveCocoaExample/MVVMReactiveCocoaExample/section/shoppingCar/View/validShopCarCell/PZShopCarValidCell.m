@@ -74,6 +74,7 @@
             [self.deleteSignal sendNext:nil];
         }
     };
+    
     self.editingView.deleteAction = ^{
         @strongify(self);
         if (self.deleteSignal) {
@@ -95,6 +96,7 @@
             [self.changeCountSignal sendNext:@{@"type":@(style),@"currentValue":@(currentValue)}];
         }
     };
+    
     self.editingView.tapDownArrowButton = ^{
         @strongify(self);
         if (self.changePropertySignal) {
@@ -134,13 +136,12 @@
     
     self.coverImgView = ({
         UIImageView *tmpImgView = [[UIImageView alloc] init];
-        tmpImgView.contentMode = UIViewContentModeScaleAspectFill;
+        tmpImgView.contentMode = UIViewContentModeScaleAspectFit;
         tmpImgView.clipsToBounds = YES;
         tmpImgView.image = [UIImage imageNamed:@""];
         tmpImgView.backgroundColor = HEXCOLOR(0xF0F0F0);
         tmpImgView;
     });
-    
     [self addSubview:self.coverImgView];
     [self.coverImgView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.mas_left).offset(40);
@@ -165,7 +166,6 @@
         make.top.bottom.right.mas_equalTo(self);
         make.left.equalTo(self.coverImgView.mas_right);
     }];
-    
     
     UIView *lineView = ({
         UIView *tmpView = [UIView new];

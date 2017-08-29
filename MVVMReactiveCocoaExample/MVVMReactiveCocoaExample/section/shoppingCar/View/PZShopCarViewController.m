@@ -19,11 +19,14 @@
 #import "PZShopCarValidFooterView.h"
 #import "PZShopCarHeader.h"
 #import "PZShopFormatController.h"
+#import "PZNoDataTipsCell.h"
+#import "PZShopCarInvalidFooterView.h"
 
 @interface PZShopCarViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic, strong) PZShopCarViewModel *viewModel;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) PZShopCarSettlementView *settlementView;
+@property (nonatomic, strong) UIBarButtonItem *editItem;
 @end
 
 @implementation PZShopCarViewController
@@ -46,7 +49,7 @@
 }
 
 - (void)setupNav {
-    self.view.backgroundColor = PZShopCarLightGrayColor;
+    self.view.backgroundColor = [UIColor whiteColor];
     self.title = @"购物车";
     UIButton *rightButton = ({
         UIButton *tmpBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 30)];
@@ -58,7 +61,8 @@
         tmpBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         tmpBtn;
     });
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    self.editItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    self.navigationItem.rightBarButtonItem = self.editItem;
     @weakify(self);
     RAC(rightButton,selected) = RACObserve(self, viewModel.edited);
     RAC(rightButton,rac_command) = RACObserve(self, viewModel.editCommand);
@@ -71,6 +75,7 @@
     [[rightButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(UIButton * sender) {
         sender.selected = !sender.selected;
     }];
+    
 }
 
 - (void)configureRefreshView {
@@ -109,23 +114,36 @@
              }
          }
      }];
-    [self.viewModel.fetchDataCommand.errors subscribeNext:^(id x) {
+    [self.viewModel.fetchDataCommand.errors subscribeNext:^(NSError * x) {
         @strongify(self);
+        [MBProgressHUD showError:x.localizedDescription toView:self.view];
         [self.collectionView.mj_header endRefreshing];
         [self.collectionView.mj_footer endRefreshing];
     }];
+    
+    [RACObserve(self, viewModel.hasValidData) subscribeNext:^(NSNumber *x) {
+        @strongify(self);
+        self.settlementView.hidden = !x.boolValue;
+        [self.settlementView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.bottom.right.mas_equalTo(self.view);
+            make.height.mas_equalTo(x.boolValue ? 50 : 0);
+        }];
+        self.navigationItem.rightBarButtonItem = x.boolValue ? self.editItem : nil;
+    }];
    
+    
     self.settlementView.markCommand = self.viewModel.markCommand;
     RAC(self,settlementView.marked) = RACObserve(self, viewModel.marked);
     RAC(self,settlementView.count) = RACObserve(self, viewModel.count);
     RAC(self,settlementView.price) = RACObserve(self, viewModel.price);
     
-    [[self.viewModel.markCommand.executing not] subscribeNext:^(NSNumber * x) {
+    [[self.viewModel.markCommand.executing not]
+     subscribeNext:^(NSNumber * x) {
         @strongify(self);
         if ([x boolValue]) {
             [self reloadData];
         }
-    }];
+     }];
 }
 
 #pragma mark - UICollectionView delegate
@@ -141,8 +159,11 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     switch ([self.viewModel sectionTypeForSection:indexPath.section]) {
+        case PZShopCarSectionInfoTypeNoneType: {
+            PZNoDataTipsCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZNoDataTipsCell" forIndexPath:indexPath];
+            return cell;
+        }
         case PZShopCarSectionInfoTypeValidType: {
             
             PZShopCarValidCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PZShopCarValidCell" forIndexPath:indexPath];
@@ -167,8 +188,7 @@
             [[[cell.deleteSignal
              flattenMap:^RACStream *(id value) {
                  @strongify(self);
-                 DLog(@"indexPath: %@",indexPath);
-                 return [self.viewModel.deleteCommand execute:indexPath];
+                 return [self.viewModel.deleteCommand execute:@{@"type":@"indexPath",@"indexPath":indexPath}];
              }]
              flattenMap:^RACStream *(id value) {
                  @strongify(self);
@@ -212,8 +232,7 @@
             [[[cell.deleteSignal
                flattenMap:^RACStream *(id value) {
                    @strongify(self);
-                   DLog(@"indexPath: %@",indexPath);
-                   return [self.viewModel.deleteCommand execute:indexPath];
+                   return [self.viewModel.deleteCommand execute:@{@"type":@"indexPath",@"indexPath":indexPath}];
                }]
                flattenMap:^RACStream *(id value) {
                    @strongify(self);
@@ -274,6 +293,25 @@
                 PZShopCarValidFooterView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidFooterView" forIndexPath:indexPath];
                 return footer;
             }
+        }
+        case PZShopCarSectionInfoTypeInvalidType: {
+            PZShopCarInvalidFooterView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarInvalidFooterView" forIndexPath:indexPath];
+            footerView.cleanSignal = [RACSubject subject];
+            @weakify(self);
+            [[[footerView.cleanSignal
+             flattenMap:^RACStream *(id value) {
+                @strongify(self);
+                 return [self.viewModel.deleteCommand execute:@{@"type":@"section",@"section":@(indexPath.section)}];
+             }]
+             flattenMap:^RACStream *(id value) {
+                @strongify(self);
+                 return [self.viewModel.fetchDataCommand execute:nil];
+             }]
+             subscribeNext:^(id x) {
+                 @strongify(self);
+                 
+            }];
+            return footerView;
         }
         case PZShopCarSectionInfoTypeRecommendClassType:
         case PZShopCarSectionInfoTypeRecommendProductType: {
@@ -394,6 +432,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
             }];
         }
         
+        [_collectionView registerClass:[PZNoDataTipsCell class]
+            forCellWithReuseIdentifier:@"PZNoDataTipsCell"];
         [_collectionView registerClass:[PZShopCarValidCell class] forCellWithReuseIdentifier:@"PZShopCarValidCell"];
         [_collectionView registerClass:[PZShopCarInvalidCell class] forCellWithReuseIdentifier:@"PZShopCarInvalidCell"];
         [_collectionView registerClass:[PZShopCarRecommendCell class] forCellWithReuseIdentifier:@"PZShopCarRecommendCell"];
@@ -408,6 +448,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
                    withReuseIdentifier:@"PZShopCarRecommendHeaderView"];
         [_collectionView registerClass:[PZShopCarValidFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
                    withReuseIdentifier:@"PZShopCarValidFooterView"];
+        [_collectionView registerClass:[PZShopCarInvalidFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                   withReuseIdentifier:@"PZShopCarInvalidFooterView"];
         
     }
     return _collectionView;

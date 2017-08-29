@@ -44,8 +44,6 @@
         make.height.mas_equalTo(37);
     }];
     
-    
-    
     self.subTitleLabel = ({
         UILabel *tmpLabel = [[UILabel alloc] init];
         tmpLabel.textColor =  PZShopCarGrayColor;

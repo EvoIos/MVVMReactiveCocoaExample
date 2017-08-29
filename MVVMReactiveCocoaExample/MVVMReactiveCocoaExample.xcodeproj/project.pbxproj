@@ -39,6 +39,8 @@
 		45F3AD5B1F472CF400103908 /* PZShopCarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F3AD5A1F472CF400103908 /* PZShopCarViewController.m */; };
 		45FAB1741F48015600345496 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45FAB1731F48015600345496 /* iconfont.ttf */; };
 		45FAB17C1F48188400345496 /* PZShopCarModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FAB17B1F48188400345496 /* PZShopCarModel.m */; };
+		C65D49DB1F55AD4E008A4EC7 /* PZNoDataTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C65D49DA1F55AD4E008A4EC7 /* PZNoDataTipsCell.m */; };
+		C65D49DE1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = C65D49DD1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m */; };
 		C6D64A1B1F481BE600E67640 /* PZShopCarViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C6D64A1A1F481BE600E67640 /* PZShopCarViewModel.m */; };
 		C6D64A1E1F48A5D200E67640 /* PZExistModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C6D64A1D1F48A5D200E67640 /* PZExistModel.m */; };
 		C6D64A211F49318D00E67640 /* PZShopCarInValidCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C6D64A201F49318D00E67640 /* PZShopCarInValidCell.m */; };
@@ -101,8 +103,8 @@
 		19C8995B1F46E35F00E4458B /* PZNetApiManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZNetApiManager.m; sourceTree = "<group>"; };
 		19E704711F3B048F0099469C /* MVVMReactiveCocoaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MVVMReactiveCocoaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19E704751F3B048F0099469C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		19E704771F3B048F0099469C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		19E704781F3B048F0099469C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		19E704771F3B048F0099469C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../AppDelegate.h; sourceTree = "<group>"; };
+		19E704781F3B048F0099469C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../AppDelegate.m; sourceTree = "<group>"; };
 		19E704801F3B048F0099469C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19E704831F3B048F0099469C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		19E704851F3B048F0099469C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -124,6 +126,10 @@
 		45FAB17B1F48188400345496 /* PZShopCarModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZShopCarModel.m; sourceTree = "<group>"; };
 		4D5304A566429A1466B11CC9 /* libPods-MVVMReactiveCocoaExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MVVMReactiveCocoaExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F3D6FA0AC8C37F03950875E /* Pods-MVVMReactiveCocoaExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MVVMReactiveCocoaExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MVVMReactiveCocoaExample/Pods-MVVMReactiveCocoaExample.debug.xcconfig"; sourceTree = "<group>"; };
+		C65D49D91F55AD4E008A4EC7 /* PZNoDataTipsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZNoDataTipsCell.h; sourceTree = "<group>"; };
+		C65D49DA1F55AD4E008A4EC7 /* PZNoDataTipsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZNoDataTipsCell.m; sourceTree = "<group>"; };
+		C65D49DC1F55B797008A4EC7 /* PZShopCarInvalidFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShopCarInvalidFooterView.h; sourceTree = "<group>"; };
+		C65D49DD1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZShopCarInvalidFooterView.m; sourceTree = "<group>"; };
 		C6D64A191F481BE600E67640 /* PZShopCarViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShopCarViewModel.h; sourceTree = "<group>"; };
 		C6D64A1A1F481BE600E67640 /* PZShopCarViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZShopCarViewModel.m; sourceTree = "<group>"; };
 		C6D64A1C1F48A5D200E67640 /* PZExistModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZExistModel.h; sourceTree = "<group>"; };
@@ -189,16 +195,17 @@
 			path = "MBProgressHUD+Add";
 			sourceTree = "<group>";
 		};
-		1988F8631F4A8B4B002D825F /* settlementView */ = {
+		1988F8631F4A8B4B002D825F /* SettlementView */ = {
 			isa = PBXGroup;
 			children = (
 				1988F8641F4A8B71002D825F /* PZShopCarSettlementView.h */,
 				1988F8651F4A8B71002D825F /* PZShopCarSettlementView.m */,
 			);
+			name = SettlementView;
 			path = settlementView;
 			sourceTree = "<group>";
 		};
-		1988F86F1F4AB093002D825F /* shopCarRecommendCell */ = {
+		1988F86F1F4AB093002D825F /* ShopCarRecommendCell */ = {
 			isa = PBXGroup;
 			children = (
 				1988F8701F4AB0C5002D825F /* PZShopCarRecommendCell.h */,
@@ -206,10 +213,11 @@
 				1988F8791F4AC3FD002D825F /* PZShopCarRecommendHeaderView.h */,
 				1988F87A1F4AC3FD002D825F /* PZShopCarRecommendHeaderView.m */,
 			);
+			name = ShopCarRecommendCell;
 			path = shopCarRecommendCell;
 			sourceTree = "<group>";
 		};
-		198AE6DF1F55393B00A6A37E /* shopCarFormatView */ = {
+		198AE6DF1F55393B00A6A37E /* ShopCarFormatView */ = {
 			isa = PBXGroup;
 			children = (
 				198AE6EF1F553D5E00A6A37E /* PZShopCarFormatCell.h */,
@@ -219,6 +227,7 @@
 				198AE6F21F553E5C00A6A37E /* AssociatedBorderColorButton.h */,
 				198AE6F31F553E5C00A6A37E /* AssociatedBorderColorButton.m */,
 			);
+			name = ShopCarFormatView;
 			path = shopCarFormatView;
 			sourceTree = "<group>";
 		};
@@ -255,7 +264,7 @@
 			isa = PBXGroup;
 			children = (
 				19E705A61F3C54970099469C /* Resources */,
-				19E704951F3B08950099469C /* section */,
+				19E704951F3B08950099469C /* Section */,
 				19E7048F1F3B05CA0099469C /* Utilities */,
 				19E7048D1F3B05CA0099469C /* General */,
 				19E704741F3B048F0099469C /* Supporting Files */,
@@ -266,8 +275,6 @@
 		19E704741F3B048F0099469C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				19E704771F3B048F0099469C /* AppDelegate.h */,
-				19E704781F3B048F0099469C /* AppDelegate.m */,
 				19E704801F3B048F0099469C /* Assets.xcassets */,
 				19E704821F3B048F0099469C /* LaunchScreen.storyboard */,
 				19E704851F3B048F0099469C /* Info.plist */,
@@ -298,13 +305,16 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		19E704951F3B08950099469C /* section */ = {
+		19E704951F3B08950099469C /* Section */ = {
 			isa = PBXGroup;
 			children = (
+				19E704771F3B048F0099469C /* AppDelegate.h */,
+				19E704781F3B048F0099469C /* AppDelegate.m */,
 				19E704911F3B05FE0099469C /* HomeViewController.h */,
 				19E704921F3B05FE0099469C /* HomeViewController.m */,
 				19E704961F3B08C80099469C /* shoppingCar */,
 			);
+			name = Section;
 			path = section;
 			sourceTree = "<group>";
 		};
@@ -347,11 +357,12 @@
 		19E704981F3B08C80099469C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				198AE6DF1F55393B00A6A37E /* shopCarFormatView */,
-				1988F86F1F4AB093002D825F /* shopCarRecommendCell */,
-				1988F8631F4A8B4B002D825F /* settlementView */,
-				C6D64A641F49C16F00E67640 /* invalidShopCarCell */,
-				45FAB1761F48175200345496 /* validShopCarCell */,
+				C65D49D81F55ABDC008A4EC7 /* NoDataTipsCell */,
+				198AE6DF1F55393B00A6A37E /* ShopCarFormatView */,
+				1988F86F1F4AB093002D825F /* ShopCarRecommendCell */,
+				1988F8631F4A8B4B002D825F /* SettlementView */,
+				C6D64A641F49C16F00E67640 /* InvalidShopCarCell */,
+				45FAB1761F48175200345496 /* ValidShopCarCell */,
 				19E704D01F3C0A0D0099469C /* PZProductListViewController.h */,
 				19E704D11F3C0A0D0099469C /* PZProductListViewController.m */,
 				45F3AD591F472CF400103908 /* PZShopCarViewController.h */,
@@ -395,7 +406,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		45FAB1761F48175200345496 /* validShopCarCell */ = {
+		45FAB1761F48175200345496 /* ValidShopCarCell */ = {
 			isa = PBXGroup;
 			children = (
 				C6D64A521F49385400E67640 /* SwipeCollectionViewCell */,
@@ -414,6 +425,7 @@
 				1988F87C1F4ACCAF002D825F /* PZShopCarValidFooterView.h */,
 				1988F87D1F4ACCAF002D825F /* PZShopCarValidFooterView.m */,
 			);
+			name = ValidShopCarCell;
 			path = validShopCarCell;
 			sourceTree = "<group>";
 		};
@@ -434,6 +446,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C65D49D81F55ABDC008A4EC7 /* NoDataTipsCell */ = {
+			isa = PBXGroup;
+			children = (
+				C65D49D91F55AD4E008A4EC7 /* PZNoDataTipsCell.h */,
+				C65D49DA1F55AD4E008A4EC7 /* PZNoDataTipsCell.m */,
+			);
+			name = NoDataTipsCell;
+			path = noDataTipsCell;
+			sourceTree = "<group>";
+		};
 		C6D64A521F49385400E67640 /* SwipeCollectionViewCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -443,12 +465,15 @@
 			path = SwipeCollectionViewCell;
 			sourceTree = "<group>";
 		};
-		C6D64A641F49C16F00E67640 /* invalidShopCarCell */ = {
+		C6D64A641F49C16F00E67640 /* InvalidShopCarCell */ = {
 			isa = PBXGroup;
 			children = (
 				C6D64A651F49C19400E67640 /* PZShopCarInvalidCell.h */,
 				C6D64A661F49C19400E67640 /* PZShopCarInvalidCell.m */,
+				C65D49DC1F55B797008A4EC7 /* PZShopCarInvalidFooterView.h */,
+				C65D49DD1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m */,
 			);
+			name = InvalidShopCarCell;
 			path = invalidShopCarCell;
 			sourceTree = "<group>";
 		};
@@ -606,6 +631,7 @@
 				C6D64A601F4962E500E67640 /* PZShopCarValidHeaderView.m in Sources */,
 				C6D64A6A1F49C81700E67640 /* PZShopCarRecommendModel.m in Sources */,
 				198AE6F71F5540F500A6A37E /* PZShopFormatViewModel.m in Sources */,
+				C65D49DB1F55AD4E008A4EC7 /* PZNoDataTipsCell.m in Sources */,
 				C6D64A2A1F49328B00E67640 /* PZShopCarEditedStateView.m in Sources */,
 				19C8995C1F46E35F00E4458B /* PZNetApiManager.m in Sources */,
 				C6D64A631F49637C00E67640 /* PZShopCarHeaderViewModel.m in Sources */,
@@ -619,6 +645,7 @@
 				C6D64A241F4931A200E67640 /* PZShopCarValidCell.m in Sources */,
 				C6D64A4E1F4937F400E67640 /* PZShopCarValidCellModel.m in Sources */,
 				19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */,
+				C65D49DE1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m in Sources */,
 				19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

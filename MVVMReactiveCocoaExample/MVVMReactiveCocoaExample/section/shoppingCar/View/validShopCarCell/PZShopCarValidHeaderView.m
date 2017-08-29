@@ -120,7 +120,6 @@
         make.bottom.top.mas_equalTo(self);
     }];
     
-    
     UIView *separatorView = [UIView new];
     separatorView.backgroundColor = CustomGrayColor;
     [self addSubview:separatorView];
