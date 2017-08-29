@@ -38,5 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)shopCarPropertyListWithParams:(NSDictionary *)param handleBlock:(void (^)( PZShopFormatModel * __nullable  model,  NSError * __nullable error))block;
 
+- (void)shopCarChangePropertyWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
+
 @end
 NS_ASSUME_NONNULL_END

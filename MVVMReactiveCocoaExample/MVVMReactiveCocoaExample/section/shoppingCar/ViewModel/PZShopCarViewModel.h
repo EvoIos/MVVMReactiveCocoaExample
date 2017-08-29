@@ -39,6 +39,11 @@
  *  input: NSIndexPath *indexPath
  */
 @property (nonatomic, strong, readonly) RACCommand *changeCountCommand;
+/**
+ *  input: @{@"param":param,@"product":product}
+ */
+@property (nonatomic, strong, readonly) RACCommand *changePropertyCommand;
+
 
 // MARK: - layout
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section;

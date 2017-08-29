@@ -31,6 +31,7 @@
 @property (nonatomic, strong, readwrite) RACCommand *editCommand;
 @property (nonatomic, strong, readwrite) RACCommand *deleteCommand;
 @property (nonatomic, strong, readwrite) RACCommand *changeCountCommand;
+@property (nonatomic, strong, readwrite) RACCommand *changePropertyCommand;
 
 @end
 
@@ -310,6 +311,30 @@
                     [subscriber sendError:error];
                 } else if (model.code == 0){
                     [cellModel changeCount:count.integerValue];
+                    [self updatePriceAndCountValue];
+                    [subscriber sendNext:@YES];
+                    [subscriber sendCompleted];
+                } else {
+                    [subscriber sendError:model.error];
+                }
+            }];
+            return nil;
+        }];
+    }];
+    
+    self.changePropertyCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(NSDictionary * input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            NSDictionary *param = input[@"param"];
+            PZShopCarProduct *product = input[@"product"];
+            NSIndexPath *indexPath = input[@"indexPath"];
+            PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+            
+            [ApiManager shopCarChangePropertyWithParams:param handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
+                @strongify(self);
+                if (error) {
+                    [subscriber sendError:error];
+                } else if (model.code == 0){
+                    [cellModel replaceProductWithModel:product];
                     [self updatePriceAndCountValue];
                     [subscriber sendNext:@YES];
                     [subscriber sendCompleted];

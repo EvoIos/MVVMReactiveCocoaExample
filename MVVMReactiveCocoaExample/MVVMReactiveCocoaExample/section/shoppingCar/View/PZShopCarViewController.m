@@ -340,10 +340,22 @@ referenceSizeForFooterInSection:(NSInteger)section {
     formatVC.callBack = ^(PZShopFormatData *data) {
         @strongify(self);
         @strongify(cellModel);
+        
+        NSDictionary *param = @{@"oldPropertyId":@(cellModel.propertyId),
+                                @"newPropertyId":@(data.propertyId)
+                                };
+        
+        NSInteger lastCount = cellModel.count;
         NSDictionary *dic = [data mj_keyValues];
         PZShopCarProduct *product = [PZShopCarProduct mj_objectWithKeyValues:dic];
-        [cellModel replaceProductWithModel:product];
-        [self reloadData];
+        product.count = lastCount;
+        
+        NSDictionary *input = @{@"param":param,@"product":product,@"indexPath":indexPath};
+        [[self.viewModel.changePropertyCommand execute:input]
+         subscribeNext:^(id x) {
+             @strongify(self);
+             [self reloadData];
+         }];
     };
     [self presentViewController:formatVC animated:YES completion:nil];
 }
