@@ -97,7 +97,7 @@
     [[[self.viewModel.fetchDataCommand.executing skip:1] not]
      subscribeNext:^(id x) {
          @strongify(self)
-         DLog(@"fetch Data herellll: %@",x);
+         DLog(@"fetch Data: %@",x);
          if ([x boolValue]) { // 执行完成
              [self reloadData];
              [self.collectionView.mj_header endRefreshing];
@@ -116,6 +116,7 @@
      }];
     [self.viewModel.fetchDataCommand.errors subscribeNext:^(NSError * x) {
         @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         [MBProgressHUD showError:x.localizedDescription toView:self.view];
         [self.collectionView.mj_header endRefreshing];
         [self.collectionView.mj_footer endRefreshing];
@@ -131,8 +132,10 @@
         self.navigationItem.rightBarButtonItem = x.boolValue ? self.editItem : nil;
     }];
    
-    
     self.settlementView.markCommand = self.viewModel.markCommand;
+    self.settlementView.deleteCommand = self.viewModel.deleteCommand;
+    
+    RAC(self,settlementView.edited) = RACObserve(self, viewModel.edited);
     RAC(self,settlementView.marked) = RACObserve(self, viewModel.marked);
     RAC(self,settlementView.count) = RACObserve(self, viewModel.count);
     RAC(self,settlementView.price) = RACObserve(self, viewModel.price);
@@ -144,6 +147,28 @@
             [self reloadData];
         }
      }];
+    
+    [[[self.viewModel.deleteCommand.executionSignals switchToLatest]
+     flattenMap:^RACStream *(id value) {
+         @strongify(self);
+         [MBProgressHUD showHUDAddedTo:self.view];
+         return [self.viewModel.fetchDataCommand execute:nil];
+     }]
+     subscribeNext:^(id x) {
+        @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
+        [self reloadData];
+     }];
+    [self.viewModel.deleteCommand.errors subscribeNext:^(NSError * error) {
+       @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        if (error.code == -2) {
+            [MBProgressHUD showError:@"还没有选中商品哦！" toView:self.view];
+        } else {
+            [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
+        }
+    }];
 }
 
 #pragma mark - UICollectionView delegate
@@ -188,6 +213,7 @@
             [[[cell.deleteSignal
              flattenMap:^RACStream *(id value) {
                  @strongify(self);
+                  [MBProgressHUD showHUDAddedTo:self.view];
                  return [self.viewModel.deleteCommand execute:@{@"type":@"indexPath",@"indexPath":indexPath}];
              }]
              flattenMap:^RACStream *(id value) {
@@ -196,6 +222,7 @@
              }]
              subscribeNext:^(id x) {
                  @strongify(self);
+                 [MBProgressHUD hideHUDForView:self.view animated:YES];
                  [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
              }];
             
@@ -203,7 +230,7 @@
             [[cell.changeCountSignal
              flattenMap:^RACStream *(NSDictionary * value) {
                  @strongify(self);
-                 [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                 [MBProgressHUD showHUDAddedTo:self.view];
                  NSDictionary *dic = @{@"indexPath":indexPath,@"count":value[@"currentValue"]};
                  return [self.viewModel.changeCountCommand execute:dic];
              }]
@@ -232,6 +259,7 @@
             [[[cell.deleteSignal
                flattenMap:^RACStream *(id value) {
                    @strongify(self);
+                   [MBProgressHUD showHUDAddedTo:self.view];
                    return [self.viewModel.deleteCommand execute:@{@"type":@"indexPath",@"indexPath":indexPath}];
                }]
                flattenMap:^RACStream *(id value) {
@@ -240,6 +268,7 @@
                }]
                subscribeNext:^(id x) {
                    @strongify(self);
+                   [MBProgressHUD hideHUDForView:self.view animated:YES];
                    [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
                }];
             return cell;
@@ -301,6 +330,7 @@
             [[[footerView.cleanSignal
              flattenMap:^RACStream *(id value) {
                 @strongify(self);
+                 [MBProgressHUD showHUDAddedTo:self.view];
                  return [self.viewModel.deleteCommand execute:@{@"type":@"section",@"section":@(indexPath.section)}];
              }]
              flattenMap:^RACStream *(id value) {
@@ -309,8 +339,12 @@
              }]
              subscribeNext:^(id x) {
                  @strongify(self);
-                 
-            }];
+                 [MBProgressHUD hideHUDForView:self.view animated:YES];
+             } error:^(NSError *error) {
+                 @strongify(self);
+                 [MBProgressHUD hideHUDForView:self.view animated:YES];
+                 [MBProgressHUD showError:error.localizedDescription toView:self.view];
+             }];
             return footerView;
         }
         case PZShopCarSectionInfoTypeRecommendClassType:

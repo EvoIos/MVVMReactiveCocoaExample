@@ -28,31 +28,22 @@
     
     @weakify(self);
 
-    [RACObserve(self, markCommand) subscribeNext:^(id x) {
-       @strongify(self);
-        self.markButton.rac_command = self.markCommand;
-    }];
+    RAC(self, deleteButton.rac_command) = RACObserve(self, deleteCommand);
     
+    RAC(self,markButton.rac_command) = RACObserve(self, markCommand);
     [[self.markButton rac_signalForControlEvents:UIControlEventTouchUpInside]
      subscribeNext:^(UIButton * x) {
          x.selected = !x.selected;
      }];
     
-//    RAC(self,markButton.selected) = RACObserve(self, marked);
-    
-//    [RACObserve(self, marked) subscribeNext:^(id x) {
-//        @strongify(self);
-//        self.markButton.selected = self.marked;
-//    }];
-    
-//    [RACObserve(self, editedAll) subscribeNext:^(NSNumber *editedAll) {
-//        @strongify(self);
-//        self.deleteButton.hidden = !editedAll.boolValue;
-//        self.moveToSaveButton.hidden = !editedAll.boolValue;
-//        self.submitButton.hidden = editedAll.boolValue;
-//        self.totalLabel.hidden = editedAll.boolValue;
-//    }];
-//
+    [RACObserve(self, edited) subscribeNext:^(NSNumber *editedAll) {
+        @strongify(self);
+        self.deleteButton.hidden = !editedAll.boolValue;
+        self.moveToSaveButton.hidden = !editedAll.boolValue;
+        self.submitButton.hidden = editedAll.boolValue;
+        self.totalLabel.hidden = editedAll.boolValue;
+    }];
+
     [RACObserve(self, price) subscribeNext:^(id x) {
         @strongify(self);
         self.totalLabel.text = [NSString stringWithFormat:@"%.2f",self.price];
@@ -136,7 +127,7 @@
         UIButton *tmpBtn = [[UIButton alloc] init];
         [tmpBtn setTitle:@"移到收藏夹" forState:UIControlStateNormal];
         [tmpBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        tmpBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+        tmpBtn.titleLabel.font = [UIFont systemFontOfSize:13];
         tmpBtn.backgroundColor = PZShopCarRedColor;
         tmpBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         tmpBtn;
@@ -171,7 +162,7 @@
     
     [self.moveToSaveButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.bottom.mas_equalTo(self);
-        make.right.equalTo(self.deleteButton.mas_left).offset(-1);
+        make.right.equalTo(self.deleteButton.mas_left).offset(-0.5);
         make.width.mas_equalTo(90);
     }];
 }

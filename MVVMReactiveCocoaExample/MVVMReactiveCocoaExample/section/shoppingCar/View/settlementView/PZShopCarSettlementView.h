@@ -13,9 +13,12 @@
 
 @property (nonatomic, assign) CGFloat price;
 @property (nonatomic, assign) NSInteger count;
-@property (nonatomic, assign) BOOL marked;
+@property (nonatomic, assign, getter=isMarked) BOOL marked;
+@property (nonatomic, assign, getter=isEdited) BOOL edited;
 
 @property (nonatomic, strong) RACCommand *markCommand;
+@property (nonatomic, strong) RACCommand *deleteCommand;
 
 - (void)reloadData;
+
 @end

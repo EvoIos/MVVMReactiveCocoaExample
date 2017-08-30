@@ -45,8 +45,7 @@
     self.edited = NO;
     self.marked = NO;
     self.more = YES;
-    self.hasValidData = NO;
-    
+
     self.sectionTypeDictionary = [@{} mutableCopy];
     self.markedDicionary = @{};
     self.markedArray = @[];
@@ -281,7 +280,26 @@
             @strongify(self);
             NSMutableArray *params = [@[] mutableCopy];
             if ([input isKindOfClass:[UIButton class]]) {
-               
+                NSArray *cellModels = [[[[self.items rac_sequence]
+                                        filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                            return value.headerViewModel.state != nil;
+                                        }]
+                                        map:^id(PZShopCarCellInfosModel * value) {
+                                            return value.cellViewModels;
+                                        }] foldLeftWithStart:@[] reduce:^id(id accumulator, id value) {
+                                            NSMutableArray *tmpArray = [@[] mutableCopy];
+                                            [tmpArray addObjectsFromArray:accumulator];
+                                            [tmpArray addObjectsFromArray:value];
+                                            return [tmpArray copy];
+                                        }];
+                params = [[[[[cellModels rac_sequence]
+                            filter:^BOOL(PZShopCarValidCellModel * value) {
+                                return value.state.isMarked;
+                            }]
+                            map:^id(PZShopCarValidCellModel * value) {
+                                return @(value.propertyId);
+                            }] array] mutableCopy];
+                DLog(@"deleteAll: %@",params);
             } else {
                 NSDictionary *dic = input;
                 NSString *type = dic[@"type"];
@@ -304,6 +322,15 @@
                     params = [tmpArry mutableCopy];
                 }
             }
+            
+            if  (params.count == 0) {
+                NSError *sendError = [[NSError alloc] initWithDomain:@"com.ablackcrow.www"
+                                                                code:-2
+                                                            userInfo:@{@"msg":@""}];
+                [subscriber sendError:sendError];
+                return nil;
+            }
+            
             [ApiManager shopCarDeleteWithParams:@{@"propertyIds":((NSArray *)[params copy]).mj_JSONString} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
                 if (error) {
                     [subscriber sendError:error];

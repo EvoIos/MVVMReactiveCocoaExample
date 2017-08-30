@@ -28,7 +28,7 @@
     self.title = @"商品列表";
     self.view.backgroundColor = HEXCOLOR(0xF5F6F7);
     @weakify(self);
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [MBProgressHUD showHUDAddedTo:self.view];
     [[self.viewModel.fetchDataCommand execute:nil]
      subscribeNext:^(id x) {
           DLog(@"there");
@@ -63,7 +63,7 @@
 }
 
 - (void)buy {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [MBProgressHUD showHUDAddedTo:self.view];
     
     @weakify(self);
     

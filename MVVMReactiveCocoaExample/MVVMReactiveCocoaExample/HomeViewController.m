@@ -7,6 +7,7 @@
 //
 
 #import "HomeViewController.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
 #import "PZProductListViewController.h"
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
