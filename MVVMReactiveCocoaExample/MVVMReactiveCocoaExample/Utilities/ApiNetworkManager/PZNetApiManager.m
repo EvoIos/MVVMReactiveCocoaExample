@@ -38,8 +38,6 @@
     if (!aPath || aPath.length <= 0) {
         return nil;
     }
-    NSString *tmp = [aPath stringByAppendingString:aPath];
-    DLog(@"tmp: %@",tmp);
     return [NSString stringWithFormat:@"%@%@",BaseUrl,aPath];
 }
 
@@ -60,7 +58,7 @@
 
 - (void)addShopCarWithParams:(NSDictionary *)param
                  handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
-    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/add"]
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/generateShopCar"]
                             withParams:param.mj_JSONObject
                         withMethodType:Post
                               andBlock:^(id data, NSError *error) {

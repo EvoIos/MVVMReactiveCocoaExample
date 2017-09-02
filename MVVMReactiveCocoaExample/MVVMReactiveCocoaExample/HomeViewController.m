@@ -8,7 +8,9 @@
 
 #import "HomeViewController.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import "PZProductListViewController.h"
+#import "PZShopCarViewController.h"
+#import "PZNetApiManager.h"
+
 
 @interface HomeViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong) NSArray *info;
@@ -51,8 +53,20 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    PZProductListViewController *productListVC = [PZProductListViewController new];
-    [self.navigationController pushViewController:productListVC animated:YES];
+    [self generateShopCarInfo];
+}
+
+- (void)generateShopCarInfo {
+    [MBProgressHUD showHUDAddedTo:self.view];
+    [ApiManager addShopCarWithParams:@{} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        if (model.code == 0) {
+            PZShopCarViewController *shopCar = [PZShopCarViewController new];
+            [self.navigationController pushViewController:shopCar animated:YES];
+        } else {
+            [MBProgressHUD showError:@"报错了，稍后再试！" toView:self.view];
+        }
+    }];
 }
 
 #pragma mark - getter and setter

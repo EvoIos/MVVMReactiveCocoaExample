@@ -153,7 +153,6 @@
         }
         
         self.items = [tmpArray copy];
-        
     }];
     
     [self.fetchMoreDataCommand.executionSignals.switchToLatest subscribeNext:^(PZShopCarRecommendModel * model) {
@@ -398,6 +397,7 @@
     
     self.changePropertyCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(NSDictionary * input) {
         return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
             NSDictionary *param = input[@"param"];
             PZShopCarProduct *product = input[@"product"];
             NSIndexPath *indexPath = input[@"indexPath"];

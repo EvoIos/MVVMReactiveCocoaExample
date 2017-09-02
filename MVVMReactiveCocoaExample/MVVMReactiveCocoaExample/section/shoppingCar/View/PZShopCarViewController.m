@@ -28,7 +28,6 @@
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) PZShopCarSettlementView *settlementView;
 @property (nonatomic, strong) UIBarButtonItem *editItem;
-@property (nonatomic, strong) UIAlertController *alertVC;
 @end
 
 @implementation PZShopCarViewController
@@ -177,6 +176,7 @@
     
     [self.viewModel.saveCommand.errors subscribeNext:^(id x) {
         @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
     }];
     
@@ -206,6 +206,7 @@
     
     [self.viewModel.submitCommand.errors subscribeNext:^(id x) {
         @strongify(self);
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
     }];
     
@@ -466,6 +467,7 @@
                  return [self.viewModel.fetchDataCommand execute:nil];
              }]
              subscribeNext:^(id x) {
+                 @strongify(self);
                  [MBProgressHUD hideHUDForView:self.view animated:YES];
              }];
             
@@ -621,23 +623,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
         _viewModel = [PZShopCarViewModel new];
     }
     return _viewModel;
-}
-
-- (UIAlertController *)alertVC {
-    if  (!_alertVC) {
-        _alertVC = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-        RACAlertAction *confirmAction = [RACAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault];
-        confirmAction.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [RACSignal return:@(YES)];
-        }];
-        RACAlertAction *deleteAction = [RACAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel];
-        deleteAction.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [RACSignal return:@(NO)];
-        }];
-        [_alertVC addAction:confirmAction];
-        [_alertVC addAction:deleteAction];
-    }
-    return _alertVC;
 }
 
 - (void)dealloc {

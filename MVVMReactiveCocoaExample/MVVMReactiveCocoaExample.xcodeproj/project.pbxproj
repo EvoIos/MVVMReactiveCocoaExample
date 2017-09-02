@@ -33,8 +33,6 @@
 		19E704811F3B048F0099469C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19E704801F3B048F0099469C /* Assets.xcassets */; };
 		19E704841F3B048F0099469C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 19E704821F3B048F0099469C /* LaunchScreen.storyboard */; };
 		19E704931F3B05FE0099469C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704921F3B05FE0099469C /* HomeViewController.m */; };
-		19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704D11F3C0A0D0099469C /* PZProductListViewController.m */; };
-		19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */; };
 		19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */; };
 		45F3AD5B1F472CF400103908 /* PZShopCarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F3AD5A1F472CF400103908 /* PZShopCarViewController.m */; };
 		45FAB1741F48015600345496 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45FAB1731F48015600345496 /* iconfont.ttf */; };
@@ -112,10 +110,6 @@
 		19E7048B1F3B05050099469C /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		19E704911F3B05FE0099469C /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomeViewController.h; path = ../HomeViewController.h; sourceTree = "<group>"; };
 		19E704921F3B05FE0099469C /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HomeViewController.m; path = ../HomeViewController.m; sourceTree = "<group>"; };
-		19E704D01F3C0A0D0099469C /* PZProductListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZProductListViewController.h; sourceTree = "<group>"; };
-		19E704D11F3C0A0D0099469C /* PZProductListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZProductListViewController.m; sourceTree = "<group>"; };
-		19E704D31F3C0A8B0099469C /* PZProductListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZProductListViewModel.h; sourceTree = "<group>"; };
-		19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZProductListViewModel.m; sourceTree = "<group>"; };
 		19E704D61F3C0B310099469C /* PZShoppingCarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShoppingCarHeader.h; sourceTree = "<group>"; };
 		19E705A31F3C4C870099469C /* PZDefaultProductListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZDefaultProductListModel.h; sourceTree = "<group>"; };
 		19E705A41F3C4C870099469C /* PZDefaultProductListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZDefaultProductListModel.m; sourceTree = "<group>"; };
@@ -366,8 +360,6 @@
 				1988F8631F4A8B4B002D825F /* SettlementView */,
 				C6D64A641F49C16F00E67640 /* InvalidShopCarCell */,
 				45FAB1761F48175200345496 /* ValidShopCarCell */,
-				19E704D01F3C0A0D0099469C /* PZProductListViewController.h */,
-				19E704D11F3C0A0D0099469C /* PZProductListViewController.m */,
 				45F3AD591F472CF400103908 /* PZShopCarViewController.h */,
 				45F3AD5A1F472CF400103908 /* PZShopCarViewController.m */,
 				198AE6EC1F553D0B00A6A37E /* PZShopFormatController.h */,
@@ -383,8 +375,6 @@
 		19E704991F3B08C80099469C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				19E704D31F3C0A8B0099469C /* PZProductListViewModel.h */,
-				19E704D41F3C0A8B0099469C /* PZProductListViewModel.m */,
 				C6D64A191F481BE600E67640 /* PZShopCarViewModel.h */,
 				C6D64A1A1F481BE600E67640 /* PZShopCarViewModel.m */,
 				C6D64A4C1F4937F400E67640 /* PZShopCarValidCellModel.h */,
@@ -621,7 +611,6 @@
 				C6D64A581F49395B00E67640 /* PZShopCarCellStateModel.m in Sources */,
 				45F3AD5B1F472CF400103908 /* PZShopCarViewController.m in Sources */,
 				C6D64A671F49C19400E67640 /* PZShopCarInvalidCell.m in Sources */,
-				19E704D21F3C0A0D0099469C /* PZProductListViewController.m in Sources */,
 				198AE6FD1F55595200A6A37E /* PZShopFormatPresentController.m in Sources */,
 				198AE6F41F553E5C00A6A37E /* AssociatedBorderColorButton.m in Sources */,
 				C6D64A1B1F481BE600E67640 /* PZShopCarViewModel.m in Sources */,
@@ -650,7 +639,6 @@
 				198AE6F11F553D5E00A6A37E /* PZShopCarFormatCell.m in Sources */,
 				C6D64A241F4931A200E67640 /* PZShopCarValidCell.m in Sources */,
 				C6D64A4E1F4937F400E67640 /* PZShopCarValidCellModel.m in Sources */,
-				19E704D51F3C0A8B0099469C /* PZProductListViewModel.m in Sources */,
 				C65D49DE1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m in Sources */,
 				19E705A51F3C4C870099469C /* PZDefaultProductListModel.m in Sources */,
 			);
