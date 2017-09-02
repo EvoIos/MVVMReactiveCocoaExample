@@ -21,12 +21,14 @@
 #import "PZShopFormatController.h"
 #import "PZNoDataTipsCell.h"
 #import "PZShopCarInvalidFooterView.h"
+#import "RACAlertAction.h"
 
 @interface PZShopCarViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property (nonatomic, strong) PZShopCarViewModel *viewModel;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) PZShopCarSettlementView *settlementView;
 @property (nonatomic, strong) UIBarButtonItem *editItem;
+@property (nonatomic, strong) UIAlertController *alertVC;
 @end
 
 @implementation PZShopCarViewController
@@ -75,7 +77,6 @@
     [[rightButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(UIButton * sender) {
         sender.selected = !sender.selected;
     }];
-    
 }
 
 - (void)configureRefreshView {
@@ -132,8 +133,10 @@
         self.navigationItem.rightBarButtonItem = x.boolValue ? self.editItem : nil;
     }];
    
+    self.settlementView.deleteSignal = [RACSubject subject];
+    self.settlementView.saveSignal = [RACSubject subject];
+    self.settlementView.submitSignal = [RACSubject subject];
     self.settlementView.markCommand = self.viewModel.markCommand;
-    self.settlementView.deleteCommand = self.viewModel.deleteCommand;
     
     RAC(self,settlementView.edited) = RACObserve(self, viewModel.edited);
     RAC(self,settlementView.marked) = RACObserve(self, viewModel.marked);
@@ -147,28 +150,125 @@
             [self reloadData];
         }
      }];
-    
-    [[[self.viewModel.deleteCommand.executionSignals switchToLatest]
-     flattenMap:^RACStream *(id value) {
-         @strongify(self);
-         [MBProgressHUD showHUDAddedTo:self.view];
-         return [self.viewModel.fetchDataCommand execute:nil];
-     }]
+        
+    [[[[self.settlementView.saveSignal
+        filter:^BOOL(id value) {
+            @strongify(self);
+            BOOL hasMarkedInfo = [self.viewModel hasMarkedInfo];
+            if (!hasMarkedInfo) {
+                [MBProgressHUD showError:@"还没有选中商品哦！" toView:self.view];
+            }
+            return hasMarkedInfo;
+        }]
+       flattenMap:^RACStream *(id value) {
+           @strongify(self);
+           [MBProgressHUD showHUDAddedTo:self.view];
+           return [self.viewModel.saveCommand execute:nil];
+       }]
+      flattenMap:^RACStream *(id value) {
+          @strongify(self);
+          return [self.viewModel.fetchDataCommand execute:nil];
+      }]
      subscribeNext:^(id x) {
-        @strongify(self);
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
-        [self reloadData];
+         @strongify(self);
+         [MBProgressHUD hideHUDForView:self.view animated:YES];
+         [MBProgressHUD showSuccess:@"收藏成功！" toView:self.view];
      }];
+    
+    [self.viewModel.saveCommand.errors subscribeNext:^(id x) {
+        @strongify(self);
+        [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
+    }];
+    
+    [[[[self.settlementView.submitSignal
+        filter:^BOOL(id value) {
+            @strongify(self);
+            BOOL hasMarkedInfo = [self.viewModel hasMarkedInfo];
+            if (!hasMarkedInfo) {
+                [MBProgressHUD showError:@"还没有选中商品哦！" toView:self.view];
+            }
+            return hasMarkedInfo;
+        }]
+       flattenMap:^RACStream *(id value) {
+           @strongify(self);
+           [MBProgressHUD showHUDAddedTo:self.view];
+           return [self.viewModel.saveCommand execute:nil];
+       }]
+      flattenMap:^RACStream *(id value) {
+          @strongify(self);
+          return [self.viewModel.fetchDataCommand execute:nil];
+      }]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         [MBProgressHUD hideHUDForView:self.view animated:YES];
+         [MBProgressHUD showSuccess:@"提交成功！" toView:self.view];
+     }];
+    
+    [self.viewModel.submitCommand.errors subscribeNext:^(id x) {
+        @strongify(self);
+        [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
+    }];
+    
+    [[[[[[self.settlementView.deleteSignal
+          filter:^BOOL(id value) {
+              @strongify(self);
+              BOOL hasMarkedInfo = [self.viewModel hasMarkedInfo];
+              if (!hasMarkedInfo) {
+                  [MBProgressHUD showError:@"还没有选中商品哦！" toView:self.view];
+              }
+              return hasMarkedInfo;
+          }]
+         flattenMap:^RACStream *(id value) {
+             @strongify(self);
+             return [self.viewModel actionWithConfirmation:^RACSignal *{
+                 @strongify(self);
+                 return [self showAlertVCWithTitle:@"确认要删除这些商品吗"];
+             }];
+        }]
+        filter:^BOOL(NSNumber * value) {
+            return [value boolValue];
+        }]
+       flattenMap:^RACStream *(id value) {
+           @strongify(self);
+           [MBProgressHUD showHUDAddedTo:self.view];
+           NSDictionary *input = @{@"type":@"all"};
+           return [self.viewModel.deleteCommand execute:input];
+       }]
+      flattenMap:^RACStream *(id value) {
+          @strongify(self);
+          return [self.viewModel.fetchDataCommand execute:nil];
+      }]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         [MBProgressHUD hideHUDForView:self.view animated:YES];
+         [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
+    }];
+    
     [self.viewModel.deleteCommand.errors subscribeNext:^(NSError * error) {
        @strongify(self);
         [MBProgressHUD hideHUDForView:self.view animated:YES];
-        if (error.code == -2) {
-            [MBProgressHUD showError:@"还没有选中商品哦！" toView:self.view];
-        } else {
-            [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
-        }
+        [MBProgressHUD showError:@"网络错误，请稍后再试！" toView:self.view];
     }];
+}
+
+- (RACSignal *)showAlertVCWithTitle:(NSString *)title {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    RACAlertAction *confirmAction = [RACAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault];
+    confirmAction.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+        return [RACSignal return:@(YES)];
+    }];
+    RACAlertAction *deleteAction = [RACAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel];
+    deleteAction.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+        return [RACSignal return:@(NO)];
+    }];
+    [alertVC addAction:confirmAction];
+    [alertVC addAction:deleteAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
+    
+    RACSignal *resultSignals = [RACSignal
+                                merge:@[ confirmAction.command.executionSignals.switchToLatest,
+                                         deleteAction.command.executionSignals.switchToLatest ]];
+    return resultSignals;
 }
 
 #pragma mark - UICollectionView delegate
@@ -198,32 +298,40 @@
             
             @weakify(self);
             cell.markSignal = [RACSubject subject];
-            [[cell.markSignal
-             flattenMap:^RACStream *(id value) {
+            [[cell.markSignal flattenMap:^RACStream *(id value) {
                 @strongify(self);
-                NSDictionary *input = @{@"type":@"indexPath",@"indexPath":indexPath};
+                NSDictionary *input = @{@"type":@"indexPath",
+                                        @"indexPath":indexPath};
                 return [self.viewModel.markCommand execute:input];
-             }]
-             subscribeNext:^(id x) {
-                @strongify(self);
-                [self reloadData];
-             }];
+            }] subscribeNext:^(id x) { }];
             
             cell.deleteSignal = [RACSubject subject];
-            [[[cell.deleteSignal
-             flattenMap:^RACStream *(id value) {
-                 @strongify(self);
+            [[[[[cell.deleteSignal
+                flattenMap:^RACStream *(id value) {
+                    @strongify(self);
+                    return [self.viewModel actionWithConfirmation:^RACSignal *{
+                        @strongify(self);
+                        return [self showAlertVCWithTitle:@"确认要删除这件商品吗"];
+                    }];
+                }]
+               filter:^BOOL(NSNumber * value) {
+                   return [value boolValue];
+               }]
+              flattenMap:^RACStream *(id value) {
+                  @strongify(self);
                   [MBProgressHUD showHUDAddedTo:self.view];
-                 return [self.viewModel.deleteCommand execute:@{@"type":@"indexPath",@"indexPath":indexPath}];
-             }]
+                  NSDictionary *input = @{@"type":@"indexPath",
+                                        @"indexPath":indexPath};
+                  return [self.viewModel.deleteCommand execute:input];
+              }]
              flattenMap:^RACStream *(id value) {
-                 @strongify(self);
+                  @strongify(self);
                  return [self.viewModel.fetchDataCommand execute:nil];
              }]
              subscribeNext:^(id x) {
                  @strongify(self);
                  [MBProgressHUD hideHUDForView:self.view animated:YES];
-                 [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
+                 [MBProgressHUD showSuccess:@"删除成功" toView:self.view ];
              }];
             
             cell.changeCountSignal = [RACSubject subject];
@@ -231,7 +339,8 @@
              flattenMap:^RACStream *(NSDictionary * value) {
                  @strongify(self);
                  [MBProgressHUD showHUDAddedTo:self.view];
-                 NSDictionary *dic = @{@"indexPath":indexPath,@"count":value[@"currentValue"]};
+                 NSDictionary *dic = @{@"indexPath":indexPath,
+                                       @"count":value[@"currentValue"]};
                  return [self.viewModel.changeCountCommand execute:dic];
              }]
              subscribeNext:^(id x) {
@@ -256,21 +365,33 @@
             cell.viewModel = self.viewModel.items[indexPath.section].cellViewModels[indexPath.row];
             cell.deleteSignal = [RACSubject subject];
             @weakify(self);
-            [[[cell.deleteSignal
+            [[[[[cell.deleteSignal
+                 flattenMap:^RACStream *(id value) {
+                     @strongify(self);
+                     return [self.viewModel actionWithConfirmation:^RACSignal *{
+                         @strongify(self);
+                         return [self showAlertVCWithTitle:@"确认要删除这件商品吗"];
+                     }];
+                 }]
+                filter:^BOOL(NSNumber * value) {
+                    return [value boolValue];
+                }]
                flattenMap:^RACStream *(id value) {
                    @strongify(self);
                    [MBProgressHUD showHUDAddedTo:self.view];
-                   return [self.viewModel.deleteCommand execute:@{@"type":@"indexPath",@"indexPath":indexPath}];
+                   NSDictionary *input = @{@"type":@"indexPath",
+                                           @"indexPath":indexPath};
+                   return [self.viewModel.deleteCommand execute:input];
                }]
-               flattenMap:^RACStream *(id value) {
-                   @strongify(self);
-                   return [self.viewModel.fetchDataCommand execute:nil];
-               }]
-               subscribeNext:^(id x) {
-                   @strongify(self);
-                   [MBProgressHUD hideHUDForView:self.view animated:YES];
-                   [MBProgressHUD showSuccess:@"删除成功！" toView:self.view];
-               }];
+              flattenMap:^RACStream *(id value) {
+                  @strongify(self);
+                  return [self.viewModel.fetchDataCommand execute:nil];
+              }]
+             subscribeNext:^(id x) {
+                 @strongify(self);
+                 [MBProgressHUD hideHUDForView:self.view animated:YES];
+                 [MBProgressHUD showSuccess:@"删除成功" toView:self.view ];
+             }];
             return cell;
         }
         case PZShopCarSectionInfoTypeRecommendClassType: {
@@ -302,21 +423,16 @@
                 [[header.viewModel.markCommand.executionSignals
                  flattenMap:^RACStream *(id value) {
                      @strongify(self);
-                     NSDictionary *input = @{@"type":@"section",@"section":@(indexPath.section)};
+                     NSDictionary *input = @{@"type":@"section",
+                                             @"section":@(indexPath.section)};
                      return [self.viewModel.markCommand execute:input];
-                 }] subscribeNext:^(id x) {
-                     @strongify(self);
-                     [self reloadData];
-                 }];
+                 }] subscribeNext:^(id x) { }];
                 [[header.viewModel.editCommand.executionSignals
                  flattenMap:^RACStream *(id value) {
                      @strongify(self);
                      return [self.viewModel.editCommand execute:@(indexPath.section)];
                  }]
-                 subscribeNext:^(id x) {
-                    @strongify(self);
-                    [self reloadData];
-                }];
+                 subscribeNext:^(id x) { }];
                 return header;
             } else {
                 PZShopCarValidFooterView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarValidFooterView" forIndexPath:indexPath];
@@ -327,24 +443,33 @@
             PZShopCarInvalidFooterView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"PZShopCarInvalidFooterView" forIndexPath:indexPath];
             footerView.cleanSignal = [RACSubject subject];
             @weakify(self);
-            [[[footerView.cleanSignal
+            [[[[[footerView.cleanSignal
+                flattenMap:^RACStream *(id value) {
+                    @strongify(self);
+                    return [self.viewModel actionWithConfirmation:^RACSignal *{
+                        @strongify(self);
+                        return [self showAlertVCWithTitle:@"确认要清空这些商品吗"];
+                    }];
+                }]
+               filter:^BOOL(NSNumber * value) {
+                   return [value boolValue];
+               }]
+              flattenMap:^RACStream *(id value) {
+                  @strongify(self);
+                  [MBProgressHUD showHUDAddedTo:self.view];
+                  NSDictionary *input = @{@"type":@"section",
+                                         @"section":@(indexPath.section)};
+                  return [self.viewModel.deleteCommand execute:input];
+              }]
              flattenMap:^RACStream *(id value) {
-                @strongify(self);
-                 [MBProgressHUD showHUDAddedTo:self.view];
-                 return [self.viewModel.deleteCommand execute:@{@"type":@"section",@"section":@(indexPath.section)}];
-             }]
-             flattenMap:^RACStream *(id value) {
-                @strongify(self);
+                 @strongify(self);
                  return [self.viewModel.fetchDataCommand execute:nil];
              }]
              subscribeNext:^(id x) {
-                 @strongify(self);
                  [MBProgressHUD hideHUDForView:self.view animated:YES];
-             } error:^(NSError *error) {
-                 @strongify(self);
-                 [MBProgressHUD hideHUDForView:self.view animated:YES];
-                 [MBProgressHUD showError:error.localizedDescription toView:self.view];
              }];
+            
+            
             return footerView;
         }
         case PZShopCarSectionInfoTypeRecommendClassType:
@@ -422,7 +547,9 @@ referenceSizeForFooterInSection:(NSInteger)section {
         PZShopCarProduct *product = [PZShopCarProduct mj_objectWithKeyValues:dic];
         product.count = lastCount;
         
-        NSDictionary *input = @{@"param":param,@"product":product,@"indexPath":indexPath};
+        NSDictionary *input = @{@"param":param,
+                                @"product":product,
+                                @"indexPath":indexPath};
         [[self.viewModel.changePropertyCommand execute:input]
          subscribeNext:^(id x) {
              @strongify(self);
@@ -494,6 +621,23 @@ referenceSizeForFooterInSection:(NSInteger)section {
         _viewModel = [PZShopCarViewModel new];
     }
     return _viewModel;
+}
+
+- (UIAlertController *)alertVC {
+    if  (!_alertVC) {
+        _alertVC = [UIAlertController alertControllerWithTitle:@"" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        RACAlertAction *confirmAction = [RACAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault];
+        confirmAction.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            return [RACSignal return:@(YES)];
+        }];
+        RACAlertAction *deleteAction = [RACAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel];
+        deleteAction.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            return [RACSignal return:@(NO)];
+        }];
+        [_alertVC addAction:confirmAction];
+        [_alertVC addAction:deleteAction];
+    }
+    return _alertVC;
 }
 
 - (void)dealloc {

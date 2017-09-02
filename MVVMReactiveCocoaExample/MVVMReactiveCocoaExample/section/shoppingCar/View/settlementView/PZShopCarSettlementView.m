@@ -28,8 +28,30 @@
     
     @weakify(self);
 
-    RAC(self, deleteButton.rac_command) = RACObserve(self, deleteCommand);
+    [[self.deleteButton rac_signalForControlEvents:UIControlEventTouchUpInside]
+     subscribeNext:^(id x) {
+        @strongify(self);
+         if (self.deleteSignal) {
+             [self.deleteSignal sendNext:nil];
+         }
+     }];
     
+    [[self.moveToSaveButton rac_signalForControlEvents:UIControlEventTouchUpInside]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         if (self.saveSignal) {
+             [self.saveSignal sendNext:nil];
+         }
+    }];
+    
+    [[self.submitButton rac_signalForControlEvents:UIControlEventTouchUpInside]
+     subscribeNext:^(id x) {
+         @strongify(self);
+         if (self.submitSignal) {
+             [self.submitSignal sendNext:nil];
+         }
+     }];
+
     RAC(self,markButton.rac_command) = RACObserve(self, markCommand);
     [[self.markButton rac_signalForControlEvents:UIControlEventTouchUpInside]
      subscribeNext:^(UIButton * x) {

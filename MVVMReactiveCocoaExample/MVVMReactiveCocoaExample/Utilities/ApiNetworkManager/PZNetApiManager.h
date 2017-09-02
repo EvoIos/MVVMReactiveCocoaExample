@@ -24,8 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)fetchDefaultProductListWithBlock:(void (^)( PZDefaultProductListModel * __nullable  model,  NSError * __nullable error))block;
 
-- (void)existShoppingWithBlock:(void (^)( PZExistModel * __nullable  model,  NSError * __nullable error))block;
-
 - (void)addShopCarWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
 
 - (void)shopCarListWithBlock:(void (^)( PZShopCarModel * __nullable  model,  NSError * __nullable error))block;
@@ -40,5 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)shopCarChangePropertyWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
 
+- (void)shopCarSaveWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
+
+- (void)shopCarSubmitWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block;
 @end
 NS_ASSUME_NONNULL_END

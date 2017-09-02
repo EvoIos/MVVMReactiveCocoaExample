@@ -29,24 +29,24 @@
  *  其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
  */
 @property (nonatomic, strong, readonly) RACCommand *markCommand;
-/** @brief 选中单个商品，section商品，全部商品
+/** @brief 编辑单个商品，section商品，全部商品
  *  input: 编辑全部 UIButton，
  *  其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
  */
 @property (nonatomic, strong, readonly) RACCommand *editCommand;
-/** @brief 选中单个商品，section商品，全部商品
- *  input: 删除全部 UIButton。
- *  其他 @{ @"type":indexPath/section,@"indexPath":NSIndexPath,@"section":section}
+/** @brief 删除单个商品，section商品，全部商品
+ *  input: NSDictionary,
+ *  @{ @"type":indexPath/section/all,@"indexPath":NSIndexPath,@"section":section}
  */
 @property (nonatomic, strong, readonly) RACCommand *deleteCommand;
-/**
- *  input: NSIndexPath *indexPath
- */
+/// input: nil
+@property (nonatomic, strong, readonly) RACCommand *saveCommand;
+///  input: NSIndexPath
 @property (nonatomic, strong, readonly) RACCommand *changeCountCommand;
-/**
- *  input: @{@"param":param,@"product":product}
- */
+///  input: @{@"param":param,@"product":product}
 @property (nonatomic, strong, readonly) RACCommand *changePropertyCommand;
+/// input: nil
+@property (nonatomic, strong, readonly) RACCommand *submitCommand;
 
 
 // MARK: - layout
@@ -58,5 +58,7 @@
 - (CGSize)referenceSizeForFooterInSection:(NSInteger)section;
 // MARK: - helper
 - (PZShopCarSectionInfoType)sectionTypeForSection:(NSInteger)section;
+- (RACSignal *)actionWithConfirmation:(RACSignal*(^)(void))signalBlock;
+- (BOOL)hasMarkedInfo;
 
 @end

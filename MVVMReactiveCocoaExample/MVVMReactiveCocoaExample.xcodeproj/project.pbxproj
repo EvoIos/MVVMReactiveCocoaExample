@@ -41,6 +41,7 @@
 		45FAB17C1F48188400345496 /* PZShopCarModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 45FAB17B1F48188400345496 /* PZShopCarModel.m */; };
 		C65D49DB1F55AD4E008A4EC7 /* PZNoDataTipsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C65D49DA1F55AD4E008A4EC7 /* PZNoDataTipsCell.m */; };
 		C65D49DE1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = C65D49DD1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m */; };
+		C65D49E11F5A43B2008A4EC7 /* RACAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = C65D49E01F5A43B2008A4EC7 /* RACAlertAction.m */; };
 		C6D64A1B1F481BE600E67640 /* PZShopCarViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C6D64A1A1F481BE600E67640 /* PZShopCarViewModel.m */; };
 		C6D64A1E1F48A5D200E67640 /* PZExistModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C6D64A1D1F48A5D200E67640 /* PZExistModel.m */; };
 		C6D64A211F49318D00E67640 /* PZShopCarInValidCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C6D64A201F49318D00E67640 /* PZShopCarInValidCell.m */; };
@@ -130,6 +131,8 @@
 		C65D49DA1F55AD4E008A4EC7 /* PZNoDataTipsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZNoDataTipsCell.m; sourceTree = "<group>"; };
 		C65D49DC1F55B797008A4EC7 /* PZShopCarInvalidFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShopCarInvalidFooterView.h; sourceTree = "<group>"; };
 		C65D49DD1F55B797008A4EC7 /* PZShopCarInvalidFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZShopCarInvalidFooterView.m; sourceTree = "<group>"; };
+		C65D49DF1F5A43B2008A4EC7 /* RACAlertAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RACAlertAction.h; sourceTree = "<group>"; };
+		C65D49E01F5A43B2008A4EC7 /* RACAlertAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RACAlertAction.m; sourceTree = "<group>"; };
 		C6D64A191F481BE600E67640 /* PZShopCarViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZShopCarViewModel.h; sourceTree = "<group>"; };
 		C6D64A1A1F481BE600E67640 /* PZShopCarViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PZShopCarViewModel.m; sourceTree = "<group>"; };
 		C6D64A1C1F48A5D200E67640 /* PZExistModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PZExistModel.h; sourceTree = "<group>"; };
@@ -371,6 +374,8 @@
 				198AE6ED1F553D0B00A6A37E /* PZShopFormatController.m */,
 				198AE6FB1F55595200A6A37E /* PZShopFormatPresentController.h */,
 				198AE6FC1F55595200A6A37E /* PZShopFormatPresentController.m */,
+				C65D49DF1F5A43B2008A4EC7 /* RACAlertAction.h */,
+				C65D49E01F5A43B2008A4EC7 /* RACAlertAction.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -637,6 +642,7 @@
 				C6D64A631F49637C00E67640 /* PZShopCarHeaderViewModel.m in Sources */,
 				191363861F3D373C0078E173 /* MBProgressHUD+Add.m in Sources */,
 				1988F8661F4A8B71002D825F /* PZShopCarSettlementView.m in Sources */,
+				C65D49E11F5A43B2008A4EC7 /* RACAlertAction.m in Sources */,
 				C6D64A5D1F4955E800E67640 /* PZShopCarCellInfosModel.m in Sources */,
 				C6D64A2D1F4932BA00E67640 /* PZCalculationView.m in Sources */,
 				1988F87E1F4ACCAF002D825F /* PZShopCarValidFooterView.m in Sources */,

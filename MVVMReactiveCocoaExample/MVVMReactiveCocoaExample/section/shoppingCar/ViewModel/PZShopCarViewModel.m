@@ -30,8 +30,10 @@
 @property (nonatomic, strong, readwrite) RACCommand *markCommand;
 @property (nonatomic, strong, readwrite) RACCommand *editCommand;
 @property (nonatomic, strong, readwrite) RACCommand *deleteCommand;
+@property (nonatomic, strong, readwrite) RACCommand *saveCommand;
 @property (nonatomic, strong, readwrite) RACCommand *changeCountCommand;
 @property (nonatomic, strong, readwrite) RACCommand *changePropertyCommand;
+@property (nonatomic, strong, readwrite) RACCommand *submitCommand;
 
 @end
 
@@ -274,16 +276,34 @@
             return nil;
         }];
     }];
-    
-    self.deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+
+    self.deleteCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(NSDictionary * input) {
         return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
             @strongify(self);
             NSMutableArray *params = [@[] mutableCopy];
-            if ([input isKindOfClass:[UIButton class]]) {
+            NSString *type = input[@"type"];
+            if  ([type isEqualToString:@"indexPath"]) {
+                NSIndexPath *indexPath = input[@"indexPath"];
+                BOOL validType = self.sectionTypeDictionary[@(indexPath.section)].integerValue == PZShopCarSectionInfoTypeValidType;
+                if (validType) {
+                    PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                    [params addObject:@(cellModel.propertyId)];
+                } else {
+                    PZShopCarInvalidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
+                    [params addObject:@(cellModel.propertyId)];
+                }
+            } else if  ([type isEqualToString:@"section"]) {
+                NSNumber *section = input[@"section"];
+                PZShopCarCellInfosModel *info = self.items[section.integerValue];
+                NSArray *tmpArry = [[info.cellViewModels.rac_sequence map:^id(PZShopCarValidCellModel * value) {
+                    return @(value.propertyId);
+                }] array];
+                params = [tmpArry mutableCopy];
+            } else {
                 NSArray *cellModels = [[[[self.items rac_sequence]
-                                        filter:^BOOL(PZShopCarCellInfosModel *value) {
-                                            return value.headerViewModel.state != nil;
-                                        }]
+                                         filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                             return value.headerViewModel.state != nil;
+                                         }]
                                         map:^id(PZShopCarCellInfosModel * value) {
                                             return value.cellViewModels;
                                         }] foldLeftWithStart:@[] reduce:^id(id accumulator, id value) {
@@ -293,49 +313,55 @@
                                             return [tmpArray copy];
                                         }];
                 params = [[[[[cellModels rac_sequence]
-                            filter:^BOOL(PZShopCarValidCellModel * value) {
-                                return value.state.isMarked;
-                            }]
+                             filter:^BOOL(PZShopCarValidCellModel * value) {
+                                 return value.state.isMarked;
+                             }]
                             map:^id(PZShopCarValidCellModel * value) {
                                 return @(value.propertyId);
                             }] array] mutableCopy];
-                DLog(@"deleteAll: %@",params);
-            } else {
-                NSDictionary *dic = input;
-                NSString *type = dic[@"type"];
-                if  ([type isEqualToString:@"indexPath"]) {
-                    NSIndexPath *indexPath = dic[@"indexPath"];
-                    BOOL validType = self.sectionTypeDictionary[@(indexPath.section)].integerValue == PZShopCarSectionInfoTypeValidType;
-                    if (validType) {
-                        PZShopCarValidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
-                        [params addObject:@(cellModel.propertyId)];
-                    } else {
-                        PZShopCarInvalidCellModel *cellModel = self.items[indexPath.section].cellViewModels[indexPath.row];
-                        [params addObject:@(cellModel.propertyId)];
-                    }
-                } else if  ([type isEqualToString:@"section"]) {
-                    NSNumber *section = dic[@"section"];
-                    PZShopCarCellInfosModel *info = self.items[section.integerValue];
-                    NSArray *tmpArry = [[info.cellViewModels.rac_sequence map:^id(PZShopCarValidCellModel * value) {
-                        return @(value.propertyId);
-                    }] array];
-                    params = [tmpArry mutableCopy];
-                }
-            }
-            
-            if  (params.count == 0) {
-                NSError *sendError = [[NSError alloc] initWithDomain:@"com.ablackcrow.www"
-                                                                code:-2
-                                                            userInfo:@{@"msg":@""}];
-                [subscriber sendError:sendError];
-                return nil;
             }
             
             [ApiManager shopCarDeleteWithParams:@{@"propertyIds":((NSArray *)[params copy]).mj_JSONString} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
                 if (error) {
                     [subscriber sendError:error];
                 } else if (model.code == 0){
-                    [subscriber sendNext:@YES];
+                    [subscriber sendNext:input];
+                    [subscriber sendCompleted];
+                } else {
+                    [subscriber sendError:model.error];
+                }
+            }];
+            return nil;
+        }];
+    }];
+    
+    self.saveCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
+            NSArray *cellModels = [[[[self.items rac_sequence]
+                                     filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                         return value.headerViewModel.state != nil;
+                                     }]
+                                    map:^id(PZShopCarCellInfosModel * value) {
+                                        return value.cellViewModels;
+                                    }] foldLeftWithStart:@[] reduce:^id(id accumulator, id value) {
+                                        NSMutableArray *tmpArray = [@[] mutableCopy];
+                                        [tmpArray addObjectsFromArray:accumulator];
+                                        [tmpArray addObjectsFromArray:value];
+                                        return [tmpArray copy];
+                                    }];
+            NSArray *params = [[[[cellModels rac_sequence]
+                         filter:^BOOL(PZShopCarValidCellModel * value) {
+                             return value.state.isMarked;
+                         }]
+                        map:^id(PZShopCarValidCellModel * value) {
+                            return @(value.propertyId);
+                        }] array];
+            [ApiManager shopCarSaveWithParams:@{@"propertyIds":params.mj_JSONString} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
+                if (error) {
+                    [subscriber sendError:error];
+                } else if (model.code == 0){
+                    [subscriber sendNext:input];
                     [subscriber sendCompleted];
                 } else {
                     [subscriber sendError:model.error];
@@ -394,63 +420,47 @@
         }];
     }];
     
+    self.submitCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal *(id input) {
+        return [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+            @strongify(self);
+            NSArray *cellModels = [[[[self.items rac_sequence]
+                                     filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                         return value.headerViewModel.state != nil;
+                                     }]
+                                    map:^id(PZShopCarCellInfosModel * value) {
+                                        return value.cellViewModels;
+                                    }] foldLeftWithStart:@[] reduce:^id(id accumulator, id value) {
+                                        NSMutableArray *tmpArray = [@[] mutableCopy];
+                                        [tmpArray addObjectsFromArray:accumulator];
+                                        [tmpArray addObjectsFromArray:value];
+                                        return [tmpArray copy];
+                                    }];
+            NSArray *params = [[[[cellModels rac_sequence]
+                                 filter:^BOOL(PZShopCarValidCellModel * value) {
+                                     return value.state.isMarked;
+                                 }]
+                                map:^id(PZShopCarValidCellModel * value) {
+                                    return @(value.propertyId);
+                                }] array];
+            [ApiManager shopCarSubmitWithParams:@{@"propertyIds":params.mj_JSONString} handleBlock:^(PZBaseResponseModel * _Nullable model, NSError * _Nullable error) {
+                if (error) {
+                    [subscriber sendError:error];
+                } else if (model.code == 0){
+                    [subscriber sendNext:input];
+                    [subscriber sendCompleted];
+                } else {
+                    [subscriber sendError:model.error];
+                }
+            }];
+            return nil;
+        }];
+    }];
+
+    
     return self;
 }
 
-/// update count/pirce value
-- (void)updatePriceAndCountValue {
-    NSArray *valideArray = [[[self.items rac_sequence]
-                            filter:^BOOL(PZShopCarCellInfosModel *value) {
-                                return value.headerViewModel.state != nil;
-                            }] array];
-    NSInteger count = 0;
-    CGFloat price = 0.0;
-    for (PZShopCarCellInfosModel *info in valideArray) {
-        for (PZShopCarValidCellModel *cellModel in info.cellViewModels) {
-            if  (cellModel.state.isMarked == YES) {
-                count += 1;
-                price += cellModel.price *cellModel.count;
-            }
-        }
-    }
-    self.price = price;
-    self.count = count;
-}
 
-/// update mark state
-- (void) updateMarkedValue {
-    @weakify(self);
-    NSArray *validArray = [[[self.sectionTypeDictionary.allValues rac_sequence]
-                            filter:^BOOL(NSNumber * value) {
-                                return value.integerValue == PZShopCarSectionInfoTypeValidType;
-                            }] array];
-    
-    NSArray *filterArray = [[[[[self.items rac_sequence]
-                               filter:^BOOL(PZShopCarCellInfosModel *value) {
-                                   return value.headerViewModel.state != nil;
-                               }]
-                              map:^id(PZShopCarCellInfosModel *info) {
-                                  @strongify(self);
-                                  info.headerViewModel.state.marked = [self stateIsYesInArray:info.cellViewModels];
-                                  return info;
-                              }]
-                             filter:^BOOL(PZShopCarCellInfosModel *info) {
-                                 return info.headerViewModel.state.isMarked;
-                             }] array];
-    self.marked = validArray.count == filterArray.count;
-}
-
-/// 判断 array 里的所有 state 是否都是 YES
-- (BOOL)stateIsYesInArray:(NSArray <PZShopCarValidCellModel *>*)array  {
-    BOOL result = YES;
-    for (PZShopCarValidCellModel *cellModel in array) {
-        if  (cellModel.state.isMarked == NO) {
-            result = NO;
-            break;
-        }
-    }
-    return result;
-}
 
 #pragma mark - UICollectionView layout
 - (UIEdgeInsets)insetForSectionAtIndex:(NSInteger)section {
@@ -543,10 +553,99 @@
     }
 }
 
+#pragma mark - event response
+
 - (PZShopCarSectionInfoType)sectionTypeForSection:(NSInteger)section {
     return self.sectionTypeDictionary[@(section)].integerValue;
 }
 
+/// update count/pirce value
+- (void)updatePriceAndCountValue {
+    NSArray *valideArray = [[[self.items rac_sequence]
+                             filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                 return value.headerViewModel.state != nil;
+                             }] array];
+    NSInteger count = 0;
+    CGFloat price = 0.0;
+    for (PZShopCarCellInfosModel *info in valideArray) {
+        for (PZShopCarValidCellModel *cellModel in info.cellViewModels) {
+            if  (cellModel.state.isMarked == YES) {
+                count += 1;
+                price += cellModel.price *cellModel.count;
+            }
+        }
+    }
+    self.price = price;
+    self.count = count;
+}
+
+/// update mark state
+- (void) updateMarkedValue {
+    @weakify(self);
+    NSArray *validArray = [[[self.sectionTypeDictionary.allValues rac_sequence]
+                            filter:^BOOL(NSNumber * value) {
+                                return value.integerValue == PZShopCarSectionInfoTypeValidType;
+                            }] array];
+    
+    NSArray *filterArray = [[[[[self.items rac_sequence]
+                               filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                   return value.headerViewModel.state != nil;
+                               }]
+                              map:^id(PZShopCarCellInfosModel *info) {
+                                  @strongify(self);
+                                  info.headerViewModel.state.marked = [self stateIsYesInArray:info.cellViewModels];
+                                  return info;
+                              }]
+                             filter:^BOOL(PZShopCarCellInfosModel *info) {
+                                 return info.headerViewModel.state.isMarked;
+                             }] array];
+    self.marked = validArray.count == filterArray.count;
+}
+
+/// 判断 array 里的所有 state 是否都是 YES
+- (BOOL)stateIsYesInArray:(NSArray <PZShopCarValidCellModel *>*)array  {
+    BOOL result = YES;
+    for (PZShopCarValidCellModel *cellModel in array) {
+        if  (cellModel.state.isMarked == NO) {
+            result = NO;
+            break;
+        }
+    }
+    return result;
+}
+
+- (RACSignal *)actionWithConfirmation:(RACSignal*(^)(void))signalBlock {
+    NSParameterAssert(signalBlock);
+    RACSignal *confirmationSignal = signalBlock();
+    return [[confirmationSignal take:1]
+            flattenMap:^__kindof RACSignal * _Nullable(id  _Nullable value) {
+                return [RACSignal return:value];
+            }];
+}
+
+- (BOOL)hasMarkedInfo {
+    NSArray *cellModels = [[[[self.items rac_sequence]
+                             filter:^BOOL(PZShopCarCellInfosModel *value) {
+                                 return value.headerViewModel.state != nil;
+                             }]
+                            map:^id(PZShopCarCellInfosModel * value) {
+                                return value.cellViewModels;
+                            }] foldLeftWithStart:@[] reduce:^id(id accumulator, id value) {
+                                NSMutableArray *tmpArray = [@[] mutableCopy];
+                                [tmpArray addObjectsFromArray:accumulator];
+                                [tmpArray addObjectsFromArray:value];
+                                return [tmpArray copy];
+                            }];
+    NSArray * params = [[[[cellModels rac_sequence]
+                          filter:^BOOL(PZShopCarValidCellModel * value) {
+                              return value.state.isMarked;
+                          }]
+                         map:^id(PZShopCarValidCellModel * value) {
+                             return @(value.propertyId);
+                         }] array];
+    BOOL invalid = params.count == 0;
+    return !invalid;
+}
 #pragma mark - setter and getter
 
 - (RACSignal *)fetchListSignal {

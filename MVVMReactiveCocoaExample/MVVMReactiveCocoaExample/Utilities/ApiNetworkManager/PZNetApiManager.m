@@ -58,22 +58,6 @@
                               }];
 }
 
-- (void)existShoppingWithBlock:(void (^)( PZExistModel * __nullable  model,  NSError * __nullable error))block  {
-    
-    [ApiClient requestJsonDataWithPath:[self urlWithPath:@"/shopCar/existshopping"]
-                            withParams:nil
-                        withMethodType:Get
-                              andBlock:^(id data, NSError *error) {
-                                  if (!error) {
-                                      PZExistModel *model = [PZExistModel mj_objectWithKeyValues:data];
-                                      block(model,nil);
-                                  } else {
-                                      block(nil,error);
-                                  }
-                              }];
-}
-
-
 - (void)addShopCarWithParams:(NSDictionary *)param
                  handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
     [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/add"]
@@ -162,6 +146,35 @@
 
 - (void)shopCarChangePropertyWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
     [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/updateProperty"]
+                            withParams:param
+                        withMethodType:Post
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZBaseResponseModel *model = [PZBaseResponseModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
+
+- (void)shopCarSaveWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/saveOrder"]
+                            withParams:param
+                        withMethodType:Post
+                              andBlock:^(id data, NSError *error) {
+                                  if (!error) {
+                                      PZBaseResponseModel *model = [PZBaseResponseModel mj_objectWithKeyValues:data];
+                                      block(model,nil);
+                                  } else {
+                                      block(nil,error);
+                                  }
+                              }];
+}
+
+
+- (void)shopCarSubmitWithParams:(NSDictionary *)param handleBlock:(void (^)( PZBaseResponseModel * __nullable  model,  NSError * __nullable error))block {
+    [ApiClient requestJsonDataWithPath:[ApiManager urlWithPath:@"/shopCar/generateOrder"]
                             withParams:param
                         withMethodType:Post
                               andBlock:^(id data, NSError *error) {

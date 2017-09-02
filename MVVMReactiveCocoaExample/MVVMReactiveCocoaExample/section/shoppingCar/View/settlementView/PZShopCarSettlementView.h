@@ -16,8 +16,11 @@
 @property (nonatomic, assign, getter=isMarked) BOOL marked;
 @property (nonatomic, assign, getter=isEdited) BOOL edited;
 
+@property (nonatomic, strong) RACSubject *deleteSignal;
+@property (nonatomic, strong) RACSubject *saveSignal;
+@property (nonatomic, strong) RACSubject *submitSignal;
 @property (nonatomic, strong) RACCommand *markCommand;
-@property (nonatomic, strong) RACCommand *deleteCommand;
+
 
 - (void)reloadData;
 
